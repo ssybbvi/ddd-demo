@@ -29,7 +29,7 @@ export class CreateMember implements UseCase<CreateMemberDTO, Promise<Response>>
     const { userId } = request
 
     try {
-      let memberExists = await this.memberRepo.existsByUserId(userId)
+      let memberExists = await this.memberRepo.existsById(userId)
       if (memberExists) {
         return left(new CreateMemberErrors.MemberAlreadyExistsError(userId))
       }
@@ -50,12 +50,14 @@ export class CreateMember implements UseCase<CreateMemberDTO, Promise<Response>>
         inviteMemberId = inviteMember.memberId
       }
 
-      const memberOrError: Result<Member> = Member.create({
-        userId: userIdOrError.getValue(),
-        inviteMemberId: inviteMemberId,
-        createAt: 0,
-        inviteToken: ''
-      })
+      const memberOrError: Result<Member> = Member.create(
+        {
+          inviteMemberId: inviteMemberId,
+          createAt: 0,
+          inviteToken: request.userId
+        },
+        new UniqueEntityID(request.userId)
+      )
 
       if (memberOrError.isFailure) {
         return left(memberOrError)

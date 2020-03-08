@@ -1,5 +1,5 @@
 import express from 'express'
-import { dailySignInController } from '../../../useCases/signIns/dailySignIn'
+import { dailySignInController } from '../../../userCases/signIns/dailySignIn'
 import { middleware } from '../../../../../shared/infra/http'
 
 const signInRouter = express.Router()

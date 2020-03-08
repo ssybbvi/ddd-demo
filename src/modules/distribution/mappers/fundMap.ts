@@ -6,7 +6,7 @@ import { IFundDbModel } from '../dbModels/iFundDbModel'
 import { FundAmount } from '../domain/fundAmount'
 import { FundType } from '../domain/fundType'
 import { FundStatus } from '../domain/fundStatus'
-import { MemberId } from '../../distribution/domain/memberId'
+import { MemberId } from '../domain/memberId'
 
 export class FundMap implements IMapper<Fund> {
   public static toDTO(fund: Fund): FundDto {

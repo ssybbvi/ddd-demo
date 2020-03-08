@@ -1,3 +1,3 @@
 import { UserDTO } from '../../users/dtos/userDTO'
 
-export interface MemberDTO {}
+export interface SignInDTO {}

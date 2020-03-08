@@ -14,46 +14,20 @@ export class MemberRepo implements IMemberRepo {
     return Global.instance.mongoDb.collection<IMemberDbModel>('member')
   }
 
-  public async existsByUserId(userId: string): Promise<boolean> {
-    const member = await this.createCollection().findOne({ userId: userId })
-    const found = !!member === true
-    return found
-  }
-
   public async existsById(_id: string): Promise<boolean> {
     const member = await this.createCollection().findOne({ _id })
     const found = !!member === true
     return found
   }
 
-  public async getMemberIdByUserId(userId: string): Promise<MemberId> {
-    const member = await this.createCollection().findOne({ userId: userId })
-    const found = !!member === true
-    if (!found) throw new Error('Member id not found')
-    return MemberIdMap.toDomain(member)
-  }
-
-  public async getMemberByUserId(userId: string): Promise<Member> {
-    const member = await this.createCollection().findOne({ userId: userId })
-    const found = !!member === true
-    if (!found) throw new Error('Member id not found')
-    return MemberMap.toDomain(member)
-  }
-
-  public async getMemberByUserName(username: string): Promise<Member> {
-    const member = await this.createCollection().findOne({ username })
-    const found = !!member === true
-    if (!found) throw new Error('Member not found')
+  public async getById(_id: string): Promise<Member> {
+    const member = await this.createCollection().findOne({ _id })
     return MemberMap.toDomain(member)
   }
 
   public async save(member: Member): Promise<void> {
-    const exists = await this.existsByUserId(member.userId.id.toString())
-    if (!exists) {
-      const rawSequelizeMember = await MemberMap.toPersistence(member)
-      await this.createCollection().insertOne(rawSequelizeMember)
-    }
-    return
+    const rawSequelizeMember = await MemberMap.toPersistence(member)
+    await this.createCollection().insertOne(rawSequelizeMember)
   }
 
   public async existsByInviteToken(inviteToken: string): Promise<boolean> {

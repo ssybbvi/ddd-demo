@@ -25,5 +25,7 @@ export class FundAmount extends ValueObject<IFundAmountProps> {
     if (!fundAmountGreaterThan.succeeded) {
       return Result.fail<FundAmount>(fundAmountGreaterThan.message)
     }
+
+    return Result.ok<FundAmount>(new FundAmount(props))
   }
 }

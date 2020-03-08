@@ -6,7 +6,7 @@ import { CreateFundErrors } from './createFundErrors'
 import { IFundRepo } from '../../../repos/iFundRepo'
 import { FundAmount } from '../../../domain/fundAmount'
 import { Fund } from '../../../domain/fund'
-import { MemberId } from '../../../../distribution/domain/memberId'
+import { MemberId } from '../../../domain/memberId'
 import { UniqueEntityID } from '../../../../../shared/domain/UniqueEntityID'
 
 type Response = Either<CreateFundErrors.FundAmountError | AppError.UnexpectedError | Result<any>, Result<void>>

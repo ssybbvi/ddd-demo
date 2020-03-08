@@ -1,6 +1,6 @@
 import { FundAmount, IFundAmountProps } from './fundAmount'
 import { FundStatus } from './fundStatus'
-import { MemberId } from '../../distribution/domain/memberId'
+import { MemberId } from './memberId'
 import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
 import { FundId } from './fundId'
 import { Result } from '../../../shared/core/Result'

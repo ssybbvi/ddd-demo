@@ -1,6 +1,6 @@
-import { IDomainEvent } from '../../../shared/domain/events/IDomainEvent'
-import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
-import { SignIn } from '../domain/signIn'
+import { IDomainEvent } from '../../../../shared/domain/events/IDomainEvent'
+import { UniqueEntityID } from '../../../../shared/domain/UniqueEntityID'
+import { SignIn } from '../signIn'
 
 export class SignInCreated implements IDomainEvent {
   public dateTimeOccurred: Date

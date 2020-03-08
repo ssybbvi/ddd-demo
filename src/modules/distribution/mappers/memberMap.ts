@@ -9,15 +9,12 @@ import { MemberId } from '../domain/memberId'
 
 export class MemberMap implements IMapper<Member> {
   public static toDomain(raw: IMemberDbModel): Member {
-    const userIdOrError = UserId.create(new UniqueEntityID(raw.userId))
-
     let inviteMemberId: MemberId = raw.inviteMemberId
       ? MemberId.create(new UniqueEntityID(raw.inviteMemberId)).getValue()
       : null
 
     const memberOrError = Member.create(
       {
-        userId: userIdOrError.getValue(),
         createAt: raw.createAt,
         inviteToken: raw.inviteToken,
         inviteMemberId: inviteMemberId
@@ -33,7 +30,6 @@ export class MemberMap implements IMapper<Member> {
   public static toPersistence(member: Member): IMemberDbModel {
     return {
       _id: member.id.toString(),
-      userId: member.userId.id.toString(),
       inviteMemberId: member.inviteMemberId ? member.inviteMemberId.id.toString() : null,
       createAt: member.createAt,
       inviteToken: member.inviteToken

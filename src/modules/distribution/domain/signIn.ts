@@ -1,8 +1,8 @@
 import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { Result } from '../../../shared/core/Result'
-import { SignInCreated } from '../events/signInCreated'
 import { SignInId } from './signInId'
+import { SignInCreated } from './events/signInCreated'
 
 export interface SignInProps {
   signInMemberId: string

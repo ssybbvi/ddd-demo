@@ -1,7 +1,7 @@
 import express from 'express'
 import { tenantRouter } from '../../../../modules/tenants/infra/http/routes/tenant'
 import { userRouter } from '../../../../modules/users/infra/http/routers/index'
-import { signInRouter } from '../../../../modules/integralTask/infra/http/routes/index'
+import { signInRouter } from '../../../../modules/distribution/infra/http/routes/index'
 
 const v1Router = express.Router()
 

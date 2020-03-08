@@ -1,18 +1,17 @@
 import { IMapper } from '../../../shared/infra/Mapper'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { SignIn } from '../domain/signIn'
-import { SignInDTO } from '../dtos/signInDTO'
 import { ISignInDbModel } from '../dbModels/iSignInDbModel'
 
 export class SignInMap implements IMapper<SignIn> {
-  public static toDTO(signIn: SignIn): SignInDTO {
-    return {
-      _id: signIn.signInMemberId.toString(),
-      signInMemberId: signIn.signInMemberId,
-      createAt: signIn.createAt,
-      reward: signIn.reward
-    }
-  }
+  // public static toDTO(signIn: SignIn): SignInDTO {
+  //   return {
+  //     _id: signIn.signInMemberId.toString(),
+  //     signInMemberId: signIn.signInMemberId,
+  //     createAt: signIn.createAt,
+  //     reward: signIn.reward
+  //   }
+  // }
 
   public static toDomain(raw: ISignInDbModel): SignIn {
     const signInOrError = SignIn.create(
