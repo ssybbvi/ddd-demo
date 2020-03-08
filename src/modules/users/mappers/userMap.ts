@@ -3,7 +3,6 @@ import { User } from '../domain/user'
 import { UserDTO, WxDTO } from '../dtos/userDTO'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { IUserDbModels, WxDbModel } from '../dbModels/iUserDbModels'
-import { platform } from 'os'
 import { WxUser } from '../domain/wxUser'
 
 export class UserMap implements IMapper<User> {

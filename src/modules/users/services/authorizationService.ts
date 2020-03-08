@@ -24,6 +24,8 @@ export class AuthorizationService {
   public async getAceessTokenWithRefreshToken(user: User): Promise<WxAuthorizationDtoResult> {
     const accessToken: JWTToken = this.getAccessTokenForUser(user)
     const refreshToken: RefreshToken = this.getRefreshTokenForUser()
+
+    user.setAccessToken(accessToken, refreshToken)
     await this.authService.saveAuthenticatedUser(user)
     return {
       accessToken,

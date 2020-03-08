@@ -45,7 +45,6 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
       let wxJsCodeToSessionResult: WxJsCodeToSessionResult = jsCodeToSessionValue.getValue()
       const isExist = await this.userRepo.existsWxOpenId(wxJsCodeToSessionResult.openid)
 
-      let loginDTOResponse: WxAuthorizationDtoResult
       if (!isExist) {
         const wxUserOrError = WxUser.create({
           openId: wxJsCodeToSessionResult.openid,
@@ -78,7 +77,9 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
       }
 
       let user = await this.userRepo.getUserByWxOpenId(wxJsCodeToSessionResult.openid)
-      loginDTOResponse = await this.authorizationService.getAceessTokenWithRefreshToken(user)
+      let loginDTOResponse: WxAuthorizationDtoResult = await this.authorizationService.getAceessTokenWithRefreshToken(
+        user
+      )
 
       return right(Result.ok<WxAuthorizationDtoResult>(loginDTOResponse))
     } catch (err) {
