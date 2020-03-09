@@ -1,13 +1,13 @@
 {
-  "name": "JiFenYueDui",
+  "name": "jifenyuedui",
   "version": "1.0.0",
   "description": "Learn how to build a hacker news-type app with TypeScript & DDD",
   "main": "index.js",
   "scripts": {
     "build": "rimraf ./dist && tsc",
     "start:dev": "cross-env NODE_ENV=development nodemon",
-    "docker:build": "docker build -t registry.cn-beijing.aliyuncs.com/honghegame/xald-management . ",
-    "docker:push": "docker push registry.cn-beijing.aliyuncs.com/honghegame/xald-management"
+    "docker:build": "docker build -t registry.cn-shenzhen.aliyuncs.com/jifenyuedui . ",
+    "docker:push": "docker push registry.cn-shenzhen.aliyuncs.com/jifenyuedui"
   },
   "dependencies": {
     "@alicloud/pop-core": "^1.7.9",

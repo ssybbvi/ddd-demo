@@ -6,6 +6,9 @@ interface WxUserProps {
   openId: string
   unionId: string
   sessionKey: string
+  nickName?: string
+  avatarUrl?: string
+  gender?: number
 }
 
 export class WxUser extends ValueObject<WxUserProps> {

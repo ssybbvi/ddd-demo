@@ -49,7 +49,10 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
         const wxUserOrError = WxUser.create({
           openId: wxJsCodeToSessionResult.openid,
           unionId: wxJsCodeToSessionResult.unionid,
-          sessionKey: wxJsCodeToSessionResult.session_key
+          sessionKey: wxJsCodeToSessionResult.session_key,
+          nickName: request.nickName,
+          avatarUrl: request.avatarUrl,
+          gender: request.gender
         })
 
         if (wxUserOrError.isFailure) {
@@ -73,7 +76,6 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
         }
 
         await this.userRepo.save(userOrError.getValue())
-        userOrError.getValue().domainEvents
       }
 
       let user = await this.userRepo.getUserByWxOpenId(wxJsCodeToSessionResult.openid)

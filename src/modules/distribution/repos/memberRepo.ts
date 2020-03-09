@@ -7,4 +7,5 @@ export interface IMemberRepo {
   existsByInviteToken(inviteToken: string): Promise<boolean>
   getByInviteToken(inviteToken: string): Promise<Member>
   save(member: Member): Promise<void>
+  getTermMemberList(memberIdList: MemberId[]): Promise<Member[]>
 }

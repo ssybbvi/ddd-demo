@@ -42,4 +42,17 @@ export class MemberRepo implements IMemberRepo {
     if (!found) throw new Error('Member id not found')
     return MemberMap.toDomain(member)
   }
+
+  public async getTermMemberList(memberIdList: MemberId[]): Promise<Member[]> {
+    let memberIds = memberIdList.map(item => item.id.toString())
+
+    let memberList = await this.createCollection()
+      .find({
+        inviteToken: {
+          $in: memberIds
+        }
+      })
+      .toArray()
+    return memberList.map(item => MemberMap.toDomain(item))
+  }
 }

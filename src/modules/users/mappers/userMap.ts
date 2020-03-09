@@ -23,7 +23,10 @@ export class UserMap implements IMapper<User> {
     return {
       openId: wxUser.props.openId,
       unionId: wxUser.props.unionId,
-      sessionKey: wxUser.props.sessionKey
+      sessionKey: wxUser.props.sessionKey,
+      nickName: wxUser.props.sessionKey,
+      avatarUrl: wxUser.props.avatarUrl,
+      gender: wxUser.props.gender
     }
   }
 
@@ -50,7 +53,10 @@ export class UserMap implements IMapper<User> {
     let wxUserOrError = WxUser.create({
       openId: raw.openId,
       unionId: raw.unionId,
-      sessionKey: raw.sessionKey
+      sessionKey: raw.sessionKey,
+      nickName: raw.nickName,
+      avatarUrl: raw.avatarUrl,
+      gender: raw.gender
     })
 
     wxUserOrError.isFailure ? console.log(wxUserOrError.error) : ''
@@ -75,13 +81,25 @@ export class UserMap implements IMapper<User> {
     return {
       openId: wxUser.value.openId,
       unionId: wxUser.value.unionId,
-      sessionKey: wxUser.value.sessionKey
+      sessionKey: wxUser.value.sessionKey,
+      nickName: wxUser.value.nickName,
+      avatarUrl: wxUser.value.avatarUrl,
+      gender: wxUser.value.gender
     }
   }
 
   public static toLoginMe(user: User) {
     return {
       id: user.id.toString()
+    }
+  }
+
+  public static toWxLoginMe(user: User) {
+    return {
+      id: user.id.toString(),
+      nickName: user.platform.wx ? user.platform.wx.props.nickName : '',
+      avatarUrl: user.platform.wx ? user.platform.wx.props.avatarUrl : '',
+      gender: user.platform.wx ? user.platform.wx.props.gender : ''
     }
   }
 }

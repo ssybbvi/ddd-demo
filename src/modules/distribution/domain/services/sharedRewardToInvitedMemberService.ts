@@ -3,7 +3,6 @@ import { Fund } from '../fund'
 import { SignIn } from '../signIn'
 import { Member } from '../member'
 import { FundAmount } from '../fundAmount'
-import { CreateFundErrors } from '../../userCases/fund/createFund/createFundErrors'
 import { left } from '../../../../shared/core/Result'
 import { MemberId } from '../memberId'
 import { UniqueEntityID } from '../../../../shared/domain/UniqueEntityID'
@@ -27,9 +26,9 @@ export class SharedRewardToInvitedMemberService {
       fundAmount: amount
     })
 
-    if (fundAmountOrError.isFailure) {
-      return left(new CreateFundErrors.FundAmountError(amount))
-    }
+    // if (fundAmountOrError.isFailure) {
+    //   return left(new CreateFundErrors.FundAmountError(amount))
+    // }
 
     const incomeMemberIdOrError = MemberId.create(new UniqueEntityID(incomeMemberId))
     if (incomeMemberIdOrError.isFailure) {
@@ -63,24 +62,20 @@ export class SharedRewardToInvitedMemberService {
     const { incomeMemberId } = rewardFundDto
     const member = await this.memberRepo.getById(incomeMemberId)
     if (!!member.inviteMemberId) {
+      rewardFundDto.paymentMemberId = member.id.toString()
       rewardFundDto.incomeMemberId = member.inviteMemberId.id.toString()
       rewardFundDto.type = 'primaryDistribution'
       rewardFundDto.amount = Math.ceil(rewardFundDto.amount / 2)
-
       await this.createFund(rewardFundDto)
-      await this.rewardGrandfatherInviteMemberToFund(rewardFundDto)
-    }
-  }
 
-  private async rewardGrandfatherInviteMemberToFund(rewardFundDto: RewardFundDto) {
-    const { incomeMemberId } = rewardFundDto
-    const member = await this.memberRepo.getById(incomeMemberId)
-    if (!!member.inviteMemberId) {
-      rewardFundDto.incomeMemberId = member.inviteMemberId.id.toString()
-      rewardFundDto.type = 'secondaryDistribution'
-      rewardFundDto.amount = Math.ceil(rewardFundDto.amount / 2)
-
-      await this.createFund(rewardFundDto)
+      let fatherInviteMember = await this.memberRepo.getById(member.inviteMemberId.id.toString())
+      if (!!fatherInviteMember.inviteMemberId) {
+        rewardFundDto.paymentMemberId = member.id.toString()
+        rewardFundDto.incomeMemberId = member.inviteMemberId.id.toString()
+        rewardFundDto.type = 'secondaryDistribution'
+        rewardFundDto.amount = Math.ceil(rewardFundDto.amount / 2)
+        await this.createFund(rewardFundDto)
+      }
     }
   }
 

@@ -1,13 +1,13 @@
 import { BaseController } from '../../../../shared/infra/http/models/BaseController'
 import { DecodedExpressRequest } from '../../infra/http/models/decodedRequest'
-import { GetUserByUserName } from '../getUserByUserName/GetUserByUserName'
+import { GetWxCurrentUserUseCase } from '../getWxCurrentUser/getWxCurrentUserUseCase'
 import { UserMap } from '../../mappers/userMap'
 import * as express from 'express'
 
-export class GetCurrentUserController extends BaseController {
-  private useCase: GetUserByUserName
+export class GetWxCurrentUserController extends BaseController {
+  private useCase: GetWxCurrentUserUseCase
 
-  constructor(useCase: GetUserByUserName) {
+  constructor(useCase: GetWxCurrentUserUseCase) {
     super()
     this.useCase = useCase
   }
@@ -23,7 +23,7 @@ export class GetCurrentUserController extends BaseController {
       } else {
         const user = result.value.getValue()
         return this.ok(res, {
-          user: UserMap.toLoginMe(user)
+          user: UserMap.toWxLoginMe(user)
         })
       }
     } catch (err) {

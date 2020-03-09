@@ -1,9 +1,11 @@
-import { IFundRepo } from '../iFundRepo'
+import { IFundRepo, TodayByMemberDto } from '../iFundRepo'
 import { Fund } from '../../domain/fund'
 import { Db, MongoClient, Collection } from 'mongodb'
 import { FundMap } from '../../mappers/fundMap'
 import { IFundDbModel } from '../../dbModels/iFundDbModel'
 import { Global } from '../../../../shared/infra/database/mongodb'
+import { MemberId } from '../../domain/memberId'
+import { FundType } from '../../domain/fundType'
 
 export class MongoFundRepo implements IFundRepo {
   constructor() {}
@@ -30,5 +32,48 @@ export class MongoFundRepo implements IFundRepo {
       .find({})
       .toArray()
     return list.map(item => FundMap.toDomain(item))
+  }
+
+  async getTodayByMemberList(
+    incomeMemberId: MemberId,
+    memberList: MemberId[],
+    type: FundType
+  ): Promise<TodayByMemberDto[]> {
+    let memberIds = memberList.map(item => item.id.toString())
+    let list = await Global.instance.mongoDb
+      .collection('funds')
+      .aggregate([
+        {
+          $match: {
+            // paymentMemberId: {
+            //   $in: memberIds
+            // },
+            // incomeMemberId:incomeMemberId.id.toString() ,
+            // type,
+            // createAt: new Date().setHours(0, 0, 0, 0)
+          }
+        },
+        {
+          $group: {
+            _id: '$paymentMemberId',
+            totalAmount: {
+              $sum: '$amount'
+            }
+          }
+        },
+        {
+          $sort: {
+            totalAmount: -1
+          }
+        },
+        {
+          $project: {
+            paymentMemberId: '$_id',
+            totalAmount: 1
+          }
+        }
+      ])
+      .toArray()
+    return list
   }
 }

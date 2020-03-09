@@ -6,6 +6,7 @@ import { getCurrentUserController } from '../../../useCases/getCurrentUser'
 import { refreshAccessTokenController } from '../../../useCases/refreshAccessToken'
 import { logoutController } from '../../../useCases/logout'
 import { wxAuthorizationController } from '../../../useCases/wxAuthorization'
+import { getWxCurrentUserController } from '../../../useCases/getWxCurrentUser'
 
 const userRouter = express.Router()
 
@@ -22,5 +23,7 @@ userRouter.get('/:username', middleware.ensureAuthenticated(), (req, res) =>
 )
 
 userRouter.post('/wx/authorization', (req, res) => wxAuthorizationController.execute(req, res))
+
+userRouter.get('/wx/me', middleware.ensureAuthenticated(), (req, res) => getWxCurrentUserController.execute(req, res))
 
 export { userRouter }

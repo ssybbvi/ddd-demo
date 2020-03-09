@@ -1,15 +1,12 @@
-FROM registry.cn-beijing.aliyuncs.com/honghegame/node-pm2:latest
+FROM registry.cn-shenzhen.aliyuncs.com/xiaoai/node-pm2:latest
 
-# copy files
-ADD dist /app
-ADD node_modules /app/node_modules
-ADD package.json /app/
-ADD package-lock.json /app/
+WORKDIR /usr/src/app/
+USER root
+COPY ./ ./
 
+RUN yarn
 
-# npm prune
-WORKDIR /app
-
+RUN npm run build
 
 EXPOSE 5000
-CMD pm2 start index.js -o NULL -e NULL -i max --no-daemon
+CMD pm2 start dist/index.js -o NULL -e NULL -i max --no-daemon
