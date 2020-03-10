@@ -1,5 +1,8 @@
 import { TermDTO } from '../../../dtos/termDTO'
 
 export interface GetDistributionMemberDtoResult {
-  terms: TermDTO[]
+  primaryDistributionTerms: TermDTO[]
+  secondaryDistributionTerms: TermDTO[]
+  primaryDistributionByTodayTerms: TermDTO[]
+  secondaryDistributionByTodayTerms: TermDTO[]
 }

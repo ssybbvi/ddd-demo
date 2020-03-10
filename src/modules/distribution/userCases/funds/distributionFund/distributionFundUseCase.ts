@@ -32,7 +32,7 @@ export class DistributionFundUseCase implements UseCase<DistributionFundDto, Pro
         let saveFundResult = await this.saveFund(
           Math.ceil(amount * item.distributionRate),
           item.memberId,
-          this.systemPaymentMemberId,
+          memberId,
           item.fundType,
           request.relationId
         )

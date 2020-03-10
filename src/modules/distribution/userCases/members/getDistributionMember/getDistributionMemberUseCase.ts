@@ -8,6 +8,8 @@ import { IFundRepo } from '../../../repos/iFundRepo'
 import { MemberId } from '../../../domain/memberId'
 import { UniqueEntityID } from '../../../../../shared/domain/UniqueEntityID'
 import e = require('express')
+import { TermDTO } from '../../../dtos/termDTO'
+import { FundType } from '../../../domain/fundType'
 
 type Response = Either<AppError.UnexpectedError | Result<any>, Result<GetDistributionMemberDtoResult>>
 
@@ -22,45 +24,51 @@ export class GetDistributionMemberUseCase implements UseCase<GetDistributionMemb
 
   public async execute(request: GetDistributionMemberDto): Promise<Response> {
     try {
-      if (request.termType === 'primaryDistribution' || request.termType === 'secondaryDistribution') {
-      } else {
-        return left(new AppError.UnexpectedError('termType只能是primaryDistribution或secondaryDistribution'))
-      }
-
       let memberIdOrError = MemberId.create(new UniqueEntityID(request.memberId))
       if (memberIdOrError.isFailure) {
         return left(memberIdOrError)
       }
 
-      let memberList = await this.memberRepo.getTermMemberList([memberIdOrError.getValue()])
-      if (request.termType === 'secondaryDistribution') {
-        memberList = await this.memberRepo.getTermMemberList(memberList)
-      }
+      let primaryDistributionTerms = await this.getTermDto(memberIdOrError.getValue(), 'primaryDistribution', 0)
 
-      let todayByMemberDtoList = await this.fundRepo.getTodayByMemberList(
+      let primaryDistributionByTodayTerms = await this.getTermDto(
         memberIdOrError.getValue(),
-        memberList,
-        'primaryDistribution'
+        'primaryDistribution',
+        new Date().setHours(0, 0, 0, 0)
       )
-      if (!!request.offset) {
-        todayByMemberDtoList.slice(0, request.offset)
-      }
 
-      let result = todayByMemberDtoList.map(item => {
-        return {
-          avatar: 'avatar',
-          nickName: item.paymentMemberId,
-          integral: item.totalAmount
-        }
-      })
+      let secondaryDistributionTerms = await this.getTermDto(memberIdOrError.getValue(), 'secondaryDistribution', 0)
+
+      let secondaryDistributionByTodayTerms = await this.getTermDto(
+        memberIdOrError.getValue(),
+        'secondaryDistribution',
+        new Date().setHours(0, 0, 0, 0)
+      )
 
       return right(
         Result.ok<GetDistributionMemberDtoResult>({
-          terms: result
+          primaryDistributionTerms,
+          primaryDistributionByTodayTerms,
+          secondaryDistributionTerms,
+          secondaryDistributionByTodayTerms
         })
       )
     } catch (err) {
       return left(new AppError.UnexpectedError(err.toString()))
     }
+  }
+
+  private async getTermDto(memberId: MemberId, type: FundType, createAt: number): Promise<TermDTO[]> {
+    let primaryDistributionList = await this.fundRepo.getDistributionList(memberId, type, createAt)
+    let primaryDistributionTerms: TermDTO[] = primaryDistributionList.map(item => {
+      return {
+        memberId: item.paymentMemberId,
+        nickName: '',
+        avatarUrl: '',
+        gender: 1,
+        integral: item.totalAmount
+      }
+    })
+    return primaryDistributionTerms
   }
 }

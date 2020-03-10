@@ -6,7 +6,8 @@ export interface IFundRepo {
   getById(id: string): Promise<Fund>
   save(fund: Fund): Promise<void>
   filter(): Promise<Fund[]>
-  getTodayByMemberList(incomeMemberId: MemberId, memberList: MemberId[], type: FundType): Promise<TodayByMemberDto[]>
+  getListByMemberId(memberId: MemberId): Promise<Fund[]>
+  getDistributionList(memberId: MemberId, type: FundType, createAt: number): Promise<TodayByMemberDto[]>
 }
 
 export interface TodayByMemberDto {

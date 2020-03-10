@@ -1,14 +1,16 @@
 import { BaseController } from '../../../../../shared/infra/http/models/BaseController'
 import * as express from 'express'
 import { DecodedExpressRequest } from '../../../../users/infra/http/models/decodedRequest'
-import { GetDistributionMemberUseCase } from './getDistributionMemberUseCase'
-import { GetDistributionMemberDto } from './getDistributionMemberDto'
-import { GetDistributionMemberDtoResult } from './getDistributionMemberDtoResult'
+import { GetFundListUseCase } from './getFundListUseCase'
+import { GetFundListDto } from './getFundListDto'
+import { Fund } from '../../../domain/fund'
+import { FundDto } from '../../../dtos/fundDto'
+import { FundMap } from '../../../mappers/fundMap'
 
-export class GetDistributionMemberController extends BaseController {
-  private useCase: GetDistributionMemberUseCase
+export class GetFundListController extends BaseController {
+  private useCase: GetFundListUseCase
 
-  constructor(useCase: GetDistributionMemberUseCase) {
+  constructor(useCase: GetFundListUseCase) {
     super()
     this.useCase = useCase
   }
@@ -16,7 +18,7 @@ export class GetDistributionMemberController extends BaseController {
   async executeImpl(req: DecodedExpressRequest, res: express.Response): Promise<any> {
     const { userId } = req.decoded
 
-    const dto: GetDistributionMemberDto = {
+    const dto: GetFundListDto = {
       memberId: userId
     }
 
@@ -31,8 +33,9 @@ export class GetDistributionMemberController extends BaseController {
             return this.fail(res, error.errorValue() + '')
         }
       } else {
-        const getDistributionMemberDtoResult: GetDistributionMemberDtoResult = useCaseValue.getValue() as GetDistributionMemberDtoResult
-        return this.ok<GetDistributionMemberDtoResult>(res, getDistributionMemberDtoResult)
+        const fundList: Fund[] = useCaseValue.getValue() as Fund[]
+        let fundDtoList = fundList.map(item => FundMap.toDTO(item))
+        return this.ok<FundDto[]>(res, fundDtoList)
       }
     } catch (err) {
       return this.fail(res, err)

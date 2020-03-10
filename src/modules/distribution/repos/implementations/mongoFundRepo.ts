@@ -34,23 +34,24 @@ export class MongoFundRepo implements IFundRepo {
     return list.map(item => FundMap.toDomain(item))
   }
 
-  async getTodayByMemberList(
-    incomeMemberId: MemberId,
-    memberList: MemberId[],
-    type: FundType
-  ): Promise<TodayByMemberDto[]> {
-    let memberIds = memberList.map(item => item.id.toString())
+  async getListByMemberId(memberId: MemberId): Promise<Fund[]> {
+    let list = await this.createCollection()
+      .find({ incomeMemberId: memberId.id.toString() })
+      .toArray()
+    return list.map(item => FundMap.toDomain(item))
+  }
+
+  async getDistributionList(memberId: MemberId, type: FundType, createAt: number): Promise<TodayByMemberDto[]> {
     let list = await Global.instance.mongoDb
       .collection('funds')
       .aggregate([
         {
           $match: {
-            // paymentMemberId: {
-            //   $in: memberIds
-            // },
-            // incomeMemberId:incomeMemberId.id.toString() ,
-            // type,
-            // createAt: new Date().setHours(0, 0, 0, 0)
+            incomeMemberId: memberId.id.toString(),
+            type,
+            createAt: {
+              $gt: createAt
+            }
           }
         },
         {
