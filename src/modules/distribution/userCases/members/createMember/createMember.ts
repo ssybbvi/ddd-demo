@@ -8,6 +8,8 @@ import { Member } from '../../../domain/member'
 import { MemberId } from '../../../domain/memberId'
 import { UserId } from '../../../../users/domain/userId'
 import { UniqueEntityID } from '../../../../../shared/domain/UniqueEntityID'
+import { MemberDistributionRelation } from '../../../domain/memberDistributionRelation'
+import { FundType } from '../../../domain/fundType'
 
 type Response = Either<
   | CreateMemberErrors.MemberAlreadyExistsError
@@ -18,8 +20,28 @@ type Response = Either<
   Result<void>
 >
 
+type CreateMemberDistributionRelationResponse = Either<
+  AppError.UnexpectedError | Result<any>,
+  Result<MemberDistributionRelation[]>
+>
+
+interface inviteDistributionRewardRelation {
+  distributionRate: number
+  fundType: FundType
+}
+
 export class CreateMember implements UseCase<CreateMemberDTO, Promise<Response>> {
   private memberRepo: IMemberRepo
+  private inviteDistributionRewardRelationList: inviteDistributionRewardRelation[] = [
+    {
+      distributionRate: 0.1,
+      fundType: 'primaryDistribution'
+    },
+    {
+      distributionRate: 0.05,
+      fundType: 'secondaryDistribution'
+    }
+  ]
 
   constructor(memberRepo: IMemberRepo) {
     this.memberRepo = memberRepo
@@ -54,7 +76,9 @@ export class CreateMember implements UseCase<CreateMemberDTO, Promise<Response>>
         {
           inviteMemberId: inviteMemberId,
           createAt: 0,
-          inviteToken: request.userId
+          inviteToken: request.userId,
+          amount: 0,
+          distributionRelationList: []
         },
         new UniqueEntityID(request.userId)
       )
@@ -66,10 +90,60 @@ export class CreateMember implements UseCase<CreateMemberDTO, Promise<Response>>
       let member = memberOrError.getValue()
 
       await this.memberRepo.save(member)
+      /////////////
+
+      let newMember = await this.memberRepo.getById(member.id.toString())
+
+      let createMemberDistributionRelationResponse = await this.createMemberDistributionRelation(
+        newMember.memberId.id.toString(),
+        this.inviteDistributionRewardRelationList,
+        []
+      )
+
+      let createMemberDistributionRelationResponseValue = createMemberDistributionRelationResponse.value
+      console.log('createMemberDistributionRelationResponseValue:::::', createMemberDistributionRelationResponseValue)
+      if (createMemberDistributionRelationResponse.isLeft()) {
+        return left(createMemberDistributionRelationResponseValue)
+      }
+
+      newMember.updateDistributionRelationList(createMemberDistributionRelationResponseValue.getValue())
+      await this.memberRepo.save(newMember)
 
       return right(Result.ok<void>())
     } catch (err) {
       return left(new AppError.UnexpectedError(err))
     }
+  }
+
+  private async createMemberDistributionRelation(
+    memberId: string,
+    inviteDistributionRewardRelationList: inviteDistributionRewardRelation[],
+    memberDistributionRelationList: MemberDistributionRelation[]
+  ): Promise<CreateMemberDistributionRelationResponse> {
+    let member = await this.memberRepo.getById(memberId)
+
+    if (!!member.inviteMemberId && !!inviteDistributionRewardRelationList.length) {
+      let inviteDistributionRewardRelation = inviteDistributionRewardRelationList.shift()
+
+      let memberDistributionRelationOrErrors = MemberDistributionRelation.create({
+        memberId: member.inviteMemberId.id.toString(),
+        distributionRate: inviteDistributionRewardRelation.distributionRate,
+        fundType: inviteDistributionRewardRelation.fundType
+      })
+
+      if (memberDistributionRelationOrErrors.isFailure) {
+        return left(memberDistributionRelationOrErrors)
+      }
+
+      memberDistributionRelationList.push(memberDistributionRelationOrErrors.getValue())
+
+      await this.createMemberDistributionRelation(
+        member.inviteMemberId.id.toString(),
+        inviteDistributionRewardRelationList,
+        memberDistributionRelationList
+      )
+    }
+
+    return right(Result.ok<MemberDistributionRelation[]>(memberDistributionRelationList))
   }
 }

@@ -21,7 +21,7 @@ export class FundAmount extends ValueObject<IFundAmountProps> {
       return Result.fail<FundAmount>(fundAmountOrNull.message)
     }
 
-    const fundAmountGreaterThan = Guard.greaterThan(1, props.fundAmount)
+    const fundAmountGreaterThan = Guard.greaterThan(0, props.fundAmount)
     if (!fundAmountGreaterThan.succeeded) {
       return Result.fail<FundAmount>(fundAmountGreaterThan.message)
     }

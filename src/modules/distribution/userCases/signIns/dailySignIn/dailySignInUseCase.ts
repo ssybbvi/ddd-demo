@@ -6,7 +6,6 @@ import { DailySignInDto } from './dailySignInDto'
 import { ISignInRepo } from '../../../repos/signInRepo'
 import { SignIn } from '../../../domain/signIn'
 import { DailySignInDtoResult } from './dailySignInDtoResult'
-import { SharedRewardToInvitedMemberService } from '../../../domain/services/sharedRewardToInvitedMemberService'
 
 type Response = Either<
   DailySignInErrors.TodayAlreadySignInError | AppError.UnexpectedError | Result<any>,
@@ -15,11 +14,9 @@ type Response = Either<
 
 export class DailySignInUseCase implements UseCase<DailySignInDto, Promise<Response>> {
   private signInRepo: ISignInRepo
-  private sharedRewardToInvitedMemberService: SharedRewardToInvitedMemberService
 
-  constructor(signInRepo: ISignInRepo, sharedRewardToInvitedMemberService: SharedRewardToInvitedMemberService) {
+  constructor(signInRepo: ISignInRepo) {
     this.signInRepo = signInRepo
-    this.sharedRewardToInvitedMemberService = sharedRewardToInvitedMemberService
   }
 
   public async execute(request: DailySignInDto): Promise<Response> {
@@ -36,7 +33,6 @@ export class DailySignInUseCase implements UseCase<DailySignInDto, Promise<Respo
       }
 
       await this.signInRepo.save(signInOrError.getValue())
-      await this.sharedRewardToInvitedMemberService.rewardSignIn(signInOrError.getValue())
 
       return right(
         Result.ok<DailySignInDtoResult>({

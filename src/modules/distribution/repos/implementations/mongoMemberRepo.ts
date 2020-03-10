@@ -26,8 +26,20 @@ export class MemberRepo implements IMemberRepo {
   }
 
   public async save(member: Member): Promise<void> {
-    const rawSequelizeMember = await MemberMap.toPersistence(member)
-    await this.createCollection().insertOne(rawSequelizeMember)
+    const raw = await MemberMap.toPersistence(member)
+    await this.createCollection().updateOne(
+      { _id: raw._id },
+      {
+        $set: {
+          inviteMemberId: raw.inviteMemberId,
+          createAt: raw.createAt,
+          inviteToken: raw.inviteToken,
+          amount: raw.amount,
+          distributionRelationList: raw.distributionRelationList
+        }
+      },
+      { upsert: true }
+    )
   }
 
   public async existsByInviteToken(inviteToken: string): Promise<boolean> {

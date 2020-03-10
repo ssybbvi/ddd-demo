@@ -1,3 +1,14 @@
-import { UserDTO } from '../../users/dtos/userDTO'
+export interface MemberDTO {
+  _id: string
+  inviteMemberId?: string
+  createAt: number
+  inviteToken: string
+  amount: number
+  distributionRelationList: DistributionRelationDTO[]
+}
 
-export interface MemberDTO {}
+interface DistributionRelationDTO {
+  memberId: string
+  distributionRate: number
+  fundType: string
+}

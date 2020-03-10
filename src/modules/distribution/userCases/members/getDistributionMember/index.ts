@@ -1,4 +1,3 @@
-import { sharedRewardToInvitedMemberService } from '../../../domain/services'
 import { GetDistributionMemberUseCase } from './getDistributionMemberUseCase'
 import { memberRepo, signInRepo, fundRepo } from '../../../repos'
 import { GetDistributionMemberController } from './getDistributionMemberController'

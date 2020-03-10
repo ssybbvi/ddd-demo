@@ -1,13 +1,21 @@
 import { IHandle } from '../../../shared/domain/events/IHandle'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
 import { SignInCreated } from '../domain/events/signInCreated'
+import { DistributionFundUseCase } from '../userCases/funds/distributionFund/distributionFundUseCase'
+import { GetMemberUseCase } from '../userCases/members/getMember/getMemberUseCase'
+import { GetMemberDto } from '../userCases/members/getMember/getMemberDto'
+import { MemberDTO } from '../dtos/memberDTO'
+import { Result } from '../../../shared/core/Result'
+import { DistributionFundDto, DistributionRelationDto } from '../userCases/funds/distributionFund/distributionFundDto'
 
 export class AfterSignInCreated implements IHandle<SignInCreated> {
-  private signInCreated: SignInCreated
+  private distributionFundUseCase: DistributionFundUseCase
+  private getMemberUseCase: GetMemberUseCase
 
-  constructor(signInCreated: SignInCreated) {
+  constructor(distributionFundUseCase: DistributionFundUseCase, getMemberUseCase: GetMemberUseCase) {
     this.setupSubscriptions()
-    this.signInCreated = signInCreated
+    this.distributionFundUseCase = distributionFundUseCase
+    this.getMemberUseCase = getMemberUseCase
   }
 
   setupSubscriptions(): void {
@@ -19,13 +27,34 @@ export class AfterSignInCreated implements IHandle<SignInCreated> {
     const { signIn } = event
 
     try {
-      // await this.createMember.execute({
-      //   userId: user.userId.id.toString(),
-      //   inviteToken: extra ? extra.inviteToken : null
-      // })
-      console.log(`[AfterUserCreated]: Successfully executed CreateMember use case AfterUserCreated`)
+      let getMemberDto: GetMemberDto = { memberId: signIn.signInMemberId }
+      let memberDtoResultValue = await this.getMemberUseCase.execute(getMemberDto)
+
+      if (memberDtoResultValue.isLeft()) {
+        console.error(memberDtoResultValue.value)
+      }
+
+      let distributionRelationDtoList: DistributionRelationDto[] = memberDtoResultValue.value
+        .getValue()
+        .distributionRelationList.map(item => {
+          return {
+            memberId: item.memberId,
+            distributionRate: item.distributionRate,
+            fundType: item.fundType
+          }
+        })
+      let distributionFundDto: DistributionFundDto = {
+        memberId: getMemberDto.memberId,
+        amount: signIn.reward,
+        fundType: 'signIn',
+        relationId: signIn.id.toString(),
+        distributionRelationList: distributionRelationDtoList
+      }
+      await this.distributionFundUseCase.execute(distributionFundDto)
+
+      console.log(`[AfterSignInCreated]: Successfully executed CreateMember use case AfterUserCreated`)
     } catch (err) {
-      console.log(`[AfterUserCreated]: Failed to execute CreateMember use case AfterUserCreated.`)
+      console.log(`[AfterSignInCreated]: Failed to execute CreateMember use case AfterUserCreated.`)
     }
   }
 }
