@@ -27,7 +27,8 @@ export class GetMemberUseCase implements UseCase<GetMemberDto, Promise<Response>
     try {
       const { memberId } = request
       let member = await this.memberRepo.getById(memberId)
-      return right(Result.ok<MemberDTO>(MemberMap.toDTO(member)))
+      let memberDto = MemberMap.toDTO(member)
+      return right(Result.ok<MemberDTO>(memberDto))
     } catch (err) {
       return left(new AppError.UnexpectedError(err))
     }

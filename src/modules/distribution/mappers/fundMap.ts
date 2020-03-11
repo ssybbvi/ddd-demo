@@ -13,13 +13,9 @@ export class FundMap implements IMapper<Fund> {
     return {
       _id: fund.fundId.id.toString(),
       amount: fund.amount.value,
-      incomeMemberId: fund.incomeMemberId.id.toString(),
-      paymentMemberId: fund.paymentMemberId.id.toString(),
-      status: fund.status,
       createAt: fund.createAt,
       descrpiton: fund.descrption,
-      type: fund.type,
-      relationId: fund.relationId
+      type: fund.type
     }
   }
 

@@ -21,7 +21,7 @@ export class DailySignInUseCase implements UseCase<DailySignInDto, Promise<Respo
 
   public async execute(request: DailySignInDto): Promise<Response> {
     try {
-      let reward = 10
+      let reward = 100
       const signInOrError = SignIn.create({
         signInMemberId: request.signInMemberId,
         createAt: 0,
