@@ -1,6 +1,7 @@
 export interface ISignInDbModel {
   _id: string
-  signInMemberId: string
+  memberId: string
   createAt: number
   reward: number
+  superReward: number
 }

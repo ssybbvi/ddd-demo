@@ -2,23 +2,24 @@ import { IMapper } from '../../../shared/infra/Mapper'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { SignIn } from '../domain/signIn'
 import { ISignInDbModel } from '../dbModels/iSignInDbModel'
+import { SignInDTO } from '../dtos/signInDTO'
 
 export class SignInMap implements IMapper<SignIn> {
-  // public static toDTO(signIn: SignIn): SignInDTO {
-  //   return {
-  //     _id: signIn.signInMemberId.toString(),
-  //     signInMemberId: signIn.signInMemberId,
-  //     createAt: signIn.createAt,
-  //     reward: signIn.reward
-  //   }
-  // }
+  public static toDTO(signIn: SignIn): SignInDTO {
+    return {
+      createAt: signIn.createAt,
+      reward: signIn.reward,
+      superReward: signIn.superReward
+    }
+  }
 
   public static toDomain(raw: ISignInDbModel): SignIn {
     const signInOrError = SignIn.create(
       {
-        signInMemberId: raw.signInMemberId,
+        memberId: raw.memberId,
         createAt: raw.createAt,
-        reward: raw.reward
+        reward: raw.reward,
+        superReward: raw.superReward
       },
       new UniqueEntityID(raw._id)
     )
@@ -31,9 +32,10 @@ export class SignInMap implements IMapper<SignIn> {
   public static async toPersistence(signIn: SignIn): Promise<ISignInDbModel> {
     return {
       _id: signIn.signInId.id.toString(),
-      signInMemberId: signIn.signInMemberId,
+      memberId: signIn.memberId,
       createAt: signIn.createAt,
-      reward: signIn.reward
+      reward: signIn.reward,
+      superReward: signIn.superReward
     }
   }
 }

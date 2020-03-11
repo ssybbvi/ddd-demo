@@ -18,7 +18,7 @@ export class DailySignInController extends BaseController {
     const { userId } = req.decoded
 
     const dto: DailySignInDto = {
-      signInMemberId: userId
+      memberId: userId
     }
 
     try {

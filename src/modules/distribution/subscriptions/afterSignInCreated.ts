@@ -27,7 +27,7 @@ export class AfterSignInCreated implements IHandle<SignInCreated> {
     const { signIn } = event
 
     try {
-      let getMemberDto: GetMemberDto = { memberId: signIn.signInMemberId }
+      let getMemberDto: GetMemberDto = { memberId: signIn.memberId }
       let memberDtoResultValue = await this.getMemberUseCase.execute(getMemberDto)
 
       if (memberDtoResultValue.isLeft()) {

@@ -5,9 +5,10 @@ import { SignInId } from './signInId'
 import { SignInCreated } from './events/signInCreated'
 
 export interface SignInProps {
-  signInMemberId: string
-  createAt: number
+  memberId: string
+  createAt?: number
   reward: number
+  superReward: number
 }
 
 export class SignIn extends AggregateRoot<SignInProps> {
@@ -19,8 +20,8 @@ export class SignIn extends AggregateRoot<SignInProps> {
     return SignInId.create(this._id).getValue()
   }
 
-  get signInMemberId(): string {
-    return this.props.signInMemberId
+  get memberId(): string {
+    return this.props.memberId
   }
 
   get createAt(): number {
@@ -29,6 +30,10 @@ export class SignIn extends AggregateRoot<SignInProps> {
 
   get reward(): number {
     return this.props.reward
+  }
+
+  get superReward(): number {
+    return this.props.superReward
   }
 
   public static create(props: SignInProps, id?: UniqueEntityID): Result<SignIn> {

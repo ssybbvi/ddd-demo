@@ -7,6 +7,7 @@ import { ISignInRepo } from '../signInRepo'
 import { ISignInDbModel } from '../../dbModels/iSignInDbModel'
 import { SignIn } from '../../domain/signIn'
 import { SignInMap } from '../../mappers/signInMap'
+import { MemberId } from '../../domain/memberId'
 
 export class MongoSignInRepo implements ISignInRepo {
   constructor() {}
@@ -20,20 +21,22 @@ export class MongoSignInRepo implements ISignInRepo {
     return SignInMap.toDomain(signIn)
   }
 
-  public async filter(): Promise<SignIn[]> {
+  public async filter(memberId: string, limit: number): Promise<SignIn[]> {
+    console.log('xxxx', memberId, limit)
     let list = await this.createCollection()
-      .find({})
+      .find({ memberId })
+      .limit(limit)
       .toArray()
     return list.map(item => SignInMap.toDomain(item))
   }
 
-  async save(signIn: SignIn): Promise<void> {
+  public async save(signIn: SignIn): Promise<void> {
     const raw = await SignInMap.toPersistence(signIn)
     await this.createCollection().updateOne(
       { _id: raw._id },
       {
         $set: {
-          signInMemberId: signIn.signInMemberId,
+          memberId: signIn.memberId,
           createAt: signIn.createAt,
           reward: signIn.reward
         }
@@ -41,5 +44,16 @@ export class MongoSignInRepo implements ISignInRepo {
       { upsert: true }
     )
     dispatchEventsCallback(raw)
+  }
+
+  public async existToday(memberId: string): Promise<boolean> {
+    let signIn = await this.createCollection().findOne({
+      memberId: memberId,
+      createAt: {
+        $gt: new Date().setHours(0, 0, 0, 0)
+      }
+    })
+
+    return !!signIn === true
   }
 }
