@@ -5,4 +5,5 @@ export interface ISignInRepo {
   save(user: SignIn): Promise<void>
   getById(_id: string): Promise<SignIn>
   existToday(memberId: string): Promise<boolean>
+  getToday(memberId: string): Promise<SignIn>
 }

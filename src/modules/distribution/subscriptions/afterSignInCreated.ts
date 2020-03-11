@@ -20,10 +20,10 @@ export class AfterSignInCreated implements IHandle<SignInCreated> {
 
   setupSubscriptions(): void {
     // Register to the domain event
-    DomainEvents.register(this.onUserCreated.bind(this), SignInCreated.name)
+    DomainEvents.register(this.onAfterSignInCreated.bind(this), SignInCreated.name)
   }
 
-  private async onUserCreated(event: SignInCreated): Promise<void> {
+  private async onAfterSignInCreated(event: SignInCreated): Promise<void> {
     const { signIn } = event
 
     try {

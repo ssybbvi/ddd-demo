@@ -82,6 +82,7 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
       let loginDTOResponse: WxAuthorizationDtoResult = await this.authorizationService.getAceessTokenWithRefreshToken(
         user
       )
+      await this.userRepo.save(user)
 
       return right(Result.ok<WxAuthorizationDtoResult>(loginDTOResponse))
     } catch (err) {

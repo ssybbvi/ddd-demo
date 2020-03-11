@@ -3,6 +3,7 @@ import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { Result } from '../../../shared/core/Result'
 import { SignInId } from './signInId'
 import { SignInCreated } from './events/signInCreated'
+import { SignInSuperRewared } from './events/signInSuperRewared'
 
 export interface SignInProps {
   memberId: string
@@ -34,6 +35,11 @@ export class SignIn extends AggregateRoot<SignInProps> {
 
   get superReward(): number {
     return this.props.superReward
+  }
+
+  public updateSuperReward(reward: number): void {
+    this.props.superReward = reward
+    this.addDomainEvent(new SignInSuperRewared(this))
   }
 
   public static create(props: SignInProps, id?: UniqueEntityID): Result<SignIn> {

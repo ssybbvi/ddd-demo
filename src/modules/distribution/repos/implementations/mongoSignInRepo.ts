@@ -22,10 +22,12 @@ export class MongoSignInRepo implements ISignInRepo {
   }
 
   public async filter(memberId: string, limit: number): Promise<SignIn[]> {
-    console.log('xxxx', memberId, limit)
     let list = await this.createCollection()
       .find({ memberId })
       .limit(limit)
+      .sort({
+        createAt: -1
+      })
       .toArray()
     return list.map(item => SignInMap.toDomain(item))
   }
@@ -55,5 +57,16 @@ export class MongoSignInRepo implements ISignInRepo {
     })
 
     return !!signIn === true
+  }
+
+  public async getToday(memberId: string): Promise<SignIn> {
+    let signIn = await this.createCollection().findOne({
+      memberId: memberId,
+      createAt: {
+        $gt: new Date().setHours(0, 0, 0, 0)
+      }
+    })
+
+    return SignInMap.toDomain(signIn)
   }
 }
