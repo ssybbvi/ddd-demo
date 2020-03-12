@@ -9,9 +9,10 @@ import { AfterLoginCreated } from './afterLoginCreated'
 import { fundService } from '../domain/services'
 import { SignInSuperRewared } from '../domain/events/signInSuperRewared'
 import { AfterSignInSuperRewared } from './afterSignInSuperRewared'
+import { updateFundAccountUseCase } from '../userCases/fundAccounts/updateFundAccount'
 
 // Subscriptions
-new AfterUserCreated(createMember)
+new AfterUserCreated(createMember, updateFundAccountUseCase)
 new AfterSignInCreated(fundService)
 new AfterLoginCreated(dailySignInUseCase)
 new AfterSignInSuperRewared(fundService)

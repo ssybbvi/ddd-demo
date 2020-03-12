@@ -36,7 +36,16 @@ export class MongoFundRepo implements IFundRepo {
 
   async getListByMemberId(memberId: MemberId): Promise<Fund[]> {
     let list = await this.createCollection()
-      .find({ incomeMemberId: memberId.id.toString() })
+      .find({
+        $or: [
+          {
+            incomeMemberId: memberId.id.toString()
+          },
+          {
+            paymentMemberId: memberId.id.toString()
+          }
+        ]
+      })
       .toArray()
     return list.map(item => FundMap.toDomain(item))
   }
