@@ -8,6 +8,7 @@ import { FundAccount } from '../../domain/fundAccount'
 import { IFundAccountDbModel } from '../../dbModels/iFundAccountDbModel'
 import { IFundAccountRepo } from '../iFundAccountRepo'
 import { FundAccountMap } from '../../mappers/fundAccountMap'
+import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 
 export class MongoFundAccountRepo implements IFundAccountRepo {
   constructor() {}
@@ -27,13 +28,13 @@ export class MongoFundAccountRepo implements IFundAccountRepo {
       { _id: raw._id },
       {
         $set: {
-          memberId: fundAccount.memberId.id.toString(),
           totalAmount: fundAccount.totalAmounnt
         }
       },
       { upsert: true }
     )
-    dispatchEventsCallback(raw)
+
+    DomainEvents.dispatchEventsForAggregate(fundAccount.id)
   }
 
   async exist(_id: string): Promise<boolean> {

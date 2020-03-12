@@ -6,6 +6,7 @@ import { IFundDbModel } from '../../dbModels/iFundDbModel'
 import { Global } from '../../../../shared/infra/database/mongodb'
 import { MemberId } from '../../domain/memberId'
 import { FundType } from '../../domain/fundType'
+import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 
 export class MongoFundRepo implements IFundRepo {
   constructor() {}
@@ -23,8 +24,25 @@ export class MongoFundRepo implements IFundRepo {
   }
 
   async save(fund: Fund): Promise<void> {
-    let FundModel = await FundMap.toPersistence(fund)
-    await this.createCollection().insertOne(FundModel)
+    let raw = await FundMap.toPersistence(fund)
+    await this.createCollection().updateOne(
+      { _id: raw._id },
+      {
+        $set: {
+          amount: raw.amount,
+          status: raw.status,
+          incomeMemberId: raw.incomeMemberId,
+          paymentMemberId: raw.paymentMemberId,
+          createAt: raw.createAt,
+          descrpiton: raw.descrpiton,
+          type: raw.type,
+          relationId: raw.relationId
+        }
+      },
+      { upsert: true }
+    )
+
+    DomainEvents.dispatchEventsForAggregate(fund.id)
   }
 
   async filter(): Promise<Fund[]> {

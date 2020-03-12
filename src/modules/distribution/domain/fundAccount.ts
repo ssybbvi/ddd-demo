@@ -12,10 +12,6 @@ export class FundAccount extends AggregateRoot<iFundAccountProps> {
     super(props, id)
   }
 
-  get memberId(): MemberId {
-    return MemberId.create(this._id).getValue()
-  }
-
   get totalAmounnt(): number {
     return this.props.totalAmounnt
   }
@@ -25,8 +21,13 @@ export class FundAccount extends AggregateRoot<iFundAccountProps> {
       ...props
     }
 
-    const member = new FundAccount(defaultValues, id)
+    const fundAccount = new FundAccount(defaultValues, id)
 
-    return Result.ok<FundAccount>(member)
+    // const isNew = !!id === false
+    // if (isNew) {
+    //   fundAccount.addDomainEvent(new Fundc(fundAccount))
+    // }
+
+    return Result.ok<FundAccount>(fundAccount)
   }
 }

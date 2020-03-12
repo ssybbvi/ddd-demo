@@ -7,6 +7,7 @@ import { MemberIdMap } from '../../mappers/memberIdMap'
 import { Global } from '../../../../shared/infra/database/mongodb'
 import { IMemberDbModel } from '../../dbModels/iMemberDbModel'
 import { Collection } from 'mongodb'
+import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 
 export class MemberRepo implements IMemberRepo {
   constructor() {}
@@ -40,6 +41,7 @@ export class MemberRepo implements IMemberRepo {
       },
       { upsert: true }
     )
+    DomainEvents.dispatchEventsForAggregate(member.id)
   }
 
   public async existsByInviteToken(inviteToken: string): Promise<boolean> {

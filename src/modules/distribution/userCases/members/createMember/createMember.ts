@@ -120,6 +120,10 @@ export class CreateMember implements UseCase<CreateMemberDTO, Promise<Response>>
     inviteDistributionRewardRelationList: inviteDistributionRewardRelation[],
     memberDistributionRelationList: MemberDistributionRelation[]
   ): Promise<CreateMemberDistributionRelationResponse> {
+    let existMember = await this.memberRepo.existsById(memberId)
+    if (!existMember) {
+      return right(Result.ok<MemberDistributionRelation[]>(memberDistributionRelationList))
+    }
     let member = await this.memberRepo.getById(memberId)
 
     if (!!member.inviteMemberId && !!inviteDistributionRewardRelationList.length) {

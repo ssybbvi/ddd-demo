@@ -8,6 +8,7 @@ import { ISignInDbModel } from '../../dbModels/iSignInDbModel'
 import { SignIn } from '../../domain/signIn'
 import { SignInMap } from '../../mappers/signInMap'
 import { MemberId } from '../../domain/memberId'
+import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 
 export class MongoSignInRepo implements ISignInRepo {
   constructor() {}
@@ -45,7 +46,7 @@ export class MongoSignInRepo implements ISignInRepo {
       },
       { upsert: true }
     )
-    dispatchEventsCallback(raw)
+    DomainEvents.dispatchEventsForAggregate(signIn.id)
   }
 
   public async existToday(memberId: string): Promise<boolean> {

@@ -7,6 +7,7 @@ import { Result } from '../../../shared/core/Result'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { IGuardArgument, Guard } from '../../../shared/core/Guard'
 import { FundType } from './fundType'
+import { FundCreated } from './events/fundCreated'
 
 export interface IFundProps {
   amount: FundAmount
@@ -110,6 +111,11 @@ export class Fund extends AggregateRoot<IFundProps> {
     }
 
     const fund = new Fund(defaultValues, id)
+
+    const isNew = !!id === false
+    if (isNew) {
+      fund.addDomainEvent(new FundCreated(fund))
+    }
     return Result.ok<Fund>(fund)
   }
 }

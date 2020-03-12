@@ -25,13 +25,13 @@ export class WxAuthrizationService {
   constructor() {}
 
   async jsCodeToSession(code: string): Promise<Response> {
-    return right(
-      Result.ok<WxJsCodeToSessionResult>({
-        openid: 'one',
-        session_key: '222',
-        unionid: '333'
-      })
-    )
+    // return right(
+    //   Result.ok<WxJsCodeToSessionResult>({
+    //     openid: 'ff',
+    //     session_key: '222',
+    //     unionid: '333'
+    //   })
+    // )
 
     let qs = new URLSearchParams()
     qs.append('appid', 'wx03241bf8686d6292')

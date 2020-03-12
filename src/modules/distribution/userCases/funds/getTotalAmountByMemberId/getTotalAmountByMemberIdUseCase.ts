@@ -32,12 +32,12 @@ export class GetTotalAmountByMemberIdUseCase implements UseCase<GetTotalAmountBy
 
       let fundList = await this.fundRepo.getListByMemberId(memberIdOrErrors.getValue())
       let totalAmount = fundList.reduce((acc, item) => {
-        if (item.incomeMemberId == memberIdOrErrors.getValue()) {
+        if (item.incomeMemberId.id.toString() == memberId) {
           return acc + item.amount.value
         }
 
         if (
-          item.paymentMemberId == memberIdOrErrors.getValue() &&
+          item.paymentMemberId.id.toString() == memberId &&
           item.type != 'primaryDistribution' &&
           item.type != 'secondaryDistribution'
         ) {
