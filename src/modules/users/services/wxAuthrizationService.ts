@@ -34,8 +34,8 @@ export class WxAuthrizationService {
     // )
 
     let qs = new URLSearchParams()
-    qs.append('appid', 'wx03241bf8686d6292')
-    qs.append('secret', 'f1dddcaf1e6dd2638c75925740c8198e')
+    qs.append('appid', 'wx84965549e7c05a03')
+    qs.append('secret', 'd2f2cc949db194b87e50779208d9aa4d')
     qs.append('js_code', code)
     qs.append('grant_type', 'authorization_code')
 
