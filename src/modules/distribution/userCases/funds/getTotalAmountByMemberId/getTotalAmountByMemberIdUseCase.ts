@@ -1,9 +1,7 @@
 import { UseCase } from '../../../../../shared/core/UseCase'
 import { IMemberRepo } from '../../../repos/memberRepo'
-import { CreateMemberDTO } from './CreateMemberDTO'
 import { Either, Result, left, right } from '../../../../../shared/core/Result'
 import { AppError } from '../../../../../shared/core/AppError'
-import { CreateMemberErrors } from './CreateMemberErrors'
 import { Member } from '../../../domain/member'
 import { MemberId } from '../../../domain/memberId'
 import { UserId } from '../../../../users/domain/userId'
@@ -12,7 +10,7 @@ import { MemberDistributionRelation } from '../../../domain/memberDistributionRe
 import { FundType } from '../../../domain/fundType'
 import { GetTotalAmountByMemberIdDto } from './getTotalAmountByMemberIdDto'
 import { IFundRepo } from '../../../repos/iFundRepo'
-import { GetTotalAmountByMemberIdDtoResult } from './GetTotalAmountByMemberIdDtoResult'
+import { GetTotalAmountByMemberIdDtoResult } from './getTotalAmountByMemberIdDtoResult'
 
 type Response = Either<AppError.UnexpectedError | Result<any>, Result<GetTotalAmountByMemberIdDtoResult>>
 

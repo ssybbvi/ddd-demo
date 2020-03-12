@@ -8,7 +8,7 @@ import { UserLoggedIn } from '../../users/domain/events/userLoggedIn'
 import { FundCreated } from '../domain/events/fundCreated'
 import { GetTotalAmountByMemberIdUseCase } from '../userCases/funds/getTotalAmountByMemberId/getTotalAmountByMemberIdUseCase'
 import { UpdateFundAccountUseCase } from '../userCases/fundAccounts/updateFundAccount/updateFundAccountUseCase'
-import { GetTotalAmountByMemberIdDtoResult } from '../userCases/funds/getTotalAmountByMemberId/GetTotalAmountByMemberIdDtoResult'
+import { GetTotalAmountByMemberIdDtoResult } from '../userCases/funds/getTotalAmountByMemberId/getTotalAmountByMemberIdDtoResult'
 
 export class AfterFundCreated implements IHandle<FundCreated> {
   private getTotalAmountByMemberIdUseCase: GetTotalAmountByMemberIdUseCase
