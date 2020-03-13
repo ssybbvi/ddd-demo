@@ -8,6 +8,7 @@ import { SignInDTO } from '../../../dtos/signInDTO'
 import { DailySuperSignInDto } from './dailySuperSignInDto'
 import { DailySuperSignInErrors } from './dailySuperSignInErrors'
 import { DailySuperSignInDtoResult } from './dailySuperSignInDtoResult'
+import { SignInService } from '../../../domain/services/signInService'
 
 type Response = Either<
   DailySuperSignInErrors.NonCompliantErrors | AppError.UnexpectedError | Result<any>,
@@ -16,33 +17,25 @@ type Response = Either<
 
 export class DailySuperSignInUseCase implements UseCase<DailySuperSignInDto, Promise<Response>> {
   private signInRepo: ISignInRepo
+  private signInService: SignInService
   private day = 5
 
-  constructor(signInRepo: ISignInRepo) {
+  constructor(signInRepo: ISignInRepo, signInService: SignInService) {
     this.signInRepo = signInRepo
+    this.signInService = signInService
   }
 
   public async execute(request: DailySuperSignInDto): Promise<Response> {
     try {
       let { memberId } = request
       let list = await this.signInRepo.filter(memberId, this.day)
-      if (list.length === 0) {
-        return left(new DailySuperSignInErrors.NonCompliantErrors(`最近${this.day}都没打卡`))
-      }
 
-      if (list.some(item => item.superReward > 0)) {
-        return left(new DailySuperSignInErrors.NonCompliantErrors(`最近${this.day}已领取超级礼包`))
-      }
-
-      let dayToMillisecond = 1000 * 60 * 60 * 24
-      let todayOfMillisecond = new Date().setHours(0, 0, 0, 0)
-      let firstDayBegin = todayOfMillisecond - dayToMillisecond * (this.day - 1)
-      let firstDayFinish = todayOfMillisecond - dayToMillisecond * (this.day - 2)
-
-      let firstDaySignIn = list[list.length - 1]
-      if (firstDayBegin < firstDaySignIn.createAt && firstDaySignIn.createAt < firstDayFinish) {
+      let continuousSignInDayCount = this.signInService.getContinuousSignInDayCount(list)
+      if (continuousSignInDayCount) {
       } else {
-        return left(new DailySuperSignInErrors.NonCompliantErrors(`不满足要求无法打卡`))
+        return left(
+          new DailySuperSignInErrors.NonCompliantErrors(`需要连续打卡${this.day},实际${continuousSignInDayCount}`)
+        )
       }
 
       let signIn = await this.signInRepo.getToday(memberId)

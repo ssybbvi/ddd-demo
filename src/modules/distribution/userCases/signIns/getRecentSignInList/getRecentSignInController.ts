@@ -34,11 +34,7 @@ export class GetRecentSignInController extends BaseController {
             return this.fail(res, error.errorValue() + '')
         }
       } else {
-        const signInList: SignIn[] = useCaseValue.getValue() as SignIn[]
-        let signInDtoList = signInList.map(item => SignInMap.toDTO(item))
-        return this.ok<GetRecentSignInDtoResult>(res, {
-          signIns: signInDtoList
-        })
+        return this.ok<GetRecentSignInDtoResult>(res, useCaseValue.getValue())
       }
     } catch (err) {
       return this.fail(res, err)

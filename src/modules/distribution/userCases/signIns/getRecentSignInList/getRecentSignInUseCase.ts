@@ -6,21 +6,33 @@ import { SignIn } from '../../../domain/signIn'
 import { SignInCreated } from '../../../domain/events/signInCreated'
 import { SignInDTO } from '../../../dtos/signInDTO'
 import { GetRecentSignInDto } from './getRecentSignInDto'
+import { SignInService } from '../../../domain/services/signInService'
+import { GetRecentSignInDtoResult } from './getRecentSignInDtoResult'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<SignIn[]>>
+type Response = Either<AppError.UnexpectedError | Result<any>, Result<GetRecentSignInDtoResult>>
 
 export class GetRecentSignInUseCase implements UseCase<GetRecentSignInDto, Promise<Response>> {
   private signInRepo: ISignInRepo
+  private signInService: SignInService
+  private day = 5
 
-  constructor(signInRepo: ISignInRepo) {
+  constructor(signInRepo: ISignInRepo, signInService: SignInService) {
     this.signInRepo = signInRepo
+    this.signInService = signInService
   }
 
   public async execute(request: GetRecentSignInDto): Promise<Response> {
     try {
       let { memberId } = request
-      let list = await this.signInRepo.filter(memberId, 5)
-      return right(Result.ok<SignIn[]>(list))
+      let list = await this.signInRepo.filter(memberId, this.day)
+      let continuousSignInDayCount = this.signInService.getContinuousSignInDayCount(list)
+
+      return right(
+        Result.ok<GetRecentSignInDtoResult>({
+          continuousSignInDayCount,
+          isAllowSuperSignIn: this.day === continuousSignInDayCount
+        })
+      )
     } catch (err) {
       return left(new AppError.UnexpectedError(err.toString()))
     }

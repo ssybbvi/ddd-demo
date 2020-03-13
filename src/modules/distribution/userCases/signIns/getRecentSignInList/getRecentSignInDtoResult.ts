@@ -1,5 +1,6 @@
 import { SignInDTO } from '../../../dtos/signInDTO'
 
 export interface GetRecentSignInDtoResult {
-  signIns: SignInDTO[]
+  continuousSignInDayCount: number
+  isAllowSuperSignIn: boolean
 }
