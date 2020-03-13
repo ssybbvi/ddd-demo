@@ -48,7 +48,7 @@ export class SignIn extends AggregateRoot<SignInProps> {
     let signIn = new SignIn(
       {
         ...props,
-        createAt: Date.now()
+        createAt: props.createAt ? props.createAt : Date.now()
       },
       id
     )

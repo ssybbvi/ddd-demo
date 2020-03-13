@@ -52,7 +52,7 @@ export class Member extends AggregateRoot<MemberProps> {
   public static create(props: MemberProps, id?: UniqueEntityID): Result<Member> {
     const defaultValues: MemberProps = {
       ...props,
-      createAt: Date.now()
+      createAt: props.createAt ? props.createAt : Date.now()
     }
 
     const member = new Member(defaultValues, id)

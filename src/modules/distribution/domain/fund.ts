@@ -14,7 +14,7 @@ export interface IFundProps {
   status: FundStatus
   incomeMemberId: MemberId
   paymentMemberId: MemberId
-  createAt: number
+  createAt?: number
   descrpiton: string
   type: FundType
   relationId: string
@@ -107,7 +107,7 @@ export class Fund extends AggregateRoot<IFundProps> {
 
     const defaultValues: IFundProps = {
       ...props,
-      createAt: Date.now()
+      createAt: props.createAt ? props.createAt : Date.now()
     }
 
     const fund = new Fund(defaultValues, id)

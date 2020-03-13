@@ -41,7 +41,8 @@ export class MongoSignInRepo implements ISignInRepo {
         $set: {
           memberId: signIn.memberId,
           createAt: signIn.createAt,
-          reward: signIn.reward
+          reward: signIn.reward,
+          superReward: signIn.superReward
         }
       },
       { upsert: true }
