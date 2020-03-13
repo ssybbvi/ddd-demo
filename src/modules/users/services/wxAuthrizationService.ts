@@ -25,7 +25,7 @@ export class WxAuthrizationService {
   constructor() {}
 
   async jsCodeToSession(code: string): Promise<Response> {
-    // return right(
+    // 1 return right(
     //   Result.ok<WxJsCodeToSessionResult>({
     //     openid: 'ff',
     //     session_key: '222',
