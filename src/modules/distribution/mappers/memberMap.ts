@@ -27,7 +27,6 @@ export class MemberMap implements IMapper<Member> {
         createAt: raw.createAt,
         inviteToken: raw.inviteToken,
         inviteMemberId: inviteMemberId,
-        amount: raw.amount,
         distributionRelationList: distributionRelationList
       },
       new UniqueEntityID(raw._id)
@@ -52,7 +51,6 @@ export class MemberMap implements IMapper<Member> {
       inviteMemberId: member.inviteMemberId ? member.inviteMemberId.id.toString() : null,
       createAt: member.createAt,
       inviteToken: member.inviteToken,
-      amount: member.amount,
       distributionRelationList: distributionRelationList
     }
   }
@@ -71,7 +69,6 @@ export class MemberMap implements IMapper<Member> {
       inviteMemberId: member.inviteMemberId ? member.inviteMemberId.id.toString() : null,
       createAt: member.createAt,
       inviteToken: member.inviteToken,
-      amount: member.amount,
       distributionRelationList: distributionRelationList
     }
   }

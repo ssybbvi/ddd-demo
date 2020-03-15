@@ -1,6 +1,6 @@
 import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
-import { FundType } from './fundType'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
+import { FundType } from '../../funds/domain/fundType'
 
 export interface IDistributionRelationProps {
   memberId: string

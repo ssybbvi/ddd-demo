@@ -1,11 +1,10 @@
-import { FundType } from '../domain/fundType'
+import { FundType } from '../../funds/domain/fundType'
 
 export interface IMemberDbModel {
   _id: string
   inviteMemberId?: string
   createAt: number
-  inviteToken: string
-  amount: number
+  inviteToken?: string
   distributionRelationList: DistributionRelationDbModel[]
 }
 

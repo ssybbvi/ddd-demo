@@ -1,7 +1,7 @@
 import { ValueObject } from '../../../shared/domain/ValueObject'
 import { Result } from '../../../shared/core/Result'
 import { Guard } from '../../../shared/core/Guard'
-import { FundType } from './fundType'
+import { FundType } from '../../funds/domain/fundType'
 
 export interface IMemberDistributionRelationProps {
   memberId: string

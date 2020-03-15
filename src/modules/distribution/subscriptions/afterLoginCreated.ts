@@ -1,7 +1,4 @@
-import { User } from '../../users/domain/user'
-import { UserCreated } from '../../users/domain/events/userCreated'
 import { IHandle } from '../../../shared/domain/events/IHandle'
-import { CreateMember } from '../userCases/members/createMember/createMember'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
 import { DailySignInUseCase } from '../userCases/signIns/dailySignIn/dailySignInUseCase'
 import { UserLoggedIn } from '../../users/domain/events/userLoggedIn'
@@ -31,9 +28,9 @@ export class AfterLoginCreated implements IHandle<UserLoggedIn> {
         console.error(dailySignInUseCaseValue.value)
       }
 
-      console.log(`[AfterUserCreated]: Successfully executed CreateMember use case AfterUserCreated`)
+      console.log(`[AfterLoginCreated]: Successfully executed CreateMember use case AfterLoginCreated`)
     } catch (err) {
-      console.log(`[AfterUserCreated]: Failed to execute CreateMember use case AfterUserCreated.`)
+      console.log(`[AfterLoginCreated]: Failed to execute CreateMember use case AfterLoginCreated.`)
     }
   }
 }

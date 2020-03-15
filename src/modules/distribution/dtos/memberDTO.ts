@@ -3,7 +3,6 @@ export interface MemberDTO {
   inviteMemberId?: string
   createAt: number
   inviteToken: string
-  amount: number
   distributionRelationList: DistributionRelationDTO[]
 }
 

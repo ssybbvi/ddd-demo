@@ -2,8 +2,6 @@ import { IMemberRepo } from '../memberRepo'
 import { Member } from '../../domain/member'
 import { MemberMap } from '../../mappers/memberMap'
 import { MemberId } from '../../domain/memberId'
-import { UniqueEntityID } from '../../../../shared/domain/UniqueEntityID'
-import { MemberIdMap } from '../../mappers/memberIdMap'
 import { Global } from '../../../../shared/infra/database/mongodb'
 import { IMemberDbModel } from '../../dbModels/iMemberDbModel'
 import { Collection } from 'mongodb'
@@ -35,7 +33,6 @@ export class MemberRepo implements IMemberRepo {
           inviteMemberId: raw.inviteMemberId,
           createAt: raw.createAt,
           inviteToken: raw.inviteToken,
-          amount: raw.amount,
           distributionRelationList: raw.distributionRelationList
         }
       },

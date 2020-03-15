@@ -2,11 +2,7 @@ import { AppError } from '../../../../shared/core/AppError'
 import { Either, Result, left, right } from '../../../../shared/core/Result'
 import { UseCase } from '../../../../shared/core/UseCase'
 import { IUserRepo } from '../../repos/userRepo'
-import { IAuthService } from '../../services/authService'
 import { User } from '../../domain/user'
-import { UserName } from '../../domain/userName'
-import { UserPassword } from '../../domain/userPassword'
-import { JWTToken, RefreshToken } from '../../domain/jwt'
 import { AuthorizationService } from '../../services/authorizationService'
 import { WxAuthorizationDto } from './wxAuthorizationDto'
 import { WxAuthrizationService, WxJsCodeToSessionResult } from '../../services/wxAuthrizationService'
@@ -36,7 +32,9 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
 
   public async execute(request: WxAuthorizationDto): Promise<Response> {
     try {
-      let jsCodeToSessionResult = await this.wxAuthrizationService.jsCodeToSession(request.code)
+      const { code, inviteToken, nickName, avatarUrl, gender } = request
+
+      let jsCodeToSessionResult = await this.wxAuthrizationService.jsCodeToSession(code)
       let jsCodeToSessionValue = jsCodeToSessionResult.value
       if (jsCodeToSessionResult.isLeft()) {
         return left(jsCodeToSessionValue)
@@ -50,9 +48,9 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
           openId: wxJsCodeToSessionResult.openid,
           unionId: wxJsCodeToSessionResult.unionid,
           sessionKey: wxJsCodeToSessionResult.session_key,
-          nickName: request.nickName,
-          avatarUrl: request.avatarUrl,
-          gender: request.gender
+          nickName: nickName,
+          avatarUrl: avatarUrl,
+          gender: gender
         })
 
         if (wxUserOrError.isFailure) {
@@ -67,7 +65,7 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
           },
           null,
           {
-            inviteToken: request.inviteToken
+            inviteToken: inviteToken
           }
         )
 

@@ -3,10 +3,7 @@ import * as express from 'express'
 import { DecodedExpressRequest } from '../../../../users/infra/http/models/decodedRequest'
 import { GetRecentSignInUseCase } from './getRecentSignInUseCase'
 import { GetRecentSignInDto } from './getRecentSignInDto'
-import { SignInDTO } from '../../../dtos/signInDTO'
 import { GetRecentSignInDtoResult } from './getRecentSignInDtoResult'
-import { SignInMap } from '../../../mappers/signInMap'
-import { SignIn } from '../../../domain/signIn'
 
 export class GetRecentSignInController extends BaseController {
   private useCase: GetRecentSignInUseCase

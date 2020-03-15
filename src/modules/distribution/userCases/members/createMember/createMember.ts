@@ -9,7 +9,7 @@ import { MemberId } from '../../../domain/memberId'
 import { UserId } from '../../../../users/domain/userId'
 import { UniqueEntityID } from '../../../../../shared/domain/UniqueEntityID'
 import { MemberDistributionRelation } from '../../../domain/memberDistributionRelation'
-import { FundType } from '../../../domain/fundType'
+import { FundType } from '../../../../funds/domain/fundType'
 
 type Response = Either<
   | CreateMemberErrors.MemberAlreadyExistsError
@@ -75,9 +75,7 @@ export class CreateMember implements UseCase<CreateMemberDTO, Promise<Response>>
       const memberOrError: Result<Member> = Member.create(
         {
           inviteMemberId: inviteMemberId,
-          createAt: 0,
           inviteToken: request.userId,
-          amount: 0,
           distributionRelationList: []
         },
         new UniqueEntityID(request.userId)

@@ -4,12 +4,12 @@ import { UseCase } from '../../../../../shared/core/UseCase'
 import { GetDistributionMemberDto } from './getDistributionMemberDto'
 import { GetDistributionMemberDtoResult } from './getDistributionMemberDtoResult'
 import { IMemberRepo } from '../../../repos/memberRepo'
-import { IFundRepo } from '../../../repos/iFundRepo'
 import { MemberId } from '../../../domain/memberId'
 import { UniqueEntityID } from '../../../../../shared/domain/UniqueEntityID'
 import e = require('express')
 import { TermDTO } from '../../../dtos/termDTO'
-import { FundType } from '../../../domain/fundType'
+import { IFundRepo } from '../../../../funds/repos/iFundRepo'
+import { FundType } from '../../../../funds/domain/fundType'
 
 type Response = Either<AppError.UnexpectedError | Result<any>, Result<GetDistributionMemberDtoResult>>
 
@@ -24,23 +24,20 @@ export class GetDistributionMemberUseCase implements UseCase<GetDistributionMemb
 
   public async execute(request: GetDistributionMemberDto): Promise<Response> {
     try {
-      let memberIdOrError = MemberId.create(new UniqueEntityID(request.memberId))
-      if (memberIdOrError.isFailure) {
-        return left(memberIdOrError)
-      }
+      const { memberId } = request
 
-      let primaryDistributionTerms = await this.getTermDto(memberIdOrError.getValue(), 'primaryDistribution', 0)
+      let primaryDistributionTerms = await this.getTermDto(memberId, 'primaryDistribution', 0)
 
       let primaryDistributionByTodayTerms = await this.getTermDto(
-        memberIdOrError.getValue(),
+        memberId,
         'primaryDistribution',
         new Date().setHours(0, 0, 0, 0)
       )
 
-      let secondaryDistributionTerms = await this.getTermDto(memberIdOrError.getValue(), 'secondaryDistribution', 0)
+      let secondaryDistributionTerms = await this.getTermDto(memberId, 'secondaryDistribution', 0)
 
       let secondaryDistributionByTodayTerms = await this.getTermDto(
-        memberIdOrError.getValue(),
+        memberId,
         'secondaryDistribution',
         new Date().setHours(0, 0, 0, 0)
       )
@@ -58,7 +55,7 @@ export class GetDistributionMemberUseCase implements UseCase<GetDistributionMemb
     }
   }
 
-  private async getTermDto(memberId: MemberId, type: FundType, createAt: number): Promise<TermDTO[]> {
+  private async getTermDto(memberId: string, type: FundType, createAt: number): Promise<TermDTO[]> {
     let primaryDistributionList = await this.fundRepo.getDistributionList(memberId, type, createAt)
     let primaryDistributionTerms: TermDTO[] = primaryDistributionList.map(item => {
       return {

@@ -1,18 +1,14 @@
 import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { Result } from '../../../shared/core/Result'
-import { UserId } from '../../users/domain/userId'
-import { UserName } from '../../users/domain/userName'
-import { Guard } from '../../../shared/core/Guard'
 import { MemberCreated } from './events/memberCreated'
 import { MemberId } from './memberId'
 import { MemberDistributionRelation } from './memberDistributionRelation'
 
 interface MemberProps {
   inviteMemberId?: MemberId
-  createAt: number
+  createAt?: number
   inviteToken: string
-  amount: number
   distributionRelationList: MemberDistributionRelation[]
 }
 
@@ -39,10 +35,6 @@ export class Member extends AggregateRoot<MemberProps> {
 
   get distributionRelationList(): MemberDistributionRelation[] {
     return this.props.distributionRelationList
-  }
-
-  get amount(): number {
-    return this.props.amount
   }
 
   public updateDistributionRelationList(memberDistributionRelationList: MemberDistributionRelation[]): void {
