@@ -4,6 +4,8 @@ import { Either, Result, left, right } from '../../../shared/core/Result'
 import { WxAuthorizationErrors } from '../useCases/wxAuthorization/wxAuthorizationErrors'
 import { AppError } from '../../../shared/core/AppError'
 import { URLSearchParams } from 'url'
+import { authConfig } from '../../../config'
+import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 
 export type Response = Either<
   WxAuthorizationErrors.WxJsCodeToSessionError | AppError.UnexpectedError | Result<any>,
@@ -25,13 +27,15 @@ export class WxAuthrizationService {
   constructor() {}
 
   async jsCodeToSession(code: string): Promise<Response> {
-    return right(
-      Result.ok<WxJsCodeToSessionResult>({
-        openid: 'three',
-        session_key: '222',
-        unionid: '333'
-      })
-    )
+    if (!authConfig.isProduction) {
+      return right(
+        Result.ok<WxJsCodeToSessionResult>({
+          openid: new UniqueEntityID().toString(),
+          session_key: '222',
+          unionid: '333'
+        })
+      )
+    }
 
     let qs = new URLSearchParams()
     qs.append('appid', 'wx84965549e7c05a03')

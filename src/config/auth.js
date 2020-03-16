@@ -1,4 +1,5 @@
 const authConfig = {
+  isProduction: process.env.XALD_MANAGEMENT_IS_PRODUCTION || false,
   secret: process.env.XALD_MANAGEMENT_APP_SECRET,
   tokenExpiryTime: 60 * 60, // seconds => 5 minutes
   redisServerPort: process.env.XALD_MANAGEMENT_REDIS_PORT || 6379,
