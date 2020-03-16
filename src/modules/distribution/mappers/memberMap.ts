@@ -9,10 +9,6 @@ import { MemberDistributionRelation } from '../domain/memberDistributionRelation
 
 export class MemberMap implements IMapper<Member> {
   public static toDomain(raw: IMemberDbModel): Member {
-    let inviteMemberId: MemberId = raw.inviteMemberId
-      ? MemberId.create(new UniqueEntityID(raw.inviteMemberId)).getValue()
-      : null
-
     let distributionRelationList = raw.distributionRelationList.map(item => {
       let memberDistributionRelationOrErrors = MemberDistributionRelation.create({
         memberId: item.memberId,
@@ -26,7 +22,7 @@ export class MemberMap implements IMapper<Member> {
       {
         createAt: raw.createAt,
         inviteToken: raw.inviteToken,
-        inviteMemberId: inviteMemberId,
+        inviteMemberId: raw.inviteMemberId,
         distributionRelationList: distributionRelationList
       },
       new UniqueEntityID(raw._id)
@@ -48,7 +44,7 @@ export class MemberMap implements IMapper<Member> {
 
     return {
       _id: member.id.toString(),
-      inviteMemberId: member.inviteMemberId ? member.inviteMemberId.id.toString() : null,
+      inviteMemberId: member.inviteMemberId,
       createAt: member.createAt,
       inviteToken: member.inviteToken,
       distributionRelationList: distributionRelationList
@@ -66,7 +62,7 @@ export class MemberMap implements IMapper<Member> {
 
     return {
       _id: member.id.toString(),
-      inviteMemberId: member.inviteMemberId ? member.inviteMemberId.id.toString() : null,
+      inviteMemberId: member.inviteMemberId,
       createAt: member.createAt,
       inviteToken: member.inviteToken,
       distributionRelationList: distributionRelationList

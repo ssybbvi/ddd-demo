@@ -6,7 +6,7 @@ import { MemberId } from './memberId'
 import { MemberDistributionRelation } from './memberDistributionRelation'
 
 interface MemberProps {
-  inviteMemberId?: MemberId
+  inviteMemberId?: string
   createAt?: number
   inviteToken: string
   distributionRelationList: MemberDistributionRelation[]
@@ -21,7 +21,7 @@ export class Member extends AggregateRoot<MemberProps> {
     return MemberId.create(this._id).getValue()
   }
 
-  get inviteMemberId(): MemberId {
+  get inviteMemberId(): string {
     return this.props.inviteMemberId
   }
 
@@ -41,7 +41,7 @@ export class Member extends AggregateRoot<MemberProps> {
     this.props.distributionRelationList = memberDistributionRelationList
   }
 
-  public static create(props: MemberProps, id?: UniqueEntityID): Result<Member> {
+  public static create(props: MemberProps, id?: UniqueEntityID, isAddDomainEvent: boolean = false): Result<Member> {
     const defaultValues: MemberProps = {
       ...props,
       createAt: props.createAt ? props.createAt : Date.now()
@@ -50,7 +50,7 @@ export class Member extends AggregateRoot<MemberProps> {
     const member = new Member(defaultValues, id)
     const isNewMember = !!id === false
 
-    if (isNewMember) {
+    if (isNewMember || isAddDomainEvent) {
       member.addDomainEvent(new MemberCreated(member))
     }
 

@@ -59,6 +59,7 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
 
         let userOrError = User.create(
           {
+            from: '',
             platform: {
               wx: wxUserOrError.getValue()
             }

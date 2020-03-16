@@ -4,6 +4,7 @@ import { UserDTO, WxDTO } from '../dtos/userDTO'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { IUserDbModels, WxDbModel } from '../dbModels/iUserDbModels'
 import { WxUser } from '../domain/wxUser'
+import { UserFrom } from '../domain/userFrom'
 
 export class UserMap implements IMapper<User> {
   public static toDTO(user: User): UserDTO {
@@ -33,6 +34,7 @@ export class UserMap implements IMapper<User> {
   public static toDomain(raw: IUserDbModels): User {
     const userOrError = User.create(
       {
+        from: raw.from as UserFrom,
         platform: {
           wx: this.wxUserToDomain(raw.platform.wx)
         }
@@ -67,6 +69,7 @@ export class UserMap implements IMapper<User> {
   public static async toPersistence(user: User): Promise<IUserDbModels> {
     return {
       _id: user.userId.id.toString(),
+      from: user.from,
       isDeleted: user.isDeleted,
       platform: {
         wx: this.toWxUserPersistence(user.platform.wx)

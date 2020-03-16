@@ -3,6 +3,8 @@ import { UserCreated } from '../../users/domain/events/userCreated'
 import { IHandle } from '../../../shared/domain/events/IHandle'
 import { CreateMember } from '../userCases/members/createMember/createMember'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
+import { CreateRobotUserDtoResult } from '../../users/useCases/createRobotUser/createRobotUserDtoResult'
+import { CreateRobotUserCase } from '../../users/useCases/createRobotUser/createRobotUserUseCase'
 
 export class AfterUserCreated implements IHandle<UserCreated> {
   private createMember: CreateMember
@@ -25,6 +27,7 @@ export class AfterUserCreated implements IHandle<UserCreated> {
         userId: user.userId.id.toString(),
         inviteToken: extra ? extra.inviteToken : null
       })
+
       console.log(`[AfterUserCreated]: Successfully executed CreateMember use case AfterUserCreated`)
     } catch (err) {
       console.log(`[AfterUserCreated]: Failed to execute CreateMember use case AfterUserCreated.`)

@@ -10,11 +10,12 @@ import { Result } from '../../../shared/core/Result'
 import { Guard } from '../../../shared/core/Guard'
 import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
 import { WxUser } from './wxUser'
+import { UserFrom } from './userFrom'
 
-export interface PasswordProps {
-  username: UserName
-  password: UserPassword
-}
+// export interface PasswordProps {
+//   username: UserName
+//   password: UserPassword
+// }
 
 export interface PlatformProps {
   wx?: WxUser
@@ -22,6 +23,7 @@ export interface PlatformProps {
 }
 
 export interface UserProps {
+  from: UserFrom
   accessToken?: JWTToken
   refreshToken?: RefreshToken
   isDeleted?: boolean
@@ -32,6 +34,10 @@ export interface UserProps {
 export class User extends AggregateRoot<UserProps> {
   get userId(): UserId {
     return UserId.create(this._id).getValue()
+  }
+
+  get from(): UserFrom {
+    return this.props.from
   }
 
   get accessToken(): string {

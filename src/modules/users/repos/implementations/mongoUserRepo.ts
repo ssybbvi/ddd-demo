@@ -50,6 +50,7 @@ export class MongoUserRepo implements IUserRepo {
       { _id: raw._id },
       {
         $set: {
+          from: raw.from,
           accessToken: raw.accessToken,
           refreshToken: raw.refreshToken,
           isDeleted: raw.isDeleted,
@@ -59,7 +60,7 @@ export class MongoUserRepo implements IUserRepo {
       },
       { upsert: true }
     )
-    DomainEvents.dispatchEventsForAggregate(user.id)
+    await DomainEvents.dispatchEventsForAggregate(user.id)
   }
 
   async getUserByWxOpenId(wxOpenId: string): Promise<User> {

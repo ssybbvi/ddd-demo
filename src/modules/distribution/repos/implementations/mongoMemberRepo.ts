@@ -38,7 +38,7 @@ export class MemberRepo implements IMemberRepo {
       },
       { upsert: true }
     )
-    DomainEvents.dispatchEventsForAggregate(member.id)
+    await DomainEvents.dispatchEventsForAggregate(member.id)
   }
 
   public async existsByInviteToken(inviteToken: string): Promise<boolean> {

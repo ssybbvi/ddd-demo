@@ -2,6 +2,7 @@ import { JWTToken, RefreshToken } from '../domain/jwt'
 
 export interface IUserDbModels {
   _id: string
+  from: string
   accessToken?: JWTToken
   refreshToken?: RefreshToken
   isDeleted?: boolean
