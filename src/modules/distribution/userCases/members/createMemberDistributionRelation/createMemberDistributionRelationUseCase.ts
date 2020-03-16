@@ -42,7 +42,6 @@ export class CreateMemberDistributionRelationUseCase
 
   public async execute(request: CreateMemberDistributionRelationDto): Promise<Response> {
     const { memberId } = request
-
     try {
       let member = await this.memberRepo.getById(memberId)
 

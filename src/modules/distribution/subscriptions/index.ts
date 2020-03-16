@@ -7,5 +7,5 @@ import { createMemberDistributionRelationUseCase } from '../userCases/members/cr
 
 // Subscriptions
 new AfterUserCreated(createMember)
-new AfterLoginCreated(dailySignInUseCase)
 new AfterMemberCreated(createMemberDistributionRelationUseCase)
+new AfterLoginCreated(dailySignInUseCase)

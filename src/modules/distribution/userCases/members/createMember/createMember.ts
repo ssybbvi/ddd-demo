@@ -35,7 +35,7 @@ export class CreateMember implements UseCase<CreateMemberDTO, Promise<Response>>
         return left(new CreateMemberErrors.MemberAlreadyExistsError(userId))
       }
 
-      let inviteMemberId: string = inviteToken //TODO
+      let inviteMemberId: string = null //inviteToken //TODO
       if (!!inviteToken) {
         let inviteMemberExists = await this.memberRepo.existsByInviteToken(inviteToken)
         // if (!inviteMemberExists) {

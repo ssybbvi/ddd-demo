@@ -18,7 +18,6 @@ export class AfterMemberCreated implements IHandle<MemberCreated> {
 
   private async onUserCreated(event: MemberCreated): Promise<void> {
     const { member } = event
-
     try {
       await this.createMemberDistributionRelationUseCase.execute({
         memberId: member.id.toString()

@@ -3,23 +3,20 @@ import { AppError } from '../../../../../shared/core/AppError'
 import { UseCase } from '../../../../../shared/core/UseCase'
 import { GetDistributionMemberDto } from './getDistributionMemberDto'
 import { GetDistributionMemberDtoResult } from './getDistributionMemberDtoResult'
-import { IMemberRepo } from '../../../repos/memberRepo'
-import { MemberId } from '../../../domain/memberId'
-import { UniqueEntityID } from '../../../../../shared/domain/UniqueEntityID'
-import e = require('express')
 import { TermDTO } from '../../../dtos/termDTO'
 import { IFundRepo } from '../../../../funds/repos/iFundRepo'
 import { FundType } from '../../../../funds/domain/fundType'
+import { IUserRepo } from '../../../../users/repos/userRepo'
 
 type Response = Either<AppError.UnexpectedError | Result<any>, Result<GetDistributionMemberDtoResult>>
 
 export class GetDistributionMemberUseCase implements UseCase<GetDistributionMemberDto, Promise<Response>> {
-  private memberRepo: IMemberRepo
   private fundRepo: IFundRepo
+  private userRepo: IUserRepo
 
-  constructor(memberRepo: IMemberRepo, fundRepo: IFundRepo) {
-    this.memberRepo = memberRepo
+  constructor(fundRepo: IFundRepo, userRepo: IUserRepo) {
     this.fundRepo = fundRepo
+    this.userRepo = userRepo
   }
 
   public async execute(request: GetDistributionMemberDto): Promise<Response> {
@@ -56,16 +53,29 @@ export class GetDistributionMemberUseCase implements UseCase<GetDistributionMemb
   }
 
   private async getTermDto(memberId: string, type: FundType, createAt: number): Promise<TermDTO[]> {
-    let primaryDistributionList = await this.fundRepo.getDistributionList(memberId, type, createAt)
-    let primaryDistributionTerms: TermDTO[] = primaryDistributionList.map(item => {
-      return {
+    let distributionList = await this.fundRepo.getDistributionList(memberId, type, createAt)
+
+    let termDtoList: TermDTO[] = []
+    for (let item of distributionList) {
+      let user = await this.userRepo.getById(item.paymentMemberId)
+      termDtoList.push({
         memberId: item.paymentMemberId,
-        nickName: '',
-        avatarUrl: '',
-        gender: 1,
+        nickName: user.platform.wx ? user.platform.wx.value.nickName : '',
+        avatarUrl: user.platform.wx ? user.platform.wx.value.avatarUrl : '',
+        gender: user.platform.wx ? user.platform.wx.value.gender : 1,
         integral: item.totalAmount
-      }
-    })
-    return primaryDistributionTerms
+      })
+    }
+
+    // let termDtoList: TermDTO[] = distributionList.map(item => {
+    //   return {
+    //     memberId: item.paymentMemberId,
+    //     nickName: '',
+    //     avatarUrl: '',
+    //     gender: 1,
+    //     integral: item.totalAmount
+    //   }
+    // })
+    return termDtoList
   }
 }
