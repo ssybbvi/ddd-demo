@@ -3,8 +3,6 @@ import { UserCreated } from '../../users/domain/events/userCreated'
 import { IHandle } from '../../../shared/domain/events/IHandle'
 import { CreateMember } from '../userCases/members/createMember/createMember'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
-import { CreateRobotUserDtoResult } from '../../users/useCases/createRobotUser/createRobotUserDtoResult'
-import { CreateRobotUserCase } from '../../users/useCases/createRobotUser/createRobotUserUseCase'
 
 export class AfterUserCreated implements IHandle<UserCreated> {
   private createMember: CreateMember

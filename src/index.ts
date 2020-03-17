@@ -7,7 +7,6 @@ import { Global } from './shared/infra/database/mongodb/index'
 })()
 
 // Subscriptions
-import './modules/users/subscriptions'
 import './modules/distribution/subscriptions'
 import './modules/funds/subscriptions'
 

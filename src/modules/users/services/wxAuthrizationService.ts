@@ -27,10 +27,10 @@ export class WxAuthrizationService {
   constructor() {}
 
   async jsCodeToSession(code: string): Promise<Response> {
-    if (!authConfig.isProduction) {
+    if (code.includes('test-xald')) {
       return right(
         Result.ok<WxJsCodeToSessionResult>({
-          openid: new UniqueEntityID().toString(),
+          openid: code,
           session_key: '222',
           unionid: '333'
         })

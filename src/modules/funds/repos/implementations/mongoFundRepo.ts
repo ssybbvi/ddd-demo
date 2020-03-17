@@ -41,7 +41,7 @@ export class MongoFundRepo implements IFundRepo {
       { upsert: true }
     )
 
-    await DomainEvents.dispatchEventsForAggregate(fund.id)
+    DomainEvents.dispatchEventsForAggregate(fund)
   }
 
   async filter(): Promise<Fund[]> {

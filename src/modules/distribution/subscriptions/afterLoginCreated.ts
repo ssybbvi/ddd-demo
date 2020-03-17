@@ -2,6 +2,7 @@ import { IHandle } from '../../../shared/domain/events/IHandle'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
 import { DailySignInUseCase } from '../userCases/signIns/dailySignIn/dailySignInUseCase'
 import { UserLoggedIn } from '../../users/domain/events/userLoggedIn'
+import { FlowUtils } from '../../../shared/utils/FlowUtils'
 
 export class AfterLoginCreated implements IHandle<UserLoggedIn> {
   private dailySignInUseCase: DailySignInUseCase
@@ -20,6 +21,8 @@ export class AfterLoginCreated implements IHandle<UserLoggedIn> {
     const { user } = event
 
     try {
+      await FlowUtils.delay(5000) //TODO
+
       let dailySignInUseCaseValue = await this.dailySignInUseCase.execute({
         memberId: user.id.toString()
       })

@@ -47,7 +47,7 @@ export class MongoSignInRepo implements ISignInRepo {
       },
       { upsert: true }
     )
-    await DomainEvents.dispatchEventsForAggregate(signIn.id)
+    DomainEvents.dispatchEventsForAggregate(signIn)
   }
 
   public async existToday(memberId: string): Promise<boolean> {

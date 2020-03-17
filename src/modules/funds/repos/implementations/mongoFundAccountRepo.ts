@@ -32,7 +32,7 @@ export class MongoFundAccountRepo implements IFundAccountRepo {
       { upsert: true }
     )
 
-    await DomainEvents.dispatchEventsForAggregate(fundAccount.id)
+    DomainEvents.dispatchEventsForAggregate(fundAccount)
   }
 
   async exist(_id: string): Promise<boolean> {

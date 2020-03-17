@@ -73,8 +73,8 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
         if (userOrError.isFailure) {
           return left(Result.fail<User>(userOrError.error.toString())) as Response
         }
-
-        await this.userRepo.save(userOrError.getValue())
+        let user = userOrError.getValue()
+        await this.userRepo.save(user)
       }
 
       let user = await this.userRepo.getUserByWxOpenId(wxJsCodeToSessionResult.openid)

@@ -28,9 +28,9 @@ export class AfterUserCreated implements IHandle<UserCreated> {
         console.error(updateFundAccountUseCaseResult.value.getValue())
       }
 
-      console.log(`[AfterUserCreated]: Successfully executed CreateMember use case AfterUserCreated`)
+      console.log(`[AfterUserCreated]: Successfully executed UpdateFundAccountUseCase use case AfterUserCreated`)
     } catch (err) {
-      console.log(`[AfterUserCreated]: Failed to execute CreateMember use case AfterUserCreated.`)
+      console.log(`[AfterUserCreated]: Failed to execute UpdateFundAccountUseCase use case AfterUserCreated.`)
     }
   }
 }
