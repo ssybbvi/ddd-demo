@@ -3,6 +3,7 @@ import { tenantRouter } from '../../../../modules/tenants/infra/http/routes/tena
 import { userRouter } from '../../../../modules/users/infra/http/routers/index'
 import { signInRouter, memberRouter } from '../../../../modules/distribution/infra/http/routes/index'
 import { fundRouter, fundAccountRouter } from '../../../../modules/funds/infra/http/routes'
+import { commodityRouter } from '../../../../modules/commoditys/infra/http/routes'
 
 const v1Router = express.Router()
 
@@ -15,4 +16,5 @@ v1Router.use('/signIn', signInRouter)
 v1Router.use('/member', memberRouter)
 v1Router.use('/fund', fundRouter)
 v1Router.use('/fundAccount', fundAccountRouter)
+v1Router.use('/commodity', commodityRouter)
 export { v1Router }
