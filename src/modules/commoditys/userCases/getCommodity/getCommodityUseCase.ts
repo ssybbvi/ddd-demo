@@ -20,7 +20,7 @@ export class GetCommodityUseCase implements UseCase<GetCommodityDto, Promise<Res
     try {
       const { name, tag } = request
 
-      const list = await this.commodityRepo.filter()
+      const list = await this.commodityRepo.filter(name,tag)
 
       const dtoList = list.map(item => CommodityMap.toDTO(item))
 

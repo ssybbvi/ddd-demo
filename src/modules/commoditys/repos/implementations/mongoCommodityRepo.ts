@@ -46,9 +46,28 @@ export class MongoCommodityRepo implements ICommodityRepo {
     return !!commodity === true
   }
 
-  public async filter(): Promise<Commodity[]> {
+  public async filter(name:string,tag:string): Promise<Commodity[]> {
+    let query:any={
+      $and:[
+        {
+          name:{
+            $regex:name
+          }
+        }
+      ]
+     
+    }
+    if(tag){
+      query.$and.push({
+        tags:{
+          $in:[tag]
+        }
+      })
+    }
+
+    console.log("xxxx",JSON.stringify(query))
     let commodityList = await this.createCollection()
-      .find({})
+      .find(query)
       .toArray()
     return commodityList.map(item => CommodityMap.toDomain(item))
   }

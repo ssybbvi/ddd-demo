@@ -14,7 +14,11 @@ export class GetCommodityController extends BaseController {
   }
 
   async executeImpl(req: any, res: express.Response): Promise<any> {
-    const dto: GetCommodityDto = req.body as GetCommodityDto
+ 
+    const dto: GetCommodityDto ={
+      name:req.query.name||"",
+      tag:req.query.tag||""
+    }
 
     try {
       const result = await this.useCase.execute(dto)
@@ -27,9 +31,10 @@ export class GetCommodityController extends BaseController {
             return this.fail(res, error.errorValue() + '')
         }
       } else {
-        // return this.ok<GetCommodityDtoResult>({
-        //   commoditys: useCaseValue.getValue() as CommodityDto[]
-        // })
+        const commodityDtoList=useCaseValue.getValue() as CommodityDto[]
+        return this.ok<GetCommodityDtoResult>(res,{
+          commoditys:commodityDtoList
+        })
       }
     } catch (err) {
       return this.fail(res, err)

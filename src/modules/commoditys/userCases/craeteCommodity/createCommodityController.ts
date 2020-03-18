@@ -11,9 +11,8 @@ export class CreateCommodityController extends BaseController {
     this.useCase = useCase
   }
 
-  async executeImpl(req: any, res: express.Response): Promise<any> {
+  async executeImpl(req: express.Request, res: express.Response): Promise<any> {
     const dto: CreateCommodityDto = req.body as CreateCommodityDto
-
     try {
       const result = await this.useCase.execute(dto)
       let useCaseValue = result.value
