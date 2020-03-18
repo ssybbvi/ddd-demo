@@ -7,6 +7,7 @@ import { CommodityDto } from '../dtos/commodityDto'
 export class CommodityMap implements IMapper<Commodity> {
   public static toDTO(commodity: Commodity): CommodityDto {
     return {
+      _id:commodity.id.toString(),
       name: commodity.name,
       price: commodity.price,
       descrption: commodity.descrption,
@@ -19,6 +20,9 @@ export class CommodityMap implements IMapper<Commodity> {
   }
 
   public static toDomain(raw: ICommodityDbModel): Commodity {
+    if(raw==null){
+      return null
+    }
     const commodityOrError = Commodity.create(
       {
         name: raw.name,

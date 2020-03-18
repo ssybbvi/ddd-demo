@@ -1,4 +1,5 @@
 export interface CommodityDto {
+  _id:string
   name: string
   price: number
   descrption: string

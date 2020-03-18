@@ -65,7 +65,6 @@ export class MongoCommodityRepo implements ICommodityRepo {
       })
     }
 
-    console.log("xxxx",JSON.stringify(query))
     let commodityList = await this.createCollection()
       .find(query)
       .toArray()
