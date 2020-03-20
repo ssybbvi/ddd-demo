@@ -11,6 +11,6 @@ const orderRouter = express.Router()
 orderRouter.post('/', middleware.ensureAuthenticated(),(req, res) => createOrderController.execute(req, res))
 orderRouter.get('/:orderId', middleware.ensureAuthenticated(),(req, res) => getOrderByIdController.execute(req, res))
 orderRouter.get('/', middleware.ensureAuthenticated(),(req, res) => getOrderListController.execute(req, res))
-orderRouter.put('/auto/cancel', (req, res) => cancelOrderController.execute(req, res))
+orderRouter.get('/auto/cancel', (req, res) => cancelOrderController.execute(req, res))
 orderRouter.put('/payment', middleware.ensureAuthenticated(),(req, res) => paymentOrderController.execute(req, res))
 export { orderRouter }

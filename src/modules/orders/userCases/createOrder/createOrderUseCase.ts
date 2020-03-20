@@ -5,7 +5,6 @@ import { Order } from '../../domain/order'
 import { CreateOrderDto } from './createOrderDto'
 import { OrderAddress } from '../../domain/orderAddress'
 import { IOrderRepo } from '../../repos/orderRepo'
-import { commodityRepo } from '../../../commoditys/repos'
 import { ICommodityRepo } from '../../../commoditys/repos/iCommodityRepo'
  
 import { OrderItem } from '../../domain/orderItem'
@@ -62,7 +61,7 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
       let orderItemList:OrderItem[]=[]
       for(let item of items){
           
-        let commodity=await commodityRepo.getById(item.commodityId)
+        let commodity=await this.commodityRepo.getById(item.commodityId)
         if(!!commodity===false){
             return left(new CreateOrderErrors.CommodityNotFound(item.commodityId))
         }
@@ -94,7 +93,6 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
       }
 
       await this.orderRepo.save(orderOrErrors.getValue())
-
 
       return right(Result.ok<Order>(orderOrErrors.getValue()))
     } catch (err) {

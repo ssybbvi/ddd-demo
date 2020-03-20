@@ -8,8 +8,6 @@ import { Order } from '../../domain/order'
 import { OrderMap } from '../../mappers/orderMap'
 import { OrderDto } from '../../dtos/orderDto'
 
-
-
 export class CreateOrderController extends BaseController {
   private useCase: CreateOrderUseCase
 
