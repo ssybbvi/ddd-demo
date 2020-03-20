@@ -1,24 +1,25 @@
 import { Either, Result, right, left } from '../../../../shared/core/Result'
 import { AppError } from '../../../../shared/core/AppError'
 import { UseCase } from '../../../../shared/core/UseCase'
-import { Commodity } from '../../domain/commodity'
-import { CreateCommodityDto } from './createCommodityDto'
 import { ICommodityRepo } from '../../repos/iCommodityRepo'
+import { IEditCommodityDto } from './editCommodityDto'
 import { CommodityName } from '../../domain/commodityName'
 import { CommodityPrice } from '../../domain/commodityPrice'
 
 type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 
-export class CreateCommodityUseCase implements UseCase<CreateCommodityDto, Promise<Response>> {
+export class EditCommodityUseCase implements UseCase<IEditCommodityDto, Promise<Response>> {
   private commodityRepo: ICommodityRepo
 
   constructor(commodityRepo: ICommodityRepo) {
     this.commodityRepo = commodityRepo
   }
 
-  public async execute(request: CreateCommodityDto): Promise<Response> {
+  public async execute(request: IEditCommodityDto): Promise<Response> {
     try {
-      const { name, price, descrption, images, fakePrice, sales, restrictedPurchaseQuantity, tags } = request
+      const {_id, name, price, descrption, images, fakePrice, restrictedPurchaseQuantity, tags } = request
+
+      const commodity = await this.commodityRepo.getById(_id)
 
       const commodityNameOrErrors= CommodityName.create({ name })
       if(commodityNameOrErrors.isFailure){
@@ -29,24 +30,16 @@ export class CreateCommodityUseCase implements UseCase<CreateCommodityDto, Promi
       if(commdityPriceOrErrors.isFailure){
         return left(commdityPriceOrErrors)
       }
+       
+      commodity.updateName(commodityNameOrErrors.getValue())
+      commodity.updatePrice(commdityPriceOrErrors.getValue())
+      commodity.updateDescrption(descrption)
+      commodity.updateFakePrice(fakePrice)
+      commodity.updateImages(images)
+      commodity.updateTags(tags)
+      commodity.updateRestrictedPurchaseQuantity(restrictedPurchaseQuantity)
 
-      const commodityOrErrors = Commodity.create({
-        name: commodityNameOrErrors.getValue(),
-        price: commdityPriceOrErrors.getValue(),
-        descrption,
-        images,
-        fakePrice,
-        sales,
-        restrictedPurchaseQuantity,
-        tags
-      })
-
-      if (commodityOrErrors.isFailure) {
-        return left(commodityOrErrors)
-      }
-
-      await this.commodityRepo.save(commodityOrErrors.getValue())
-
+      await this.commodityRepo.save(commodity)
       return right(Result.ok<void>())
     } catch (err) {
       return left(new AppError.UnexpectedError(err))

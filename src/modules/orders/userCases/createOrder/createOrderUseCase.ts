@@ -67,8 +67,8 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
         }
 
         let orderItemOrErrors= OrderItem.create({
-            name:commodity.name,
-            price:commodity.price,
+            name:commodity.name.value,
+            price:commodity.price.value,
             image:commodity.images?commodity.images[0]:"",
             commodityId:item.commodityId
         })

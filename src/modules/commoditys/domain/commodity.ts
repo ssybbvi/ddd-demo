@@ -3,10 +3,12 @@ import { Result } from '../../../shared/core/Result'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { IGuardArgument, Guard } from '../../../shared/core/Guard'
 import { CommodityCreated } from './events/CommodityCreated'
+import { CommodityPrice } from './commodityPrice'
+import { CommodityName } from './commodityName'
 
 export interface ICommodityProps {
-  name: string
-  price: number
+  name: CommodityName
+  price: CommodityPrice
   descrption: string
   images: string[]
   fakePrice: string
@@ -20,11 +22,11 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     super(props, id)
   }
 
-  get name(): string {
+  get name(): CommodityName {
     return this.props.name
   }
 
-  get price(): number {
+  get price(): CommodityPrice {
     return this.props.price
   }
 
@@ -50,6 +52,34 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
 
   get restrictedPurchaseQuantity(): number {
     return this.props.restrictedPurchaseQuantity
+  }
+
+  public updateName(name:CommodityName){
+    this.props.name=name
+  }
+
+  public updatePrice  (price:CommodityPrice){
+    this.props.price=price
+  }
+
+  public updateDescrption(descrption:string){
+    this.props.descrption=descrption
+  }
+
+  public updateImages (images:string[]){
+    this.props.images=images
+  }
+
+  public updateFakePrice(fakePrice:string){
+    this.props.fakePrice=fakePrice
+  }
+
+  public updateTags(tags:string[]){
+    this.props.tags=tags
+  }
+
+  public updateRestrictedPurchaseQuantity(restrictedPurchaseQuantity:number){
+    return this.props.restrictedPurchaseQuantity=restrictedPurchaseQuantity
   }
 
   public sale():void{
@@ -78,7 +108,8 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     }
 
     const defaultValues: ICommodityProps = {
-      ...props
+      ...props,
+      tags: props.tags ? props.tags :[]
     }
 
     const fund = new Commodity(defaultValues, id)

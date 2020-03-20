@@ -16,7 +16,7 @@ export class FundAmount extends ValueObject<IFundAmountProps> {
   }
 
   public static create(props: IFundAmountProps): Result<FundAmount> {
-    const fundAmountOrNull = Guard.againstNullOrUndefined(props.fundAmount, '租户名称')
+    const fundAmountOrNull = Guard.againstNullOrUndefined(props.fundAmount, '账户金额')
     if (!fundAmountOrNull.succeeded) {
       return Result.fail<FundAmount>(fundAmountOrNull.message)
     }

@@ -25,7 +25,7 @@ export interface IGuardResult {
         ? { succeeded: true } 
         : { 
           succeeded: false, 
-          message: `Number given {${actualValue}} is not greater than {${minValue}}`
+          message: `参数{${actualValue}}不能小于{${minValue}}`
       }
     }
   
@@ -34,7 +34,7 @@ export interface IGuardResult {
         ? { succeeded: true } 
         : { 
             succeeded: false, 
-            message: `Text is not at least ${numChars} chars.`
+            message: `至少需要${numChars}个字符.`
         }
     }
   
@@ -43,13 +43,13 @@ export interface IGuardResult {
         ? { succeeded: true } 
         : { 
             succeeded: false, 
-            message: `Text is greater than ${numChars} chars.`
+            message: `超过${numChars}给字符了.`
         }
     }
   
     public static againstNullOrUndefined (argument: any, argumentName: string): IGuardResult {
       if (argument === null || argument === undefined) {
-        return { succeeded: false, message: `${argumentName} is null or undefined` }
+        return { succeeded: false, message: `${argumentName} 不能为空` }
       } else {
         return { succeeded: true }
       }
@@ -85,7 +85,7 @@ export interface IGuardResult {
     public static inRange (num: number, min: number, max: number, argumentName: string) : IGuardResult {
       const isInRange = num >= min && num <= max;
       if (!isInRange) {
-        return { succeeded: false, message: `${argumentName} is not within range ${min} to ${max}.`}
+        return { succeeded: false, message: `${argumentName}需要在${min}和${max}之间.`}
       } else {
         return { succeeded: true }
       }
