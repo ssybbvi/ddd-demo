@@ -1,7 +1,7 @@
 import { OrderStatus } from "./orderStatus";
 import { AggregateRoot } from "../../../shared/domain/AggregateRoot";
 import { UniqueEntityID } from "../../../shared/domain/UniqueEntityID";
-import { Result } from "../../../shared/core/Result";
+import { Result, Either, left, right } from "../../../shared/core/Result";
  
 import { OrderAddress } from "./orderAddress";
 import { OrderItem } from "./orderItem";
@@ -10,7 +10,14 @@ import { OrderReceived } from "./events/orderReceived";
 import { OrderPaymented } from "./events/orderPaymented";
 import { OrderShipped } from "./events/orderShipped";
 import { OrderCreated } from "./events/orderCreated";
+import { CancelOrderErrors } from "../userCases/cancelOrder/CancelOrderErrors";
 
+
+export type CancelOrderResult = Either<
+  CancelOrderErrors.StatusNotUnPaid | 
+  Result<any>, 
+  Result<void>
+>
 
 
 export interface OrderProps {
@@ -118,10 +125,16 @@ export class Order extends AggregateRoot<OrderProps>{
         return this.props.items
     }
 
-    public cancel(){
+    public cancel():  CancelOrderResult{
+        if(!this.isUnPaid()){
+            return left(new CancelOrderErrors.StatusNotUnPaid())
+        }
+
         this.props.cancelTime=Date.now()
         this.props.status='cancel'
         this.addDomainEvent(new OrderCanceled(this))
+
+        return right(Result.ok<void>())
     }
 
     public payment (){
@@ -144,9 +157,17 @@ export class Order extends AggregateRoot<OrderProps>{
         this.addDomainEvent(new OrderReceived(this))
     }
 
-    public isAllowPyamnet():boolean{
+    public isAtPaymentTime():boolean{
         const lastPaymentTime=Date.now()-1000* 60 *15
-        return this.props.createAt>lastPaymentTime
+        return this.props.createAt>lastPaymentTime;
+    }
+
+    public isAllowPyamnet():boolean{
+        return  this.isAtPaymentTime() && this.isUnPaid()
+    }
+
+    public isAllowCancel():boolean{
+        return !this.isAtPaymentTime()&& this.isUnPaid()
     }
 
     public isUnPaid():boolean{

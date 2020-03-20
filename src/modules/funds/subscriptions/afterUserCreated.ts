@@ -1,14 +1,14 @@
 import { UserCreated } from '../../users/domain/events/userCreated'
 import { IHandle } from '../../../shared/domain/events/IHandle'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
-import { UpdateFundAccountUseCase } from '../userCases/fundAccounts/updateFundAccount/updateFundAccountUseCase'
+import { CreateFundAccountUseCase } from '../userCases/fundAccounts/createFundAccount/createFundAccountUseCase'
 
 export class AfterUserCreated implements IHandle<UserCreated> {
-  private updateFundAccountUseCase: UpdateFundAccountUseCase
+  private createFundAccountUseCase: CreateFundAccountUseCase
 
-  constructor(updateFundAccountUseCase: UpdateFundAccountUseCase) {
+  constructor(createFundAccountUseCase: CreateFundAccountUseCase) {
     this.setupSubscriptions()
-    this.updateFundAccountUseCase = updateFundAccountUseCase
+    this.createFundAccountUseCase = createFundAccountUseCase
   }
 
   setupSubscriptions(): void {
@@ -20,17 +20,16 @@ export class AfterUserCreated implements IHandle<UserCreated> {
     const { user } = event
 
     try {
-      let updateFundAccountUseCaseResult = await this.updateFundAccountUseCase.execute({
+      let createFundAccountUseCaseResult = await this.createFundAccountUseCase.execute({
         memberId: user.userId.id.toString(),
-        totalAmount: 0
       })
-      if (updateFundAccountUseCaseResult.isLeft()) {
-        console.error(updateFundAccountUseCaseResult.value.getValue())
+      if (createFundAccountUseCaseResult.isLeft()) {
+        console.error(createFundAccountUseCaseResult.value.getValue())
       }
 
-      console.log(`[AfterUserCreated]: Successfully executed UpdateFundAccountUseCase use case AfterUserCreated`)
+      console.log(`[AfterUserCreated]: Successfully executed CreateFundAccountUseCase use case AfterUserCreated`)
     } catch (err) {
-      console.log(`[AfterUserCreated]: Failed to execute UpdateFundAccountUseCase use case AfterUserCreated.`)
+      console.log(`[AfterUserCreated]: Failed to execute CreateFundAccountUseCase use case AfterUserCreated.`)
     }
   }
 }

@@ -1,21 +1,16 @@
 import { IHandle } from '../../../shared/domain/events/IHandle'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
 import { FundCreated } from '../domain/events/fundCreated'
-import { GetTotalAmountByMemberIdUseCase } from '../userCases/funds/getTotalAmountByMemberId/getTotalAmountByMemberIdUseCase'
-import { UpdateFundAccountUseCase } from '../userCases/fundAccounts/updateFundAccount/updateFundAccountUseCase'
-import { GetTotalAmountByMemberIdDtoResult } from '../userCases/funds/getTotalAmountByMemberId/getTotalAmountByMemberIdDtoResult'
+import { RefreshFundAccountUseCase } from '../userCases/fundAccounts/refreshFundAccount/refreshFundAccountUseCase'
 
 export class AfterFundCreated implements IHandle<FundCreated> {
-  private getTotalAmountByMemberIdUseCase: GetTotalAmountByMemberIdUseCase
-  private updateFundAccountUseCase: UpdateFundAccountUseCase
+  private refreshFundAccountUseCase: RefreshFundAccountUseCase
 
   constructor(
-    getTotalAmountByMemberIdUseCase: GetTotalAmountByMemberIdUseCase,
-    updateFundAccountUseCase: UpdateFundAccountUseCase
+    refreshFundAccountUseCase: RefreshFundAccountUseCase,
   ) {
     this.setupSubscriptions()
-    this.getTotalAmountByMemberIdUseCase = getTotalAmountByMemberIdUseCase
-    this.updateFundAccountUseCase = updateFundAccountUseCase
+    this.refreshFundAccountUseCase = refreshFundAccountUseCase
   }
 
   setupSubscriptions(): void {
@@ -27,32 +22,21 @@ export class AfterFundCreated implements IHandle<FundCreated> {
     const { fund } = event
 
     try {
-      await this.updateMemberTotalAmount(fund.incomeMemberId)
-      await this.updateMemberTotalAmount(fund.paymentMemberId)
+      await this.refreshFundAccount(fund.incomeMemberId)
+      await this.refreshFundAccount(fund.paymentMemberId)
       console.log(`[AfterFundCreated]: Successfully executed AfterFundCreated use case AfterFundCreated`)
     } catch (err) {
       console.log(`[AfterFundCreated]: Failed to execute AfterFundCreated use case AfterFundCreated.`)
     }
   }
 
-  private async updateMemberTotalAmount(memberId: string) {
-    let getTotalAmountByMemberIdUseCaseResult = await this.getTotalAmountByMemberIdUseCase.execute({
+  private async refreshFundAccount(memberId: string) {
+    let refreshFundAccountUseCaseResult = await this.refreshFundAccountUseCase.execute({
       memberId: memberId
     })
 
-    if (getTotalAmountByMemberIdUseCaseResult.isLeft()) {
-      console.error(getTotalAmountByMemberIdUseCaseResult.value)
-    }
-
-    let getTotalAmountByMemberIdDtoResult = getTotalAmountByMemberIdUseCaseResult.value.getValue() as GetTotalAmountByMemberIdDtoResult
-
-    let updateFundAccountUseCaseResult = await this.updateFundAccountUseCase.execute({
-      memberId: memberId,
-      totalAmount: getTotalAmountByMemberIdDtoResult.totalAmount
-    })
-
-    if (updateFundAccountUseCaseResult.isLeft()) {
-      console.error(updateFundAccountUseCaseResult.value)
+    if (refreshFundAccountUseCaseResult.isLeft()) {
+      console.error(refreshFundAccountUseCaseResult.value)
     }
   }
 }

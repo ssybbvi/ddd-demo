@@ -67,16 +67,15 @@ export class MongoOrderRepo implements IOrderRepo {
     return !!order === true
   }
 
-  public async filter(orderStatus:OrderStatus|'',memberId:string): Promise<Order[]> {
+  public async filter(orderStatus:OrderStatus|'',memberId?:string): Promise<Order[]> {
     let query:any={  }
     if(!!orderStatus===true){
-      query.orderStatus=orderStatus
+      query.status=orderStatus
     }
 
     if(!!memberId===true){
       query.memberId=memberId
     }
-
     let orderList = await this.createCollection()
       .find(query)
       .toArray()

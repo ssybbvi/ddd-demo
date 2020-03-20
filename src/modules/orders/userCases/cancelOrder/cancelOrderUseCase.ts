@@ -19,10 +19,13 @@ export class CancelOrderUseCase implements UseCase<CancelOrderDto, Promise<Respo
 
   public async execute(request: CancelOrderDto): Promise<Response> {
     try {
-
-      let time=Date.now()-1000*60*15
-      await  this.orderRepo.cancelOrder(time)
-
+      const list=await  this.orderRepo.filter('unpaid')
+      for(const item of list){
+        let result= item.cancel()
+          if(result.isRight()){
+            this.orderRepo.save(item)
+          }
+      }
       return right(Result.ok<void>())
     } catch (err) {
       return left(new AppError.UnexpectedError(err))

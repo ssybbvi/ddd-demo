@@ -9,7 +9,6 @@ import { commodityRepo } from '../../../commoditys/repos'
 import { ICommodityRepo } from '../../../commoditys/repos/iCommodityRepo'
  
 import { OrderItem } from '../../domain/orderItem'
-import { OrderItemDto } from '../../dtos/orderItemDto'
 import { CreateOrderErrors } from './createOrderErrors'
 
 type Response = Either<CreateOrderErrors.CommodityNotFound

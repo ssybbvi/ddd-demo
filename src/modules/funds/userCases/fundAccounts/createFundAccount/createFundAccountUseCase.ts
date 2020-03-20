@@ -1,19 +1,14 @@
 import { Either, Result, left, right } from '../../../../../shared/core/Result'
 import { AppError } from '../../../../../shared/core/AppError'
-import { UserId } from '../../../../users/domain/userId'
 import { UniqueEntityID } from '../../../../../shared/domain/UniqueEntityID'
-import { IFundRepo } from '../../../repos/iFundRepo'
-import { FundAmount } from '../../../domain/fundAmount'
-import { Fund } from '../../../domain/fund'
-import { FundType } from '../../../domain/fundType'
 import { IFundAccountRepo } from '../../../repos/iFundAccountRepo'
 import { FundAccount } from '../../../domain/fundAccount'
 import { UseCase } from '../../../../../shared/core/UseCase'
 import { CreateFundAccountDto } from './createFundAccountDto'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<FundAccount>>
+type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 
-export class CreateAccountUseCase implements UseCase<CreateFundAccountDto, Promise<Response>> {
+export class CreateFundAccountUseCase implements UseCase<CreateFundAccountDto, Promise<Response>> {
   private fundAccountRepo: IFundAccountRepo
 
   constructor(fundAccountRepo: IFundAccountRepo) {
@@ -24,16 +19,20 @@ export class CreateAccountUseCase implements UseCase<CreateFundAccountDto, Promi
     try {
       const { memberId } = request
 
-      FundAccount.create(
+      const fundAccountOrErrors= FundAccount.create(
         {
           totalAmounnt: 0
         },
-        new UniqueEntityID(memberId)
+        new UniqueEntityID(memberId),
+        true
       )
+      if(fundAccountOrErrors.isFailure){
+        return left(fundAccountOrErrors)
+      }
 
-      let fundAccount = await this.fundAccountRepo.getById(memberId)
+      await this.fundAccountRepo.save(fundAccountOrErrors.getValue())
 
-      return right(Result.ok<FundAccount>(fundAccount))
+      return right(Result.ok<void>())
     } catch (err) {
       return left(new AppError.UnexpectedError(err))
     }

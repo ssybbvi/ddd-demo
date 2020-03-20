@@ -32,7 +32,7 @@ export class PaymentOrderUseCase implements UseCase<PaymentOrderDto, Promise<Res
       }
 
       if(!!order.isAllowPyamnet()===false){
-        return left(new PaymentOrderErrors.UnableToPaid())
+        return left(new PaymentOrderErrors.OrderStatusNotPaid())
       }
 
       if(order.memberId!==memberId){
@@ -45,7 +45,7 @@ export class PaymentOrderUseCase implements UseCase<PaymentOrderDto, Promise<Res
      
       const fundAccount=await  this.fundAccountRepo.getById(memberId)
       if(fundAccount.totalAmounnt<order.price){
-        return left(new PaymentOrderErrors.OrderStatusNotPaid())
+        return left(new PaymentOrderErrors.UnableToPaid())
       }
 
       order.payment()
