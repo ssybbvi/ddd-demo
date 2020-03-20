@@ -13,7 +13,7 @@ import { CreateOrderErrors } from './createOrderErrors'
 
 type Response = Either<CreateOrderErrors.CommodityNotFound
 | CreateOrderErrors.OrderItemNotNull
-| AppError.UnexpectedError | Result<any>, Result<void>>
+| AppError.UnexpectedError | Result<any>, Result<Order>>
 
 export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo
@@ -95,7 +95,8 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
 
       await this.orderRepo.save(orderOrErrors.getValue())
 
-      return right(Result.ok<void>())
+
+      return right(Result.ok<Order>(orderOrErrors.getValue()))
     } catch (err) {
       return left(new AppError.UnexpectedError(err))
     }

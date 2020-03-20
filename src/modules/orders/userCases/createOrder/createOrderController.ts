@@ -4,6 +4,9 @@ import { CreateOrderUseCase } from './createOrderUseCase'
 import { CreateOrderDto } from './createOrderDto'
 import { CreateOrderErrors } from './createOrderErrors'
 import { DecodedExpressRequest } from '../../../users/infra/http/models/decodedRequest'
+import { Order } from '../../domain/order'
+import { OrderMap } from '../../mappers/orderMap'
+import { OrderDto } from '../../dtos/orderDto'
 
 
 
@@ -35,7 +38,10 @@ export class CreateOrderController extends BaseController {
             return this.fail(res, error.errorValue() + '')
         }
       }
-        return this.ok<void>(res)
+
+      const order=  useCaseValue.getValue() as Order
+      const orderDto= OrderMap.toDTO(order)
+      return this.ok<OrderDto>(res,orderDto)
     } catch (err) {
       return this.fail(res, err)
     }
