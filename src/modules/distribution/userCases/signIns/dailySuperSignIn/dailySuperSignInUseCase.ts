@@ -6,6 +6,7 @@ import { DailySuperSignInDto } from './dailySuperSignInDto'
 import { DailySuperSignInErrors } from './dailySuperSignInErrors'
 import { DailySuperSignInDtoResult } from './dailySuperSignInDtoResult'
 import { SignInService } from '../../../domain/services/signInService'
+import { RandomUtils } from '../../../../../shared/utils/RandomUtils'
 
 type Response = Either<
   DailySuperSignInErrors.NonCompliantErrors | AppError.UnexpectedError | Result<any>,
@@ -37,9 +38,9 @@ export class DailySuperSignInUseCase implements UseCase<DailySuperSignInDto, Pro
 
       let signIn = await this.signInRepo.getToday(memberId)
 
-      let reward = this.getRewared()
+      let reward =RandomUtils.interval(4,10)*10
       signIn.updateSuperReward(reward)
-      this.signInRepo.save(signIn)
+      await this.signInRepo.save(signIn)
 
       return right(
         Result.ok<DailySuperSignInDtoResult>({ reward })
@@ -47,16 +48,5 @@ export class DailySuperSignInUseCase implements UseCase<DailySuperSignInDto, Pro
     } catch (err) {
       return left(new AppError.UnexpectedError(err.toString()))
     }
-  }
-
-  private getRewared(): number {
-    let maxNum = 20
-    let minNum = 50
-
-    var result = Math.random() * (maxNum + 1 - minNum) + minNum
-    while (result > maxNum) {
-      result = Math.random() * (maxNum + 1 - minNum) + minNum
-    }
-    return result
   }
 }

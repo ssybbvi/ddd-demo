@@ -52,6 +52,14 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     return this.props.restrictedPurchaseQuantity
   }
 
+  public sale():void{
+    this.props.sales++
+  }
+
+  public withdraw():void{
+    this.props.sales--
+  }
+
   public static create(props: ICommodityProps, id?: UniqueEntityID): Result<Commodity> {
     const guardArgs: IGuardArgument[] = [
       { argument: props.name, argumentName: '商品名称' },

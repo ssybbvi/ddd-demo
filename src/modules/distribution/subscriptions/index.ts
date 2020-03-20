@@ -9,3 +9,4 @@ import { createMemberDistributionRelationUseCase } from '../userCases/members/cr
 new AfterUserCreated(createMember)
 new AfterMemberCreated(createMemberDistributionRelationUseCase)
 new AfterLoginCreated(dailySignInUseCase)
+

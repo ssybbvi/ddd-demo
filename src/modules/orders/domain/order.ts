@@ -144,6 +144,15 @@ export class Order extends AggregateRoot<OrderProps>{
         this.addDomainEvent(new OrderReceived(this))
     }
 
+    public isAllowPyamnet():boolean{
+        const lastPaymentTime=Date.now()-1000* 60 *15
+        return this.props.createAt>lastPaymentTime
+    }
+
+    public isUnPaid():boolean{
+        return this.props.status==="unpaid"
+    }
+
     private calculationOrderItemPriceTotal():void{
       this.props.price=this.orderItems.reduce((acc,item)=>acc+=item.price,0)
     }
@@ -164,7 +173,7 @@ export class Order extends AggregateRoot<OrderProps>{
         random.padStart(randomLength,'0')
         this.props.code=code+random
     }
-    
+
     public static create(props: OrderProps, id?: UniqueEntityID): Result<Order> {
         const isNew= !!id === false
         const order = new Order(

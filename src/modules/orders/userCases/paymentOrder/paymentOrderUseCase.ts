@@ -1,9 +1,7 @@
 import { Either, Result, right, left } from '../../../../shared/core/Result'
 import { AppError } from '../../../../shared/core/AppError'
 import { UseCase } from '../../../../shared/core/UseCase'
-import { Order } from '../../domain/order'
 import { IOrderRepo } from '../../repos/orderRepo'
-import { OrderStatus } from '../../domain/orderStatus'
 import { PaymentOrderDto } from './paymentOrderDto'
 import { PaymentOrderErrors } from './paymentOrderErrors'
 import { IFundAccountRepo } from '../../../funds/repos/iFundAccountRepo'
@@ -27,23 +25,21 @@ export class PaymentOrderUseCase implements UseCase<PaymentOrderDto, Promise<Res
   public async execute(request: PaymentOrderDto): Promise<Response> {
     try {
       const { memberId,orderId  } = request
-
       const order=await this.orderRepo.getById(orderId)
 
       if(!!order===false){
         return left(new PaymentOrderErrors.OrderNotFound())
       }
 
-      let lastPaymentTime=Date.now()-1000* 60 *15
-      if(order.createAt<lastPaymentTime){
-        return left(new PaymentOrderErrors.OrderNotFound())
+      if(!!order.isAllowPyamnet()===false){
+        return left(new PaymentOrderErrors.UnableToPaid())
       }
 
       if(order.memberId!==memberId){
         return left(new PaymentOrderErrors.DoesNotBelongToYou())
       }
 
-      if(order.status!=="unpaid"){
+      if(!!order.isUnPaid()===false){
           return left(new PaymentOrderErrors.OrderStatusNotPaid())
       }
      

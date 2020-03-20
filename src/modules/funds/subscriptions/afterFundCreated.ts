@@ -28,7 +28,7 @@ export class AfterFundCreated implements IHandle<FundCreated> {
 
     try {
       await this.updateMemberTotalAmount(fund.incomeMemberId)
-      //await this.updateMemberTotalAmount(fund.paymentMemberId.id.toString())
+      await this.updateMemberTotalAmount(fund.paymentMemberId)
       console.log(`[AfterFundCreated]: Successfully executed AfterFundCreated use case AfterFundCreated`)
     } catch (err) {
       console.log(`[AfterFundCreated]: Failed to execute AfterFundCreated use case AfterFundCreated.`)
