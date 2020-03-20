@@ -57,14 +57,24 @@ export class GetDistributionMemberUseCase implements UseCase<GetDistributionMemb
 
     let termDtoList: TermDTO[] = []
     for (let item of distributionList) {
-      let user = await this.userRepo.getById(item.paymentMemberId)
-      termDtoList.push({
-        memberId: item.paymentMemberId,
-        nickName: user.platform.wx ? user.platform.wx.value.nickName : '',
-        avatarUrl: user.platform.wx ? user.platform.wx.value.avatarUrl : '',
-        gender: user.platform.wx ? user.platform.wx.value.gender : 1,
-        integral: item.totalAmount
-      })
+      if(item.paymentMemberId=="0"){
+        termDtoList.push({
+          memberId: item.paymentMemberId,
+          nickName:  '',
+          avatarUrl:  '',
+          gender: 1,
+          integral: item.totalAmount
+        })
+      }else{
+        let user = await this.userRepo.getById(item.paymentMemberId)
+        termDtoList.push({
+          memberId: item.paymentMemberId,
+          nickName: user.platform.wx ? user.platform.wx.value.nickName : '',
+          avatarUrl: user.platform.wx ? user.platform.wx.value.avatarUrl : '',
+          gender: user.platform.wx ? user.platform.wx.value.gender : 1,
+          integral: item.totalAmount
+        })
+      }
     }
 
     // let termDtoList: TermDTO[] = distributionList.map(item => {

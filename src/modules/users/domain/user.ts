@@ -23,7 +23,7 @@ export interface PlatformProps {
 }
 
 export interface UserProps {
-  from: UserFrom
+  from?: UserFrom
   accessToken?: JWTToken
   refreshToken?: RefreshToken
   isDeleted?: boolean

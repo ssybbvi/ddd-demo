@@ -6,7 +6,6 @@ import { IUserDbModels } from '../../dbModels/iUserDbModels'
 import { Global } from '../../../../shared/infra/database/mongodb'
 import { UserMap } from '../../mappers/userMap'
 import { UserName } from '../../domain/userName'
-import { dispatchEventsCallback } from '../../../../shared/infra/database/mongodb/hooks'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 
 export class MongoUserRepo implements IUserRepo {

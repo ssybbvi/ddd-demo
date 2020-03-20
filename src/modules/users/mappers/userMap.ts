@@ -34,7 +34,7 @@ export class UserMap implements IMapper<User> {
   public static toDomain(raw: IUserDbModels): User {
     const userOrError = User.create(
       {
-        from: raw.from as UserFrom,
+        //from: raw.from as UserFrom,
         platform: {
           wx: this.wxUserToDomain(raw.platform.wx)
         }
