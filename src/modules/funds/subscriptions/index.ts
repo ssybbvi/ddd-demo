@@ -1,4 +1,3 @@
-import { distributionFundUseCase } from '../userCases/funds/distributionFund'
 
 import { AfterUserCreated } from './afterUserCreated'
 import { AfterSignInCreated } from './afterSignInCreated'

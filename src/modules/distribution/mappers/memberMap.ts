@@ -2,9 +2,7 @@ import { IMapper } from '../../../shared/infra/Mapper'
 import { Member } from '../domain/member'
 import { MemberDTO } from '../dtos/memberDTO'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
-import { UserId } from '../../users/domain/userId'
 import { IMemberDbModel } from '../dbModels/iMemberDbModel'
-import { MemberId } from '../domain/memberId'
 import { MemberDistributionRelation } from '../domain/memberDistributionRelation'
 
 export class MemberMap implements IMapper<Member> {

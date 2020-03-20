@@ -18,7 +18,6 @@ export class GetCommodityByIdController extends BaseController {
   }
 
   async executeImpl(req: any, res: express.Response): Promise<any> {
-    console.log("req.params.commodityId",req.params.commodityId)
     const dto: GetCommodityByIdDto ={
         commodityId:req.params.commodityId
     }

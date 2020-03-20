@@ -21,10 +21,15 @@ export class AfterUserCreated implements IHandle<UserCreated> {
     const { user, extra } = event
 
     try {
-      await this.createMember.execute({
+      const result=  await this.createMember.execute({
         userId: user.userId.id.toString(),
         inviteToken: extra ? extra.inviteToken : null
       })
+
+      if(result.isLeft()){
+        console.error(result.value)
+        return 
+      }
 
       console.log(`[AfterUserCreated]: Successfully executed CreateMember use case AfterUserCreated`)
     } catch (err) {

@@ -3,10 +3,9 @@ import { IMemberRepo } from '../../../repos/memberRepo'
 import { Either, Result, left, right } from '../../../../../shared/core/Result'
 import { AppError } from '../../../../../shared/core/AppError'
 import { GetMemberDto } from './getMemberDto'
-import { MemberDTO } from '../../../dtos/memberDTO'
-import { MemberMap } from '../../../mappers/memberMap'
+import { Member } from '../../../domain/member'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<MemberDTO>>
+type Response = Either<AppError.UnexpectedError | Result<any>, Result<Member>>
 
 export class GetMemberUseCase implements UseCase<GetMemberDto, Promise<Response>> {
   private memberRepo: IMemberRepo
@@ -19,8 +18,7 @@ export class GetMemberUseCase implements UseCase<GetMemberDto, Promise<Response>
     try {
       const { memberId } = request
       let member = await this.memberRepo.getById(memberId)
-      let memberDto = MemberMap.toDTO(member)
-      return right(Result.ok<MemberDTO>(memberDto))
+      return right(Result.ok<Member>(member))
     } catch (err) {
       return left(new AppError.UnexpectedError(err))
     }

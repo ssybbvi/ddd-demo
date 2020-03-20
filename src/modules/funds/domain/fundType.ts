@@ -1,1 +1,1 @@
-export type FundType = 'signIn' | 'signInSuperReward' | 'primaryDistribution' | 'secondaryDistribution'
+export type FundType = 'signIn' | 'signInSuperReward' | 'primaryDistribution' | 'secondaryDistribution' |'paymentOrder'

@@ -14,6 +14,18 @@ export class MemberDistributionRelation extends ValueObject<IMemberDistributionR
     super(prop)
   }
 
+  get memberId():string{
+    return this.props.memberId
+  }
+
+  get fundType():FundType{
+    return this.props.fundType
+  }
+
+  get distributionRate():number{
+    return this.props.distributionRate
+  }
+
   get value(): IMemberDistributionRelationProps {
     return this.props
   }

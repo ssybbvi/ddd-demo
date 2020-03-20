@@ -10,11 +10,11 @@ import { FundId } from './fundId'
 
 export interface IFundProps {
   amount: FundAmount
-  status: FundStatus
-  incomeMemberId: string
-  paymentMemberId: string
+  status?: FundStatus
+  incomeMemberId?: string
+  paymentMemberId?: string
   createAt?: number
-  descrpiton: string
+  descrpiton?: string
   type: FundType
   relationId: string
 }
@@ -89,13 +89,9 @@ export class Fund extends AggregateRoot<IFundProps> {
 
   public static create(props: IFundProps, id?: UniqueEntityID): Result<Fund> {
     const guardArgs: IGuardArgument[] = [
-      { argument: props.status, argumentName: '资金状态' },
       { argument: props.amount, argumentName: '资金金额' },
-      { argument: props.paymentMemberId, argumentName: '支付用户' },
-      { argument: props.incomeMemberId, argumentName: '收入用户' },
       { argument: props.type, argumentName: '资金类型' },
       { argument: props.relationId, argumentName: '资金关联记录' },
-      { argument: props.descrpiton, argumentName: '资金描述' }
     ]
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)
@@ -106,7 +102,11 @@ export class Fund extends AggregateRoot<IFundProps> {
 
     const defaultValues: IFundProps = {
       ...props,
-      createAt: props.createAt ? props.createAt : Date.now()
+      createAt: props.createAt ? props.createAt : Date.now(),
+      status: props.status ? props.status : 'valid',
+      descrpiton: props.descrpiton ? props.descrpiton : "",
+      incomeMemberId: props.incomeMemberId ? props.incomeMemberId : "0",
+      paymentMemberId:props.paymentMemberId ? props.paymentMemberId : "0",
     }
 
     const fund = new Fund(defaultValues, id)

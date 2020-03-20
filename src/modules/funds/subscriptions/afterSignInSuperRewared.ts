@@ -2,26 +2,46 @@ import { IHandle } from '../../../shared/domain/events/IHandle'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
 import { FundService } from '../domain/services/fundService'
 import { SignInSuperRewared } from '../../distribution/domain/events/signInSuperRewared'
+import { FundAmount } from '../domain/fundAmount'
+import { Fund } from '../domain/fund'
 
 export class AfterSignInSuperRewared implements IHandle<SignInSuperRewared> {
-  private fundService: FundService
-
-  constructor(fundService: FundService) {
+  private fundService:FundService
+ 
+  constructor(
+    fundService:FundService
+    ) {
     this.setupSubscriptions()
-    this.fundService = fundService
+    this.fundService=fundService
   }
 
   setupSubscriptions(): void {
     // Register to the domain event
-    DomainEvents.register(this.onUserCreated.bind(this), SignInSuperRewared.name)
+    DomainEvents.register(this.onAfterSignInSuperRewared.bind(this), SignInSuperRewared.name)
   }
 
-  private async onUserCreated(event: SignInSuperRewared): Promise<void> {
+  private async onAfterSignInSuperRewared(event: SignInSuperRewared): Promise<void> {
     const { signIn } = event
+
     try {
-      let result = await this.fundService.signInRewared(signIn, 'signInSuperReward')
-      if (result.isLeft()) {
-        console.error(result.value)
+      const fundAmountOrError = FundAmount.create({
+        fundAmount: signIn.superReward
+      })
+      if (fundAmountOrError.isFailure) {
+        console.error(fundAmountOrError.error)
+        return 
+      }
+      const fundOrErrors= Fund.create({
+        incomeMemberId:signIn.memberId,
+        amount: fundAmountOrError.getValue(),
+        type: 'signInSuperReward',
+        relationId: signIn.id.toString()
+      })
+
+      const distributionResult=await  this.fundService.distribution(fundOrErrors.getValue())
+      if(distributionResult.isLeft()){
+        console.error(distributionResult.value)
+        return
       }
       console.log(`[AfterSignInSuperRewared]: Successfully executed CreateMember use case AfterSignInSuperRewared`)
     } catch (err) {
