@@ -60,8 +60,8 @@ export class GetDistributionMemberUseCase implements UseCase<GetDistributionMemb
       if(item.paymentMemberId=="0"){
         termDtoList.push({
           memberId: item.paymentMemberId,
-          nickName:  '',
-          avatarUrl:  '',
+          nickName: type==="primaryDistribution"?"赚赚":"乐乐",
+          avatarUrl:  type==="primaryDistribution"?"https://pic2.zhimg.com/v2-8b0006ebf42e8ee2df8ef1d538e74d64_xl.jpg":"https://profile.csdnimg.cn/2/6/3/3_woshidamimi0",
           gender: 1,
           integral: item.totalAmount
         })
@@ -77,15 +77,7 @@ export class GetDistributionMemberUseCase implements UseCase<GetDistributionMemb
       }
     }
 
-    // let termDtoList: TermDTO[] = distributionList.map(item => {
-    //   return {
-    //     memberId: item.paymentMemberId,
-    //     nickName: '',
-    //     avatarUrl: '',
-    //     gender: 1,
-    //     integral: item.totalAmount
-    //   }
-    // })
+ 
     return termDtoList
   }
 }
