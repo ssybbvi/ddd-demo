@@ -1,1 +1,93 @@
-{}
+{
+  // 编辑器和terminal外观设置
+  "editor.fontSize": 12,
+  "editor.letterSpacing": 0.2,
+  "editor.fontLigatures": false,
+  "terminal.integrated.fontSize": 12,
+  "editor.tabSize": 2,
+  "eslint.autoFixOnSave": true, // 每次保存的时候将代码按eslint格式进行修复
+  "tslint.autoFixOnSave": true, // 让prettier使用tslint的代码格式进行校验
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveTimeout": 500,
+  "prettier.semi": false, // 去掉代码结尾的分号
+  "prettier.singleQuote": true, // 使用带引号替代双引号
+  "javascript.format.insertSpaceBeforeFunctionParenthesis": true, // 让函数(名)和后面的括号之间加个空格
+  "vetur.format.defaultFormatter.js": "vscode-typescript", // 让vue中的js按编辑器自带的ts格式进行格式化
+  "vetur.format.defaultFormatterOptions": {
+    "prettyhtml": {
+      // 单行超过120个长度的时候开始换行显示各种参数和事件
+      "printWidth": 120
+    }
+  },
+  "eslint.validate": [
+    //开启对.vue文件中错误的检查
+    "javascript",
+    "javascriptreact",
+    {
+      "language": "html",
+      "autoFix": true
+    },
+    {
+      "language": "vue",
+      "autoFix": true
+    },
+    {
+      "language": "wxml",
+      "autoFix": true
+    }
+  ],
+  "gitlens.advanced.messages": {
+    "suppressShowKeyBindingsNotice": true
+  },
+  "git.autofetch": true, // 自动拉取代码
+  // 颜色主题设置
+  "workbench.iconTheme": "material-icon-theme",
+  // 自动加注释头设置
+  "fileheader.Author": "zhangzhenfei@sythealth.com",
+  "fileheader.LastModifiedBy": "zhangzhenfei",
+  "material-icon-theme.activeIconPack": "react_redux",
+  "material-icon-theme.folders.theme": "specific",
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false,
+  "editor.minimap.enabled": true,
+  "sync.gist": "349cdcce98ddea6ba914098513e36a03",
+  "files.associations": {
+    "*.cjson": "jsonc",
+    "*.wxss": "css",
+    "*.wxs": "javascript",
+    ".gitmodules": "gitconfig",
+    "*.vue": "vue"
+  },
+  "emmet.includeLanguages": {
+    "wxml": "html"
+  },
+  "minapp-vscode.disableAutoConfig": true,
+  "todo-tree.defaultHighlight": {
+    "foreground": "green",
+    "type": "none"
+  },
+  "todo-tree.customHighlight": {
+    "TODO": {},
+    "FIXME": {}
+  },
+  "liveServer.settings.donotShowInfoMsg": true,
+  "editor.cursorStyle": "underline",
+  "html.format.wrapAttributes": "force-aligned",
+  "editor.wordWrap": "on",
+  "breadcrumbs.enabled": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "javascript.implicitProjectConfig.checkJs": true,
+  "editor.tokenColorCustomizations": {},
+  "editor.fontFamily": "Monaco",
+  "gitlens.advanced.quickPick.closeOnFocusOut": false,
+  "gitlens.blame.ignoreWhitespace": true,
+  "gitlens.codeLens.authors.enabled": false,
+  "gitlens.codeLens.enabled": false,
+  "workbench.colorTheme": "Atom One Dark",
+  "prettier.printWidth": 120,
+  "files.autoSaveDelay": 200,
+  "window.zoomLevel": 0,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}
