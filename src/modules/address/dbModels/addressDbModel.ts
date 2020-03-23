@@ -4,5 +4,5 @@ export interface AddressDbModel{
     areCodes:string
     address:string
     isDefault:boolean
-    memberId:string
+    recommendedUserId:string
 }

@@ -24,16 +24,16 @@ export class AfterLoginCreated implements IHandle<UserLoggedIn> {
       await FlowUtils.delay(5000) //TODO
 
       let dailySignInUseCaseValue = await this.dailySignInUseCase.execute({
-        memberId: user.id.toString()
+        userId: user.id.toString()
       })
 
       if (dailySignInUseCaseValue.isLeft()) {
         console.error(dailySignInUseCaseValue.value)
       }
 
-      console.log(`[AfterLoginCreated]: Successfully executed CreateMember use case AfterLoginCreated`)
+      console.log(`[AfterLoginCreated]: Successfully executed CreateRecommendedUser use case AfterLoginCreated`)
     } catch (err) {
-      console.log(`[AfterLoginCreated]: Failed to execute CreateMember use case AfterLoginCreated.`)
+      console.log(`[AfterLoginCreated]: Failed to execute CreateRecommendedUser use case AfterLoginCreated.`)
     }
   }
 }

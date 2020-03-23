@@ -20,7 +20,7 @@ export class GetOrderByIdUseCase implements UseCase<GetOrderByIdDto, Promise<Res
 
   public async execute(request: GetOrderByIdDto): Promise<Response> {
     try {
-      const {  memberId,  orderId  } = request
+      const {  userId,  orderId  } = request
 
       const order=await this.orderRepo.getById(orderId)
 
@@ -28,7 +28,7 @@ export class GetOrderByIdUseCase implements UseCase<GetOrderByIdDto, Promise<Res
         return left(new GetOrderByIdErrors.OrderNotFound())
       }
 
-      if(order.memberId!==memberId){
+      if(order.userId!==userId){
         return left(new GetOrderByIdErrors.DoesNotBelongToYou())
       }
 

@@ -20,8 +20,8 @@ export class CreateFundUseCase implements UseCase<CreateFundDto, Promise<Respons
   public async execute(request: CreateFundDto): Promise<Response> {
     try {
       const {amount,
-        incomeMemberId,
-        paymentMemberId,
+        incomeUserId,
+        paymentUserId,
         status,
         descrption,
         type,
@@ -36,8 +36,8 @@ export class CreateFundUseCase implements UseCase<CreateFundDto, Promise<Respons
     let fundOrErrors = Fund.create({
         amount: fundAmountOrError.getValue(),
         status:status as FundStatus,
-        incomeMemberId: incomeMemberId,
-        paymentMemberId: paymentMemberId,
+        incomeUserId: incomeUserId,
+        paymentUserId: paymentUserId,
         descrpiton: descrption,
         type: type as FundType,
         relationId

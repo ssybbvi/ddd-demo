@@ -1,15 +1,15 @@
 import { FundType } from '../../funds/domain/fundType'
 
-export interface IMemberDbModel {
+export interface IRecommendedUserDbModel {
   _id: string
-  inviteMemberId?: string
+  inviteRecommendedUserId?: string
   createAt: number
   inviteToken?: string
   distributionRelationList: DistributionRelationDbModel[]
 }
 
 interface DistributionRelationDbModel {
-  memberId: string
+  recommendedUserId: string
   distributionRate: number
   fundType: FundType
 }

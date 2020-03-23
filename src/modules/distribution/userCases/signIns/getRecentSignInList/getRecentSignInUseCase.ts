@@ -20,8 +20,8 @@ export class GetRecentSignInUseCase implements UseCase<GetRecentSignInDto, Promi
 
   public async execute(request: GetRecentSignInDto): Promise<Response> {
     try {
-      let { memberId } = request
-      let list = await this.signInRepo.filter(memberId, this.day)
+      let { userId } = request
+      let list = await this.signInRepo.filter(userId, this.day)
       let continuousSignInDayCount = this.signInService.getContinuousSignInDayCount(list)
 
       return right(

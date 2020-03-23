@@ -24,7 +24,7 @@ export class AfterOrderPaymented implements IHandle<OrderPaymented> {
 
         const dto:CreateFundDto={
             amount: order.price,
-            paymentMemberId: order.memberId,
+            paymentUserId: order.userId,
             type: "paymentOrder",
             relationId: order.id.toString()
         }
@@ -33,9 +33,9 @@ export class AfterOrderPaymented implements IHandle<OrderPaymented> {
         if (result.isLeft()) {
           console.error(result.value)
         }
-        console.log(`[OrderPaymented]: Successfully executed CreateMember use case OrderPaymented`)
+        console.log(`[OrderPaymented]: Successfully executed CreateRecommendedUser use case OrderPaymented`)
       } catch (err) {
-        console.log(`[OrderPaymented]: Failed to execute CreateMember use case OrderPaymented.`)
+        console.log(`[OrderPaymented]: Failed to execute CreateRecommendedUser use case OrderPaymented.`)
       }
     }
   }

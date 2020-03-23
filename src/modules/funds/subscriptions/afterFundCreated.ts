@@ -22,17 +22,17 @@ export class AfterFundCreated implements IHandle<FundCreated> {
     const { fund } = event
 
     try {
-      await this.refreshFundAccount(fund.incomeMemberId)
-      await this.refreshFundAccount(fund.paymentMemberId)
+      await this.refreshFundAccount(fund.incomeUserId)
+      await this.refreshFundAccount(fund.paymentUserId)
       console.log(`[AfterFundCreated]: Successfully executed AfterFundCreated use case AfterFundCreated`)
     } catch (err) {
       console.log(`[AfterFundCreated]: Failed to execute AfterFundCreated use case AfterFundCreated.`)
     }
   }
 
-  private async refreshFundAccount(memberId: string) {
+  private async refreshFundAccount(recommendedUserId: string) {
     let refreshFundAccountUseCaseResult = await this.refreshFundAccountUseCase.execute({
-      memberId: memberId
+      recommendedUserId: recommendedUserId
     })
 
     if (refreshFundAccountUseCaseResult.isLeft()) {

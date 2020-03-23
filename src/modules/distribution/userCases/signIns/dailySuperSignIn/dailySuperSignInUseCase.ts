@@ -25,8 +25,8 @@ export class DailySuperSignInUseCase implements UseCase<DailySuperSignInDto, Pro
 
   public async execute(request: DailySuperSignInDto): Promise<Response> {
     try {
-      let { memberId } = request
-      let list = await this.signInRepo.filter(memberId, this.day)
+      let { userId } = request
+      let list = await this.signInRepo.filter(userId, this.day)
 
       let continuousSignInDayCount = this.signInService.getContinuousSignInDayCount(list)
       if (continuousSignInDayCount) {
@@ -36,7 +36,7 @@ export class DailySuperSignInUseCase implements UseCase<DailySuperSignInDto, Pro
         )
       }
 
-      let signIn = await this.signInRepo.getToday(memberId)
+      let signIn = await this.signInRepo.getToday(userId)
 
       let reward =RandomUtils.interval(4,10)*10
       signIn.updateSuperReward(reward)

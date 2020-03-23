@@ -1,6 +1,6 @@
 export interface OrderDbModel{
     _id:string
-    memberId:string
+    userId:string
     createAt:number
     status:string
     price:number

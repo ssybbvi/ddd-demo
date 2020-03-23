@@ -1,13 +1,11 @@
 import { Db, MongoClient, Collection } from 'mongodb'
 
 import { Global } from '../../../../shared/infra/database/mongodb'
-import { dispatchEventsCallback } from '../../../../shared/infra/database/mongodb/hooks'
 
 import { ISignInRepo } from '../signInRepo'
 import { ISignInDbModel } from '../../dbModels/iSignInDbModel'
 import { SignIn } from '../../domain/signIn'
 import { SignInMap } from '../../mappers/signInMap'
-import { MemberId } from '../../domain/memberId'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 
 export class MongoSignInRepo implements ISignInRepo {
@@ -22,9 +20,9 @@ export class MongoSignInRepo implements ISignInRepo {
     return SignInMap.toDomain(signIn)
   }
 
-  public async filter(memberId: string, limit: number): Promise<SignIn[]> {
+  public async filter(userId: string, limit: number): Promise<SignIn[]> {
     let list = await this.createCollection()
-      .find({ memberId })
+      .find({ userId })
       .limit(limit)
       .sort({
         createAt: -1
@@ -39,7 +37,7 @@ export class MongoSignInRepo implements ISignInRepo {
       { _id: raw._id },
       {
         $set: {
-          memberId: signIn.memberId,
+          userId: signIn.userId,
           createAt: signIn.createAt,
           reward: signIn.reward,
           superReward: signIn.superReward
@@ -50,9 +48,9 @@ export class MongoSignInRepo implements ISignInRepo {
     DomainEvents.dispatchEventsForAggregate(signIn)
   }
 
-  public async existToday(memberId: string): Promise<boolean> {
+  public async existToday(userId: string): Promise<boolean> {
     let signIn = await this.createCollection().findOne({
-      memberId: memberId,
+      userId: userId,
       createAt: {
         $gt: new Date().setHours(0, 0, 0, 0)
       }
@@ -61,9 +59,9 @@ export class MongoSignInRepo implements ISignInRepo {
     return !!signIn === true
   }
 
-  public async getToday(memberId: string): Promise<SignIn> {
+  public async getToday(userId: string): Promise<SignIn> {
     let signIn = await this.createCollection().findOne({
-      memberId: memberId,
+      userId: userId,
       createAt: {
         $gt: new Date().setHours(0, 0, 0, 0)
       }

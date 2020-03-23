@@ -17,13 +17,13 @@ export class CreateFundAccountUseCase implements UseCase<CreateFundAccountDto, P
 
   public async execute(request: CreateFundAccountDto): Promise<Response> {
     try {
-      const { memberId } = request
+      const { recommendedUserId } = request
 
       const fundAccountOrErrors= FundAccount.create(
         {
           totalAmounnt: 0
         },
-        new UniqueEntityID(memberId),
+        new UniqueEntityID(recommendedUserId),
         true
       )
       if(fundAccountOrErrors.isFailure){

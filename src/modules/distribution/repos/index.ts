@@ -1,7 +1,7 @@
-import { MemberRepo } from './implementations/mongoMemberRepo'
+import { RecommendedUserRepo } from './implementations/mongoRecommendedUserRepo'
 import { MongoSignInRepo } from './implementations/mongoSignInRepo'
 
 const signInRepo = new MongoSignInRepo()
-const memberRepo = new MemberRepo()
+const recommendedUserRepo = new RecommendedUserRepo()
 
-export { memberRepo, signInRepo }
+export { recommendedUserRepo, signInRepo }

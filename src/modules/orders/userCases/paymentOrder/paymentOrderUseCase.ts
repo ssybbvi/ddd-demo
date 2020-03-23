@@ -24,7 +24,7 @@ export class PaymentOrderUseCase implements UseCase<PaymentOrderDto, Promise<Res
 
   public async execute(request: PaymentOrderDto): Promise<Response> {
     try {
-      const { memberId,orderId  } = request
+      const { userId,orderId  } = request
       const order=await this.orderRepo.getById(orderId)
 
       if(!!order===false){
@@ -35,7 +35,7 @@ export class PaymentOrderUseCase implements UseCase<PaymentOrderDto, Promise<Res
         return left(new PaymentOrderErrors.OrderStatusNotPaid())
       }
 
-      if(order.memberId!==memberId){
+      if(order.userId!==userId){
         return left(new PaymentOrderErrors.DoesNotBelongToYou())
       }
 
@@ -43,7 +43,7 @@ export class PaymentOrderUseCase implements UseCase<PaymentOrderDto, Promise<Res
           return left(new PaymentOrderErrors.OrderStatusNotPaid())
       }
      
-      const fundAccount=await  this.fundAccountRepo.getById(memberId)
+      const fundAccount=await  this.fundAccountRepo.getById(userId)
       if(fundAccount.totalAmounnt<order.price){
         return left(new PaymentOrderErrors.UnableToPaid())
       }

@@ -5,11 +5,11 @@ export interface IFundRepo {
   getById(id: string): Promise<Fund>
   save(fund: Fund): Promise<void>
   filter(): Promise<Fund[]>
-  getListByMemberId(memberId: string): Promise<Fund[]>
-  getDistributionList(memberId: string, type: FundType, createAt: number): Promise<TodayByMemberDto[]>
+  getListByRecommendedUserId(recommendedUserId: string): Promise<Fund[]>
+  getDistributionList(recommendedUserId: string, type: FundType, createAt: number): Promise<TodayByRecommendedUserDto[]>
 }
 
-export interface TodayByMemberDto {
-  paymentMemberId: string
+export interface TodayByRecommendedUserDto {
+  paymentUserId: string
   totalAmount: number
 }

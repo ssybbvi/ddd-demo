@@ -1,3 +1,3 @@
 export interface DailySuperSignInDto {
-  memberId: string
+  userId: string
 }

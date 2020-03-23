@@ -20,9 +20,9 @@ export class GetFundListUseCase implements UseCase<GetFundListDto, Promise<Respo
 
   public async execute(request: GetFundListDto): Promise<Response> {
     try {
-      const { memberId } = request
+      const { recommendedUserId } = request
 
-      let fundList = await this.fundRepo.getListByMemberId(memberId)
+      let fundList = await this.fundRepo.getListByRecommendedUserId(recommendedUserId)
       return right(Result.ok<Fund[]>(fundList))
     } catch (err) {
       return left(new AppError.UnexpectedError(err.toString()))

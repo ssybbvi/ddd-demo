@@ -5,4 +5,4 @@ export interface FundDto {
   descrpiton: string
   type: string
 }
-//MemberDTO
+//RecommendedUserDTO

@@ -1,12 +1,12 @@
 import { dailySignInUseCase } from '../userCases/signIns/dailySignIn'
 import { AfterLoginCreated } from './afterLoginCreated'
-import { createMember } from '../userCases/members/createMember'
+import { createRecommendedUser } from '../userCases/recommendedUsers/createRecommendedUser'
 import { AfterUserCreated } from './afterUserCreated'
-import { AfterMemberCreated } from './afterMemberCreated'
-import { createMemberDistributionRelationUseCase } from '../userCases/members/createMemberDistributionRelation'
+import { AfterRecommendedUserCreated } from './afterRecommendedUserCreated'
+import { createRecommendedUserDistributionRelationUseCase } from '../userCases/recommendedUsers/createRecommendedUserDistributionRelation'
 
 // Subscriptions
-new AfterUserCreated(createMember)
-new AfterMemberCreated(createMemberDistributionRelationUseCase)
+new AfterUserCreated(createRecommendedUser)
+new AfterRecommendedUserCreated(createRecommendedUserDistributionRelationUseCase)
 new AfterLoginCreated(dailySignInUseCase)
 

@@ -19,10 +19,10 @@ export class GetOrderListUseCase implements UseCase<GetOrderListDto, Promise<Res
   public async execute(request: GetOrderListDto): Promise<Response> {
     try {
       const {
-        memberId,orderStatus
+        userId,orderStatus
       } = request
 
-      const orderList=await this.orderRepo.filter(orderStatus as (OrderStatus|''),memberId)
+      const orderList=await this.orderRepo.filter(orderStatus as (OrderStatus|''),userId)
 
       return right(Result.ok<Order[]>(orderList))
     } catch (err) {

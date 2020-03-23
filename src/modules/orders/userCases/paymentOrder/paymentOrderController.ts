@@ -17,7 +17,7 @@ export class PaymentOrderController extends BaseController {
     const { userId } = req.decoded;
     const dto: PaymentOrderDto ={
         orderId:req.body.orderId,
-        memberId:userId
+        userId:userId
     }
 
     try {

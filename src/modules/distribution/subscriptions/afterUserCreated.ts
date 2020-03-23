@@ -1,15 +1,15 @@
 import { User } from '../../users/domain/user'
 import { UserCreated } from '../../users/domain/events/userCreated'
 import { IHandle } from '../../../shared/domain/events/IHandle'
-import { CreateMember } from '../userCases/members/createMember/createMember'
+import { CreateRecommendedUser } from '../userCases/recommendedUsers/createRecommendedUser/createRecommendedUser'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
 
 export class AfterUserCreated implements IHandle<UserCreated> {
-  private createMember: CreateMember
+  private createRecommendedUser: CreateRecommendedUser
 
-  constructor(createMember: CreateMember) {
+  constructor(createRecommendedUser: CreateRecommendedUser) {
     this.setupSubscriptions()
-    this.createMember = createMember
+    this.createRecommendedUser = createRecommendedUser
   }
 
   setupSubscriptions(): void {
@@ -21,7 +21,7 @@ export class AfterUserCreated implements IHandle<UserCreated> {
     const { user, extra } = event
 
     try {
-      const result=  await this.createMember.execute({
+      const result=  await this.createRecommendedUser.execute({
         userId: user.userId.id.toString(),
         inviteToken: extra ? extra.inviteToken : null
       })
@@ -31,9 +31,9 @@ export class AfterUserCreated implements IHandle<UserCreated> {
         return 
       }
 
-      console.log(`[AfterUserCreated]: Successfully executed CreateMember use case AfterUserCreated`)
+      console.log(`[AfterUserCreated]: Successfully executed CreateRecommendedUser use case AfterUserCreated`)
     } catch (err) {
-      console.log(`[AfterUserCreated]: Failed to execute CreateMember use case AfterUserCreated.`)
+      console.log(`[AfterUserCreated]: Failed to execute CreateRecommendedUser use case AfterUserCreated.`)
     }
   }
 }

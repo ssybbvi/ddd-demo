@@ -27,7 +27,7 @@ export class AfterFundAccountCreated implements IHandle<FundAccountCreated> {
      
       const createFundUseCaseByPrimaryDistributionResult=await  this.createFundUseCase.execute({ 
         amount: 10,
-        incomeMemberId: fundAccount.id.toString(),
+        incomeUserId: fundAccount.id.toString(),
         type: "primaryDistribution",
         relationId: fundAccount.id.toString()
       })
@@ -38,7 +38,7 @@ export class AfterFundAccountCreated implements IHandle<FundAccountCreated> {
 
       const createFundSecondaryDistributionUseCaseResult=await  this.createFundUseCase.execute({ 
         amount: 1,
-        incomeMemberId: fundAccount.id.toString(),
+        incomeUserId: fundAccount.id.toString(),
         type: "secondaryDistribution",
         relationId: fundAccount.id.toString()
       })

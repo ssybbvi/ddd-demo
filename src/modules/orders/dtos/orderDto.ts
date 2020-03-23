@@ -2,7 +2,7 @@ import { OrderItemDto } from "./orderItemDto";
 
 export interface OrderDto{
     _id:string
-    memberId:string
+    userId:string
     createAt:number
     status:string
     price:number

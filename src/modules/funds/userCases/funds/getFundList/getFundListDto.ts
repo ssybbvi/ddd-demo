@@ -1,3 +1,3 @@
 export interface GetFundListDto {
-  memberId: string
+  recommendedUserId: string
 }

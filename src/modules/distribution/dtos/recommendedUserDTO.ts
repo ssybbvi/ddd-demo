@@ -1,13 +1,13 @@
-export interface MemberDTO {
+export interface RecommendedUserDTO {
   _id: string
-  inviteMemberId?: string
+  inviteRecommendedUserId?: string
   createAt: number
   inviteToken: string
   distributionRelationList: DistributionRelationDTO[]
 }
 
 interface DistributionRelationDTO {
-  memberId: string
+  recommendedUserId: string
   distributionRate: number
   fundType: string
 }

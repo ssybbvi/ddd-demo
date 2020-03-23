@@ -1,4 +1,4 @@
 import { signInRouter } from './signIn'
-import { memberRouter } from './member'
+import { recommendedUserRouter } from './recommendedUser'
 
-export { signInRouter, memberRouter }
+export { signInRouter, recommendedUserRouter }

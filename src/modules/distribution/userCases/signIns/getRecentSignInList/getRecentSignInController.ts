@@ -17,7 +17,7 @@ export class GetRecentSignInController extends BaseController {
     const { userId } = req.decoded
 
     const dto: GetRecentSignInDto = {
-      memberId: userId
+      userId: userId
     }
 
     try {

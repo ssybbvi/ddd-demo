@@ -1,3 +1,3 @@
 export interface CreateFundAccountDto {
-  memberId: string
+  recommendedUserId: string
 }

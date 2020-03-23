@@ -6,7 +6,7 @@ import { SignInCreated } from './events/signInCreated'
 import { SignInSuperRewared } from './events/signInSuperRewared'
 
 export interface SignInProps {
-  memberId: string
+  userId: string
   createAt?: number
   reward: number
   superReward: number
@@ -21,8 +21,8 @@ export class SignIn extends AggregateRoot<SignInProps> {
     return SignInId.create(this._id).getValue()
   }
 
-  get memberId(): string {
-    return this.props.memberId
+  get userId(): string {
+    return this.props.userId
   }
 
   get createAt(): number {

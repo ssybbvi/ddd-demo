@@ -22,15 +22,15 @@ export class RefreshFundAccountUseCase implements UseCase<UpdateFundAccountDto, 
 
   public async execute(request: UpdateFundAccountDto): Promise<Response> {
     try {
-      const { memberId } = request
+      const { recommendedUserId } = request
 
-      const totalAmount=await this.getMemberTotalAmount(memberId)
+      const totalAmount=await this.getRecommendedUserTotalAmount(recommendedUserId)
 
       const fundAccountOrErrors = FundAccount.create(
         {
           totalAmounnt: totalAmount
         },
-        new UniqueEntityID(memberId)
+        new UniqueEntityID(recommendedUserId)
       )
 
       if (fundAccountOrErrors.isFailure) {
@@ -45,15 +45,15 @@ export class RefreshFundAccountUseCase implements UseCase<UpdateFundAccountDto, 
     }
   }
 
-  private async getMemberTotalAmount(memberId:string){
-    let fundList = await this.fundRepo.getListByMemberId(memberId)
+  private async getRecommendedUserTotalAmount(recommendedUserId:string){
+    let fundList = await this.fundRepo.getListByRecommendedUserId(recommendedUserId)
     let totalAmount = fundList.reduce((acc, item) => {
-      if (item.incomeMemberId == memberId) {
+      if (item.incomeUserId == recommendedUserId) {
         return acc + item.amount.value
       }
 
       if (
-        item.paymentMemberId == memberId &&
+        item.paymentUserId == recommendedUserId &&
         item.type != 'primaryDistribution' &&
         item.type != 'secondaryDistribution'
       ) {

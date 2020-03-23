@@ -1,7 +1,7 @@
 import { UseCaseError } from '../../../../../shared/core/UseCaseError'
 import { Result } from '../../../../../shared/core/Result'
 
-export namespace CreateMemberErrors {
+export namespace CreateRecommendedUserErrors {
   export class UserDoesntExistError extends Result<UseCaseError> {
     constructor(baseUserId: string) {
       super(false, {
@@ -10,18 +10,18 @@ export namespace CreateMemberErrors {
     }
   }
 
-  export class MemberAlreadyExistsError extends Result<UseCaseError> {
+  export class RecommendedUserAlreadyExistsError extends Result<UseCaseError> {
     constructor(baseUserId: string) {
       super(false, {
-        message: `Member for ${baseUserId} already exists.`
+        message: `RecommendedUser for ${baseUserId} already exists.`
       } as UseCaseError)
     }
   }
 
-  export class InviteMemberNotExists extends Result<UseCaseError> {
-    constructor(memberId: string) {
+  export class InviteRecommendedUserNotExists extends Result<UseCaseError> {
+    constructor(recommendedUserId: string) {
       super(false, {
-        message: `Member for ${memberId} not exists.`
+        message: `RecommendedUser for ${recommendedUserId} not exists.`
       } as UseCaseError)
     }
   }

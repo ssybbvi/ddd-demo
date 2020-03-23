@@ -2,39 +2,39 @@ import { Result, Either, right, left } from '../../../../shared/core/Result'
 import { AppError } from '../../../../shared/core/AppError'
 import { Fund } from '../fund'
 import { FundAmount } from '../fundAmount'
-import { GetMemberUseCase } from '../../../distribution/userCases/members/getMember/getMemberUseCase'
-import { Member } from '../../../distribution/domain/member'
+import { GetRecommendedUserUseCase } from '../../../distribution/userCases/recommendedUsers/getRecommendedUser/getRecommendedUserUseCase'
+import { RecommendedUser } from '../../../distribution/domain/recommendedUser'
 import { CreateFundUseCase } from '../../userCases/funds/createFund/createFundUseCase'
 
 
-type MemberResponse=Either<AppError.UnexpectedError | Result<any>, Result<Member>>
+type RecommendedUserResponse=Either<AppError.UnexpectedError | Result<any>, Result<RecommendedUser>>
 type FundListResponse=Either<AppError.UnexpectedError | Result<any>, Result<Fund[]>>
 type DistributionResponse=Either<AppError.UnexpectedError | Result<any>, Result<void>>
 
 export class FundService {
 
-  private getMemberUseCase: GetMemberUseCase
+  private getRecommendedUserUseCase: GetRecommendedUserUseCase
   private createFundUseCase:CreateFundUseCase
    
   constructor(
-    getMemberUseCase: GetMemberUseCase,
+    getRecommendedUserUseCase: GetRecommendedUserUseCase,
     createFundUseCase:CreateFundUseCase
     ) {
-    this.getMemberUseCase = getMemberUseCase
+    this.getRecommendedUserUseCase = getRecommendedUserUseCase
     this.createFundUseCase = createFundUseCase
   }
 
   public async distribution( fund:Fund ):Promise<DistributionResponse>{
-    const getMemberUseCaseResult = await this.getMemberUseCase.execute({memberId:fund.incomeMemberId})
-    const  getMemberUseCaseResultValue=getMemberUseCaseResult.value
-    if(getMemberUseCaseResult.isLeft()){
-      return left(getMemberUseCaseResult)
+    const getRecommendedUserUseCaseResult = await this.getRecommendedUserUseCase.execute({recommendedUserId:fund.incomeUserId})
+    const  getRecommendedUserUseCaseResultValue=getRecommendedUserUseCaseResult.value
+    if(getRecommendedUserUseCaseResult.isLeft()){
+      return left(getRecommendedUserUseCaseResult)
     }
-    const member=getMemberUseCaseResultValue.getValue() as Member
+    const recommendedUser=getRecommendedUserUseCaseResultValue.getValue() as RecommendedUser
 
     
     let fundList:Fund[]=[fund]
-    for (let item of member.distributionRelationList) {
+    for (let item of recommendedUser.distributionRelationList) {
       const fundAmountOrError = FundAmount.create({
         fundAmount: Math.ceil(fund.amount.value * item.distributionRate)
       })
@@ -45,8 +45,8 @@ export class FundService {
 
       const fundOrErrors=Fund.create({
         amount: fundAmountOrError.getValue(),
-        incomeMemberId: item.memberId,
-        paymentMemberId: fund.incomeMemberId,
+        incomeUserId: item.recommendedUserId,
+        paymentUserId: fund.incomeUserId,
         type: item.fundType,
         relationId: fund.relationId
       })
@@ -61,8 +61,8 @@ export class FundService {
     for(const item of fundList){
       const createFundUseCaseResult=  await this.createFundUseCase.execute({
         amount: item.amount.value,
-        incomeMemberId: item.incomeMemberId,
-        paymentMemberId: item.paymentMemberId,
+        incomeUserId: item.incomeUserId,
+        paymentUserId: item.paymentUserId,
         status: item.status,
         descrption: item.descrption,
         type: item.type,

@@ -16,7 +16,7 @@ export class SignInMap implements IMapper<SignIn> {
   public static toDomain(raw: ISignInDbModel): SignIn {
     const signInOrError = SignIn.create(
       {
-        memberId: raw.memberId,
+        userId: raw.userId,
         createAt: raw.createAt,
         reward: raw.reward,
         superReward: raw.superReward
@@ -32,7 +32,7 @@ export class SignInMap implements IMapper<SignIn> {
   public static async toPersistence(signIn: SignIn): Promise<ISignInDbModel> {
     return {
       _id: signIn.signInId.id.toString(),
-      memberId: signIn.memberId,
+      userId: signIn.userId,
       createAt: signIn.createAt,
       reward: signIn.reward,
       superReward: signIn.superReward

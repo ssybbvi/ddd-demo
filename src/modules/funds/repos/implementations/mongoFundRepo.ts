@@ -1,4 +1,4 @@
-import { IFundRepo, TodayByMemberDto } from '../iFundRepo'
+import { IFundRepo, TodayByRecommendedUserDto } from '../iFundRepo'
 import { Fund } from '../../domain/fund'
 import { Db, MongoClient, Collection } from 'mongodb'
 import { FundMap } from '../../mappers/fundMap'
@@ -30,8 +30,8 @@ export class MongoFundRepo implements IFundRepo {
         $set: {
           amount: raw.amount,
           status: raw.status,
-          incomeMemberId: raw.incomeMemberId,
-          paymentMemberId: raw.paymentMemberId,
+          incomeUserId: raw.incomeUserId,
+          paymentUserId: raw.paymentUserId,
           createAt: raw.createAt,
           descrpiton: raw.descrpiton,
           type: raw.type,
@@ -51,15 +51,15 @@ export class MongoFundRepo implements IFundRepo {
     return list.map(item => FundMap.toDomain(item))
   }
 
-  async getListByMemberId(memberId: string): Promise<Fund[]> {
+  async getListByRecommendedUserId(recommendedUserId: string): Promise<Fund[]> {
     let list = await this.createCollection()
       .find({
         $or: [
           {
-            incomeMemberId: memberId
+            incomeUserId: recommendedUserId
           },
           {
-            paymentMemberId: memberId
+            paymentUserId: recommendedUserId
           }
         ]
       })
@@ -67,13 +67,13 @@ export class MongoFundRepo implements IFundRepo {
     return list.map(item => FundMap.toDomain(item))
   }
 
-  async getDistributionList(memberId: string, type: FundType, createAt: number): Promise<TodayByMemberDto[]> {
+  async getDistributionList(recommendedUserId: string, type: FundType, createAt: number): Promise<TodayByRecommendedUserDto[]> {
     let list = await Global.instance.mongoDb
       .collection('funds')
       .aggregate([
         {
           $match: {
-            incomeMemberId: memberId,
+            incomeUserId: recommendedUserId,
             type,
             createAt: {
               $gt: createAt
@@ -82,7 +82,7 @@ export class MongoFundRepo implements IFundRepo {
         },
         {
           $group: {
-            _id: '$paymentMemberId',
+            _id: '$paymentUserId',
             totalAmount: {
               $sum: '$amount'
             }
@@ -95,7 +95,7 @@ export class MongoFundRepo implements IFundRepo {
         },
         {
           $project: {
-            paymentMemberId: '$_id',
+            paymentUserId: '$_id',
             totalAmount: 1
           }
         }

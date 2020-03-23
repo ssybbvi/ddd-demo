@@ -2,7 +2,7 @@ import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { Result } from '../../../shared/core/Result'
 import { Entity } from '../../../shared/domain/Entity'
 
-export class MemberId extends Entity<any> {
+export class RecommendedUserId extends Entity<any> {
   get id(): UniqueEntityID {
     return this._id
   }
@@ -11,7 +11,7 @@ export class MemberId extends Entity<any> {
     super(null, id)
   }
 
-  public static create(id?: UniqueEntityID): Result<MemberId> {
-    return Result.ok<MemberId>(new MemberId(id))
+  public static create(id?: UniqueEntityID): Result<RecommendedUserId> {
+    return Result.ok<RecommendedUserId>(new RecommendedUserId(id))
   }
 }

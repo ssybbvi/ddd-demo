@@ -16,9 +16,9 @@ export class GetFundAccountUseCase implements UseCase<GetFundAccountDto, Promise
 
   public async execute(request: GetFundAccountDto): Promise<Response> {
     try {
-      const { memberId } = request
+      const { recommendedUserId } = request
 
-      let fundAccount = await this.fundAccountRepo.getById(memberId)
+      let fundAccount = await this.fundAccountRepo.getById(recommendedUserId)
 
       return right(Result.ok<FundAccount>(fundAccount))
     } catch (err) {

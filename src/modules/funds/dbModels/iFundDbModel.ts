@@ -1,8 +1,8 @@
 export interface IFundDbModel {
   _id: string
   amount: number
-  incomeMemberId: string
-  paymentMemberId: string
+  incomeUserId: string
+  paymentUserId: string
   status: string
   createAt: number
   descrpiton: string

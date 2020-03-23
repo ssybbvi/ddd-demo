@@ -19,7 +19,7 @@ export class GetOrderListController extends BaseController {
     const { userId } = req.decoded;
     const dto: GetOrderListDto ={
         orderStatus:req.query.orderStatus,
-        memberId:userId
+        userId:userId
     }
 
     try {

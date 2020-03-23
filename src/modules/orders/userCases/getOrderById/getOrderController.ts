@@ -20,7 +20,7 @@ export class GetOrderByIdController extends BaseController {
     const { userId } = req.decoded;
     const dto: GetOrderByIdDto ={
         orderId:req.params.orderId,
-        memberId:userId
+        userId:userId
     }
 
     console.log(dto)

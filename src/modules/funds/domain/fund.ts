@@ -11,8 +11,8 @@ import { FundId } from './fundId'
 export interface IFundProps {
   amount: FundAmount
   status?: FundStatus
-  incomeMemberId?: string
-  paymentMemberId?: string
+  incomeUserId?: string
+  paymentUserId?: string
   createAt?: number
   descrpiton?: string
   type: FundType
@@ -36,12 +36,12 @@ export class Fund extends AggregateRoot<IFundProps> {
     return this.props.amount
   }
 
-  get incomeMemberId(): string {
-    return this.props.incomeMemberId
+  get incomeUserId(): string {
+    return this.props.incomeUserId
   }
 
-  get paymentMemberId(): string {
-    return this.props.paymentMemberId
+  get paymentUserId(): string {
+    return this.props.paymentUserId
   }
 
   get createAt(): number {
@@ -105,8 +105,8 @@ export class Fund extends AggregateRoot<IFundProps> {
       createAt: props.createAt ? props.createAt : Date.now(),
       status: props.status ? props.status : 'valid',
       descrpiton: props.descrpiton ? props.descrpiton : "",
-      incomeMemberId: props.incomeMemberId ? props.incomeMemberId : "0",
-      paymentMemberId:props.paymentMemberId ? props.paymentMemberId : "0",
+      incomeUserId: props.incomeUserId ? props.incomeUserId : "0",
+      paymentUserId:props.paymentUserId ? props.paymentUserId : "0",
     }
 
     const fund = new Fund(defaultValues, id)

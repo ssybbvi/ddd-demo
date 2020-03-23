@@ -25,8 +25,8 @@ export class FundMap implements IMapper<Fund> {
       {
         amount: fundAmountOrError.getValue(),
         status: raw.status as FundStatus,
-        incomeMemberId: raw.incomeMemberId,
-        paymentMemberId: raw.paymentMemberId,
+        incomeUserId: raw.incomeUserId,
+        paymentUserId: raw.paymentUserId,
         createAt: raw.createAt,
         descrpiton: raw.descrpiton,
         type: raw.type as FundType,
@@ -43,8 +43,8 @@ export class FundMap implements IMapper<Fund> {
     return {
       _id: fund.id.toString(),
       amount: fund.amount.value,
-      incomeMemberId: fund.incomeMemberId,
-      paymentMemberId: fund.paymentMemberId,
+      incomeUserId: fund.incomeUserId,
+      paymentUserId: fund.paymentUserId,
       status: fund.status,
       createAt: fund.createAt,
       descrpiton: fund.descrption,

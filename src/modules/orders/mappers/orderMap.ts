@@ -16,7 +16,7 @@ export class OrderMap implements IMapper<Order> {
 
     return {
         _id:order.id.toString(),
-        memberId:order.memberId,
+        userId:order.userId,
         createAt:order.createAt,
         status:order.status,
         price:order.price,
@@ -79,7 +79,7 @@ export class OrderMap implements IMapper<Order> {
 
     const orderOrError = Order.create(
       {
-        memberId:raw.memberId,
+        userId:raw.userId,
         createAt:raw.createAt,
         status:raw.status as OrderStatus,
         price:raw.price,
@@ -127,7 +127,7 @@ export class OrderMap implements IMapper<Order> {
 
     return {
       _id:order.id.toString(),
-      memberId:order.memberId,
+      userId:order.userId,
       createAt:order.createAt,
       status:order.status,
       price:order.price,

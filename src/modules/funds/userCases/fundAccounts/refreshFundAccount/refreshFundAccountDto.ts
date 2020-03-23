@@ -1,3 +1,3 @@
 export interface UpdateFundAccountDto {
-  memberId: string
+  recommendedUserId: string
 }

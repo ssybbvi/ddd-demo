@@ -21,15 +21,15 @@ export class DailySignInUseCase implements UseCase<DailySignInDto, Promise<Respo
 
   public async execute(request: DailySignInDto): Promise<Response> {
     try {
-      let { memberId } = request
-      let exist = await this.signInRepo.existToday(memberId)
+      let { userId } = request
+      let exist = await this.signInRepo.existToday(userId)
       if (exist) {
         return left(new DailySignInErrors.TodayAlreadySignInError())
       }
 
       let reward = 100
       const signInOrError = SignIn.create({
-        memberId: request.memberId,
+        userId: request.userId,
         reward: reward,
         superReward: 0
       })

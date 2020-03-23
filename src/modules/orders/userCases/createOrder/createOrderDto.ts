@@ -1,5 +1,5 @@
 export interface CreateOrderDto{
-    memberId:string
+    userId:string
     remark:string
 
     userName:string

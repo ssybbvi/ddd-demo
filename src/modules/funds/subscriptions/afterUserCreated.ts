@@ -21,7 +21,7 @@ export class AfterUserCreated implements IHandle<UserCreated> {
 
     try {
       let createFundAccountUseCaseResult = await this.createFundAccountUseCase.execute({
-        memberId: user.userId.id.toString(),
+        recommendedUserId: user.userId.id.toString(),
       })
       if (createFundAccountUseCaseResult.isLeft()) {
         console.error(createFundAccountUseCaseResult.value.getValue())

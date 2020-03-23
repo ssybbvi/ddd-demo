@@ -1,4 +1,4 @@
 export interface GetOrderListDto{
-    memberId:string
+    userId:string
     orderStatus:string
 }

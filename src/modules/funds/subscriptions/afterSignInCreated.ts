@@ -33,7 +33,7 @@ export class AfterSignInCreated implements IHandle<SignInCreated> {
         return 
       }
       const fundOrErrors= Fund.create({
-        incomeMemberId:signIn.memberId,
+        incomeUserId:signIn.userId,
         amount: fundAmountOrError.getValue(),
         type: 'signIn',
         relationId: signIn.id.toString()
@@ -45,9 +45,9 @@ export class AfterSignInCreated implements IHandle<SignInCreated> {
         return
       }
 
-      console.log(`[AfterSignInCreated]: Successfully executed CreateMember use case AfterSignInCreated`)
+      console.log(`[AfterSignInCreated]: Successfully executed CreateRecommendedUser use case AfterSignInCreated`)
     } catch (err) {
-      console.log(`[AfterSignInCreated]: Failed to execute CreateMember use case AfterSignInCreated.`)
+      console.log(`[AfterSignInCreated]: Failed to execute CreateRecommendedUser use case AfterSignInCreated.`)
     }
   }
 

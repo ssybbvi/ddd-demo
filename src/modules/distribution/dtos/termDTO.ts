@@ -1,5 +1,5 @@
 export interface TermDTO {
-  memberId: string
+  recommendedUserId: string
   nickName: string
   avatarUrl: string
   gender: number

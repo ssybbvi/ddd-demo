@@ -26,7 +26,7 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
   public async execute(request: CreateOrderDto): Promise<Response> {
     try {
       const {
-        memberId,
+        userId,
         remark,
 
         userName,
@@ -81,7 +81,7 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
 
 
       const orderOrErrors = Order.create({
-        memberId:memberId,
+        userId:userId,
         status:'unpaid',
         remark:remark,
         orderAddress:orderAddressOrErrors.getValue(),

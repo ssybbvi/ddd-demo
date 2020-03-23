@@ -32,7 +32,7 @@ export class AfterSignInSuperRewared implements IHandle<SignInSuperRewared> {
         return 
       }
       const fundOrErrors= Fund.create({
-        incomeMemberId:signIn.memberId,
+        incomeUserId:signIn.userId,
         amount: fundAmountOrError.getValue(),
         type: 'signInSuperReward',
         relationId: signIn.id.toString()
@@ -43,9 +43,9 @@ export class AfterSignInSuperRewared implements IHandle<SignInSuperRewared> {
         console.error(distributionResult.value)
         return
       }
-      console.log(`[AfterSignInSuperRewared]: Successfully executed CreateMember use case AfterSignInSuperRewared`)
+      console.log(`[AfterSignInSuperRewared]: Successfully executed CreateRecommendedUser use case AfterSignInSuperRewared`)
     } catch (err) {
-      console.log(`[AfterSignInSuperRewared]: Failed to execute CreateMember use case AfterSignInSuperRewared.`)
+      console.log(`[AfterSignInSuperRewared]: Failed to execute CreateRecommendedUser use case AfterSignInSuperRewared.`)
     }
   }
 }

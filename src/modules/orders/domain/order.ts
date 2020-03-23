@@ -21,7 +21,7 @@ export type CancelOrderResult = Either<
 
 
 export interface OrderProps {
-    memberId:string
+    userId:string
     createAt?:number
     status:OrderStatus
     price?:number
@@ -51,8 +51,8 @@ export class Order extends AggregateRoot<OrderProps>{
         super(props, id)
     }
 
-    get memberId():string{
-        return this.props.memberId
+    get userId():string{
+        return this.props.userId
     }
 
     get createAt():number{

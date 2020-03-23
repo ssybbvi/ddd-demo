@@ -19,7 +19,7 @@ export class GetFundAccountController extends BaseController {
     const { userId } = req.decoded
 
     const dto: GetFundAccountDto = {
-      memberId: userId
+      recommendedUserId: userId
     }
 
     try {

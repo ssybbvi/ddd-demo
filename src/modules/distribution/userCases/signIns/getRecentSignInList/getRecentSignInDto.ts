@@ -1,3 +1,3 @@
 export interface GetRecentSignInDto {
-  memberId: string
+  userId: string
 }

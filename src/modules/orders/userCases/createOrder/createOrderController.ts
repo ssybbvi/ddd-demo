@@ -19,7 +19,7 @@ export class CreateOrderController extends BaseController {
   async executeImpl(req: DecodedExpressRequest, res: express.Response): Promise<any> {
     const { userId } = req.decoded;
     const dto: CreateOrderDto = req.body as CreateOrderDto
-    dto.memberId=userId
+    dto.userId=userId
 
     try {
       const result = await this.useCase.execute(dto)

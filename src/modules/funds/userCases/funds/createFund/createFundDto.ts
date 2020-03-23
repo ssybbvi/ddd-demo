@@ -1,7 +1,7 @@
 export interface CreateFundDto{
     amount: number
-    incomeMemberId?: string
-    paymentMemberId?: string
+    incomeUserId?: string
+    paymentUserId?: string
     status?: string
     descrption?: string
     type: string
