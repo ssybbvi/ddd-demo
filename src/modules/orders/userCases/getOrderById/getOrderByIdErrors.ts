@@ -10,7 +10,7 @@ export namespace GetOrderByIdErrors {
     }
   }
 
-   
+
   export class DoesNotBelongToYou extends Result<UseCaseError> {
     constructor() {
       super(false, {

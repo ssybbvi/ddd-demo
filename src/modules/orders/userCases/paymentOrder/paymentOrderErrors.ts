@@ -17,7 +17,7 @@ export namespace PaymentOrderErrors {
       } as UseCaseError)
     }
   }
- 
+
   export class UnableToPaid extends Result<UseCaseError> {
     constructor() {
       super(false, {

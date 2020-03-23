@@ -15,9 +15,9 @@ export class PaymentOrderController extends BaseController {
 
   async executeImpl(req: DecodedExpressRequest, res: express.Response): Promise<any> {
     const { userId } = req.decoded;
-    const dto: PaymentOrderDto ={
-        orderId:req.body.orderId,
-        userId:userId
+    const dto: PaymentOrderDto = {
+      orderId: req.body.orderId,
+      userId: userId
     }
 
     try {
@@ -27,19 +27,19 @@ export class PaymentOrderController extends BaseController {
         const error = useCaseValue
 
         switch (error.constructor) {
-            case PaymentOrderErrors.DoesNotBelongToYou:
-                return this.notFound(res, error.errorValue().message)
-            case PaymentOrderErrors.OrderNotFound:
-                return this.notFound(res, error.errorValue().message)
-            case PaymentOrderErrors.OrderStatusNotPaid:
-                return this.notFound(res, error.errorValue().message)
-            case PaymentOrderErrors.UnableToPaid:
-                return this.notFound(res, error.errorValue().message)
-            default:
-                return this.fail(res, error.errorValue() + '')
+          case PaymentOrderErrors.DoesNotBelongToYou:
+            return this.notFound(res, error.errorValue().message)
+          case PaymentOrderErrors.OrderNotFound:
+            return this.notFound(res, error.errorValue().message)
+          case PaymentOrderErrors.OrderStatusNotPaid:
+            return this.notFound(res, error.errorValue().message)
+          case PaymentOrderErrors.UnableToPaid:
+            return this.notFound(res, error.errorValue().message)
+          default:
+            return this.fail(res, error.errorValue() + '')
         }
       }
-        return this.ok<void>(res)
+      return this.ok<void>(res)
     } catch (err) {
       return this.fail(res, err)
     }

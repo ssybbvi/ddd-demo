@@ -1,4 +1,4 @@
-export interface GetOrderListDto{
-    userId:string
-    orderStatus:string
+export interface GetOrderListDto {
+    userId: string
+    orderStatus: string
 }

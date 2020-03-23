@@ -26,7 +26,7 @@ export class CancelOrderController extends BaseController {
             return this.fail(res, error.errorValue() + '')
         }
       }
-        return this.ok<void>(res)
+      return this.ok<void>(res)
     } catch (err) {
       return this.fail(res, err)
     }

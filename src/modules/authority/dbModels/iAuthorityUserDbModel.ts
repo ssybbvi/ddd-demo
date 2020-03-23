@@ -1,5 +1,5 @@
 export interface IAuthorityUserDbModel {
   _id: string
-   name:string
+  name: string
   roleIds: string[]
 }

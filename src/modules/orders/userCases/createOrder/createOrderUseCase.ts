@@ -6,21 +6,21 @@ import { CreateOrderDto } from './createOrderDto'
 import { OrderAddress } from '../../domain/orderAddress'
 import { IOrderRepo } from '../../repos/orderRepo'
 import { ICommodityRepo } from '../../../commoditys/repos/iCommodityRepo'
- 
+
 import { OrderItem } from '../../domain/orderItem'
 import { CreateOrderErrors } from './createOrderErrors'
 
 type Response = Either<CreateOrderErrors.CommodityNotFound
-| CreateOrderErrors.OrderItemNotNull
-| AppError.UnexpectedError | Result<any>, Result<Order>>
+  | CreateOrderErrors.OrderItemNotNull
+  | AppError.UnexpectedError | Result<any>, Result<Order>>
 
 export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo
-  private commodityRepo:ICommodityRepo
+  private commodityRepo: ICommodityRepo
 
-  constructor(orderRepo: IOrderRepo,commodityRepo:ICommodityRepo) {
+  constructor(orderRepo: IOrderRepo, commodityRepo: ICommodityRepo) {
     this.orderRepo = orderRepo
-    this.commodityRepo=commodityRepo
+    this.commodityRepo = commodityRepo
   }
 
   public async execute(request: CreateOrderDto): Promise<Response> {
@@ -30,62 +30,62 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
         remark,
 
         userName,
-        provinceName ,
-        cityName ,
-        countyName ,
-        detailAddressInfo ,
-        nationalCode ,
-        telNumber ,
-    
+        provinceName,
+        cityName,
+        countyName,
+        detailAddressInfo,
+        nationalCode,
+        telNumber,
+
         items
       } = request
 
-      const orderAddressOrErrors=  OrderAddress.create({
-        userName:userName,
-        provinceName : provinceName,
-        cityName : cityName,
-        countyName : countyName,
-        detailAddressInfo :detailAddressInfo,
-        nationalCode : nationalCode,
-        telNumber :telNumber,
+      const orderAddressOrErrors = OrderAddress.create({
+        userName: userName,
+        provinceName: provinceName,
+        cityName: cityName,
+        countyName: countyName,
+        detailAddressInfo: detailAddressInfo,
+        nationalCode: nationalCode,
+        telNumber: telNumber,
       })
-  
-      if(orderAddressOrErrors.isFailure){
-          return left(orderAddressOrErrors)
+
+      if (orderAddressOrErrors.isFailure) {
+        return left(orderAddressOrErrors)
       }
 
-      if(!!items===false||items.length===0){
-        return left(new  CreateOrderErrors.OrderItemNotNull())
+      if (!!items === false || items.length === 0) {
+        return left(new CreateOrderErrors.OrderItemNotNull())
       }
 
-      let orderItemList:OrderItem[]=[]
-      for(let item of items){
-          
-        let commodity=await this.commodityRepo.getById(item.commodityId)
-        if(!!commodity===false){
-            return left(new CreateOrderErrors.CommodityNotFound(item.commodityId))
+      let orderItemList: OrderItem[] = []
+      for (let item of items) {
+
+        let commodity = await this.commodityRepo.getById(item.commodityId)
+        if (!!commodity === false) {
+          return left(new CreateOrderErrors.CommodityNotFound(item.commodityId))
         }
 
-        let orderItemOrErrors= OrderItem.create({
-            name:commodity.name.value,
-            price:commodity.price.value,
-            image:commodity.images?commodity.images[0]:"",
-            commodityId:item.commodityId
+        let orderItemOrErrors = OrderItem.create({
+          name: commodity.name.value,
+          price: commodity.price.value,
+          image: commodity.images ? commodity.images[0] : "",
+          commodityId: item.commodityId
         })
 
-        if(orderItemOrErrors.isFailure){
-            return left (orderItemOrErrors)
+        if (orderItemOrErrors.isFailure) {
+          return left(orderItemOrErrors)
         }
         orderItemList.push(orderItemOrErrors.getValue())
       }
 
 
       const orderOrErrors = Order.create({
-        userId:userId,
-        status:'unpaid',
-        remark:remark,
-        orderAddress:orderAddressOrErrors.getValue(),
-        items:orderItemList,
+        userId: userId,
+        status: 'unpaid',
+        remark: remark,
+        orderAddress: orderAddressOrErrors.getValue(),
+        items: orderItemList,
       })
 
       if (orderOrErrors.isFailure) {

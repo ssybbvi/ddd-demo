@@ -19,7 +19,7 @@ export class CreateOrderController extends BaseController {
   async executeImpl(req: DecodedExpressRequest, res: express.Response): Promise<any> {
     const { userId } = req.decoded;
     const dto: CreateOrderDto = req.body as CreateOrderDto
-    dto.userId=userId
+    dto.userId = userId
 
     try {
       const result = await this.useCase.execute(dto)
@@ -31,15 +31,15 @@ export class CreateOrderController extends BaseController {
           case CreateOrderErrors.CommodityNotFound:
             return this.notFound(res, error.errorValue().message)
           case CreateOrderErrors.OrderItemNotNull:
-              return this.notFound(res, error.errorValue().message)
+            return this.notFound(res, error.errorValue().message)
           default:
             return this.fail(res, error.errorValue() + '')
         }
       }
 
-      const order=  useCaseValue.getValue() as Order
-      const orderDto= OrderMap.toDTO(order)
-      return this.ok<OrderDto>(res,orderDto)
+      const order = useCaseValue.getValue() as Order
+      const orderDto = OrderMap.toDTO(order)
+      return this.ok<OrderDto>(res, orderDto)
     } catch (err) {
       return this.fail(res, err)
     }

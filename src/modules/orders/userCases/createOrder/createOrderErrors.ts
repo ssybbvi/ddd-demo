@@ -3,7 +3,7 @@ import { Result } from '../../../../shared/core/Result'
 
 export namespace CreateOrderErrors {
   export class CommodityNotFound extends Result<UseCaseError> {
-    constructor(commodityId:string) {
+    constructor(commodityId: string) {
       super(false, {
         message: `没有该商品编号:${commodityId}`
       } as UseCaseError)
@@ -17,5 +17,5 @@ export namespace CreateOrderErrors {
       } as UseCaseError)
     }
   }
- 
+
 }

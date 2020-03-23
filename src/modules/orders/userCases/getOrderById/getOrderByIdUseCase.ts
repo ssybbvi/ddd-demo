@@ -4,12 +4,12 @@ import { UseCase } from '../../../../shared/core/UseCase'
 import { Order } from '../../domain/order'
 import { IOrderRepo } from '../../repos/orderRepo'
 import { GetOrderByIdDto } from './getOrderByIdDto'
-import {GetOrderByIdErrors} from './getOrderByIdErrors'
+import { GetOrderByIdErrors } from './getOrderByIdErrors'
 
 type Response = Either<
-GetOrderByIdErrors.DoesNotBelongToYou|
-GetOrderByIdErrors.OrderNotFound|
-AppError.UnexpectedError | Result<any>, Result<Order>>
+  GetOrderByIdErrors.DoesNotBelongToYou |
+  GetOrderByIdErrors.OrderNotFound |
+  AppError.UnexpectedError | Result<any>, Result<Order>>
 
 export class GetOrderByIdUseCase implements UseCase<GetOrderByIdDto, Promise<Response>> {
   private orderRepo: IOrderRepo
@@ -20,15 +20,15 @@ export class GetOrderByIdUseCase implements UseCase<GetOrderByIdDto, Promise<Res
 
   public async execute(request: GetOrderByIdDto): Promise<Response> {
     try {
-      const {  userId,  orderId  } = request
+      const { userId, orderId } = request
 
-      const order=await this.orderRepo.getById(orderId)
+      const order = await this.orderRepo.getById(orderId)
 
-      if(!!order===false){
+      if (!!order === false) {
         return left(new GetOrderByIdErrors.OrderNotFound())
       }
 
-      if(order.userId!==userId){
+      if (order.userId !== userId) {
         return left(new GetOrderByIdErrors.DoesNotBelongToYou())
       }
 

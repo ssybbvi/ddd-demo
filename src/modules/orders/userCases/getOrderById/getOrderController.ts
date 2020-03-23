@@ -18,9 +18,9 @@ export class GetOrderByIdController extends BaseController {
 
   async executeImpl(req: DecodedExpressRequest, res: express.Response): Promise<any> {
     const { userId } = req.decoded;
-    const dto: GetOrderByIdDto ={
-        orderId:req.params.orderId,
-        userId:userId
+    const dto: GetOrderByIdDto = {
+      orderId: req.params.orderId,
+      userId: userId
     }
 
     console.log(dto)
@@ -32,17 +32,17 @@ export class GetOrderByIdController extends BaseController {
         const error = useCaseValue
 
         switch (error.constructor) {
-            case GetOrderByIdErrors.DoesNotBelongToYou:
-                return this.notFound(res, error.errorValue().message)
-            case GetOrderByIdErrors.OrderNotFound:
-                return this.notFound(res, error.errorValue().message)
-            default:
-                return this.fail(res, error.errorValue() + '')
+          case GetOrderByIdErrors.DoesNotBelongToYou:
+            return this.notFound(res, error.errorValue().message)
+          case GetOrderByIdErrors.OrderNotFound:
+            return this.notFound(res, error.errorValue().message)
+          default:
+            return this.fail(res, error.errorValue() + '')
         }
       }
-      const order= useCaseValue.getValue() as Order
-      const orderDto=OrderMap.toDTO(order)
-        return this.ok<OrderDto>(res,orderDto)
+      const order = useCaseValue.getValue() as Order
+      const orderDto = OrderMap.toDTO(order)
+      return this.ok<OrderDto>(res, orderDto)
     } catch (err) {
       return this.fail(res, err)
     }

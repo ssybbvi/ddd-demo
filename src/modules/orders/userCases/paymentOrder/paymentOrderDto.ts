@@ -1,4 +1,4 @@
-export interface PaymentOrderDto{
+export interface PaymentOrderDto {
     userId: string
-    orderId:string
+    orderId: string
 }

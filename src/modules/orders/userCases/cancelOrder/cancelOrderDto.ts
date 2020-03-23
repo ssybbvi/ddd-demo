@@ -1,2 +1,2 @@
-export interface CancelOrderDto{
+export interface CancelOrderDto {
 }

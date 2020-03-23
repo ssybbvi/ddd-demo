@@ -17,9 +17,9 @@ export class GetOrderListController extends BaseController {
 
   async executeImpl(req: DecodedExpressRequest, res: express.Response): Promise<any> {
     const { userId } = req.decoded;
-    const dto: GetOrderListDto ={
-        orderStatus:req.query.orderStatus,
-        userId:userId
+    const dto: GetOrderListDto = {
+      orderStatus: req.query.orderStatus,
+      userId: userId
     }
 
     try {
@@ -33,9 +33,9 @@ export class GetOrderListController extends BaseController {
             return this.fail(res, error.errorValue() + '')
         }
       }
-      const orderList=useCaseValue.getValue() as Order[]
-      const orderDtoList=orderList.map(item=>OrderMap.toDTO(item))
-        return this.ok<OrderDto[]>(res,orderDtoList)
+      const orderList = useCaseValue.getValue() as Order[]
+      const orderDtoList = orderList.map(item => OrderMap.toDTO(item))
+      return this.ok<OrderDto[]>(res, orderDtoList)
     } catch (err) {
       return this.fail(res, err)
     }

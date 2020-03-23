@@ -6,23 +6,23 @@ import { IOrderRepo } from '../../repos/orderRepo'
 import { GetOrderListDto } from './getOrderListDto'
 import { OrderStatus } from '../../domain/orderStatus'
 
-type Response = Either< 
-| AppError.UnexpectedError | Result<any>, Result<Order[]>>
+type Response = Either<
+  | AppError.UnexpectedError | Result<any>, Result<Order[]>>
 
 export class GetOrderListUseCase implements UseCase<GetOrderListDto, Promise<Response>> {
   private orderRepo: IOrderRepo
 
-  constructor(orderRepo: IOrderRepo ) {
+  constructor(orderRepo: IOrderRepo) {
     this.orderRepo = orderRepo
   }
 
   public async execute(request: GetOrderListDto): Promise<Response> {
     try {
       const {
-        userId,orderStatus
+        userId, orderStatus
       } = request
 
-      const orderList=await this.orderRepo.filter(orderStatus as (OrderStatus|''),userId)
+      const orderList = await this.orderRepo.filter(orderStatus as (OrderStatus | ''), userId)
 
       return right(Result.ok<Order[]>(orderList))
     } catch (err) {
