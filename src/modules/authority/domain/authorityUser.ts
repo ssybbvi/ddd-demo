@@ -21,6 +21,9 @@ export class AuthorityUser extends AggregateRoot<AuthorityUserProps> {
     return this.props.name
   }
 
+  get roleIds(): RoleId[] {
+    return this.props.roleIds
+  }
 
   private constructor(props: AuthorityUserProps, id?: UniqueEntityID) {
     super(props, id)

@@ -8,5 +8,5 @@ export interface IAuthorityUserRepo {
   getAuthorityUserIdByUserId(userId: string): Promise<AuthorityUserId>
   getAuthorityUserByUserName(username: string): Promise<AuthorityUser>
   save(authorityUser: AuthorityUser): Promise<void>
-  filter(): Promise<AuthorityUserDetails[]>
+  filter(): Promise<AuthorityUser[]>
 }

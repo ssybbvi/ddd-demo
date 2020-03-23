@@ -1,7 +1,8 @@
-import { CreateAuthorityUser } from './CreateAuthorityUser'
+import { CreateAuthorityUserUseCase } from './createAuthorityUserUseCase'
 import { userRepo } from '../../../../users/repos'
 import { authorityUserRepo } from '../../../repos'
+import { CreateAuthorityUserController } from './createAuthorityUserController'
 
-const createAuthorityUser = new CreateAuthorityUser(userRepo, authorityUserRepo)
-
-export { createAuthorityUser }
+const createAuthorityUserUseCase = new CreateAuthorityUserUseCase(userRepo, authorityUserRepo)
+const createAuthorityUserController = new CreateAuthorityUserController(createAuthorityUserUseCase)
+export { createAuthorityUserUseCase, createAuthorityUserController }

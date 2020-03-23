@@ -9,23 +9,20 @@ import { Global } from '../../../../shared/infra/database/mongodb'
 import { IAuthorityUserDbModel } from '../../dbModels/iAuthorityUserDbModel'
 import { Collection } from 'mongodb'
 import { IUserDbModels } from '../../../users/dbModels/iUserDbModels'
+import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 
 export class AuthorityUserRepo implements IAuthorityUserRepo {
-  constructor() {}
+  constructor() { }
   private createCollection(): Collection<IAuthorityUserDbModel> {
     return Global.instance.mongoDb.collection<IAuthorityUserDbModel>('authorityUser')
   }
 
-  private createUserCollection(): Collection<IUserDbModels> {
-    return Global.instance.mongoDb.collection<IUserDbModels>('user')
-  }
 
-  public async filter(): Promise<AuthorityUserDetails[]> {
+  public async filter(): Promise<AuthorityUser[]> {
     let list = await this.createCollection()
       .find({})
       .toArray()
-  
-    return []//list.map(item => AuthorityUserDetailsMap.toDomain(item))
+    return list.map(item => AuthorityUserMap.toDomain(item))
   }
 
   public async exists(userId: string): Promise<boolean> {
@@ -56,7 +53,18 @@ export class AuthorityUserRepo implements IAuthorityUserRepo {
   }
 
   public async save(authorityUser: AuthorityUser): Promise<void> {
-      const rawSequelizeAuthorityUser = await AuthorityUserMap.toPersistence(authorityUser)
-      await this.createCollection().insertOne(rawSequelizeAuthorityUser)
+    const raw = await AuthorityUserMap.toPersistence(authorityUser)
+    await this.createCollection().updateOne(
+      { _id: raw._id },
+      {
+        $set: {
+          name: raw.name,
+          roleIds: raw.roleIds
+        }
+      },
+      { upsert: true }
+    )
+
+    DomainEvents.dispatchEventsForAggregate(authorityUser)
   }
 }

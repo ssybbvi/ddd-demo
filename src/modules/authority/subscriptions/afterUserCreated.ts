@@ -1,12 +1,12 @@
 import { UserCreated } from '../../users/domain/events/userCreated'
 import { IHandle } from '../../../shared/domain/events/IHandle'
-import { CreateAuthorityUser } from '../useCases/authorityUsers/createAuthorityUser/CreateAuthorityUser'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
+import { CreateAuthorityUserUseCase } from '../useCases/authorityUsers/createAuthorityUser/createAuthorityUserUseCase'
 
 export class AfterUserCreated implements IHandle<UserCreated> {
-  private createAuthorityUser: CreateAuthorityUser
+  private createAuthorityUser: CreateAuthorityUserUseCase
 
-  constructor(createAuthorityUser: CreateAuthorityUser) {
+  constructor(createAuthorityUser: CreateAuthorityUserUseCase) {
     this.setupSubscriptions()
     this.createAuthorityUser = createAuthorityUser
   }
@@ -20,7 +20,7 @@ export class AfterUserCreated implements IHandle<UserCreated> {
     const { user } = event
 
     try {
-      await this.createAuthorityUser.execute({  name: "" , roleIds:[]  })
+      await this.createAuthorityUser.execute({ name: "", roleIds: [] })
       console.log(`[AfterUserCreated]: Successfully executed CreateAuthorityUser use case AfterUserCreated`)
     } catch (err) {
       console.log(`[AfterUserCreated]: Failed to execute CreateAuthorityUser use case AfterUserCreated.`)

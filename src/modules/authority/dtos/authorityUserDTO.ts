@@ -1,5 +1,7 @@
 import { UserDTO } from '../../users/dtos/userDTO'
 
 export interface AuthorityUserDTO {
-  user: UserDTO
+  _id: string
+  name: string
+  roleIds: string[]
 }

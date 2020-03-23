@@ -1,10 +1,10 @@
 import { UseCase } from '../../../../../shared/core/UseCase'
 import { IAuthorityUserRepo } from '../../../repos/authorityUserRepo'
-import { CreateAuthorityUserDTO } from './CreateAuthorityUserDTO'
+import { CreateAuthorityUserDTO } from './createAuthorityUserDTO'
 import { IUserRepo } from '../../../../users/repos/userRepo'
 import { Either, Result, left, right } from '../../../../../shared/core/Result'
 import { AppError } from '../../../../../shared/core/AppError'
-import { CreateAuthorityUserErrors } from './CreateAuthorityUserErrors'
+import { CreateAuthorityUserErrors } from './createAuthorityUserErrors'
 import { AuthorityUser } from '../../../domain/authorityUser'
 
 type Response = Either<
@@ -15,12 +15,10 @@ type Response = Either<
   Result<void>
 >
 
-export class CreateAuthorityUser implements UseCase<CreateAuthorityUserDTO, Promise<Response>> {
+export class CreateAuthorityUserUseCase implements UseCase<CreateAuthorityUserDTO, Promise<Response>> {
   private authorityUserRepo: IAuthorityUserRepo
-  private userRepo: IUserRepo
 
   constructor(userRepo: IUserRepo, authorityUserRepo: IAuthorityUserRepo) {
-    this.userRepo = userRepo
     this.authorityUserRepo = authorityUserRepo
   }
 
@@ -31,7 +29,7 @@ export class CreateAuthorityUser implements UseCase<CreateAuthorityUserDTO, Prom
 
       const authorityUserOrError: Result<AuthorityUser> = AuthorityUser.create({
         name: request.name,
-        roleIds:[]
+        roleIds: []
       })
 
       if (authorityUserOrError.isFailure) {

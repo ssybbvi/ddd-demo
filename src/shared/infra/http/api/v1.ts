@@ -5,6 +5,7 @@ import { signInRouter, recommendedUserRouter } from '../../../../modules/distrib
 import { fundRouter, fundAccountRouter } from '../../../../modules/funds/infra/http/routes'
 import { commodityRouter } from '../../../../modules/commoditys/infra/http/routes'
 import { orderRouter } from '../../../../modules/orders/infra/http/routes'
+import { authorityUserRouter } from '../../../../modules/authority/infra/http/routes'
 
 const v1Router = express.Router()
 
@@ -18,5 +19,9 @@ v1Router.use('/recommendedUser', recommendedUserRouter)
 v1Router.use('/fund', fundRouter)
 v1Router.use('/fundAccount', fundAccountRouter)
 v1Router.use('/commodity', commodityRouter)
-v1Router.use('/order',orderRouter)
+v1Router.use('/order', orderRouter)
+v1Router.use('/authority', authorityUserRouter)
+
+
+
 export { v1Router }
