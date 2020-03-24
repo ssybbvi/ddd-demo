@@ -3,7 +3,7 @@ import { tenantRouter } from '../../../../modules/tenants/infra/http/routes/tena
 import { userRouter } from '../../../../modules/users/infra/http/routers/index'
 import { signInRouter, recommendedUserRouter } from '../../../../modules/distribution/infra/http/routes/index'
 import { fundRouter, fundAccountRouter } from '../../../../modules/funds/infra/http/routes'
-import { commodityRouter } from '../../../../modules/commoditys/infra/http/routes'
+import { commodityRouter, purchaseHistoryRouter } from '../../../../modules/commoditys/infra/http/routes'
 import { orderRouter } from '../../../../modules/orders/infra/http/routes'
 import { authorityUserRouter } from '../../../../modules/authority/infra/http/routes'
 
@@ -21,7 +21,7 @@ v1Router.use('/fundAccount', fundAccountRouter)
 v1Router.use('/commodity', commodityRouter)
 v1Router.use('/order', orderRouter)
 v1Router.use('/authority', authorityUserRouter)
-
+v1Router.use('/purchase/history', purchaseHistoryRouter)
 
 
 export { v1Router }

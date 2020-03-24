@@ -1,9 +1,9 @@
 import express from 'express'
 import { middleware } from '../../../../../shared/infra/http'
-import { createCommodityController } from '../../../userCases/craeteCommodity'
-import { getCommodityController } from '../../../userCases/getCommodity'
-import {getCommodityByIdController} from '../../../userCases/getCommodityById'
-import {editCommodityController} from '../../../userCases/editCommodity'
+import { createCommodityController } from '../../../userCases/commoditys/craeteCommodity'
+import { getCommodityController } from '../../../userCases/commoditys/getCommodity'
+import { getCommodityByIdController } from '../../../userCases/commoditys/getCommodityById'
+import { editCommodityController } from '../../../userCases/commoditys/editCommodity'
 
 const commodityRouter = express.Router()
 

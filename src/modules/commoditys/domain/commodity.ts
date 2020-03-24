@@ -54,39 +54,39 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     return this.props.restrictedPurchaseQuantity
   }
 
-  public updateName(name:CommodityName){
-    this.props.name=name
+  public updateName(name: CommodityName) {
+    this.props.name = name
   }
 
-  public updatePrice  (price:CommodityPrice){
-    this.props.price=price
+  public updatePrice(price: CommodityPrice) {
+    this.props.price = price
   }
 
-  public updateDescrption(descrption:string){
-    this.props.descrption=descrption
+  public updateDescrption(descrption: string) {
+    this.props.descrption = descrption
   }
 
-  public updateImages (images:string[]){
-    this.props.images=images
+  public updateImages(images: string[]) {
+    this.props.images = images
   }
 
-  public updateFakePrice(fakePrice:string){
-    this.props.fakePrice=fakePrice
+  public updateFakePrice(fakePrice: string) {
+    this.props.fakePrice = fakePrice
   }
 
-  public updateTags(tags:string[]){
-    this.props.tags=tags
+  public updateTags(tags: string[]) {
+    this.props.tags = tags
   }
 
-  public updateRestrictedPurchaseQuantity(restrictedPurchaseQuantity:number){
-    return this.props.restrictedPurchaseQuantity=restrictedPurchaseQuantity
+  public updateRestrictedPurchaseQuantity(restrictedPurchaseQuantity: number) {
+    return this.props.restrictedPurchaseQuantity = restrictedPurchaseQuantity
   }
 
-  public sale():void{
+  public sale(): void {
     this.props.sales++
   }
 
-  public withdraw():void{
+  public withdraw(): void {
     this.props.sales--
   }
 
@@ -109,7 +109,7 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
 
     const defaultValues: ICommodityProps = {
       ...props,
-      tags: props.tags ? props.tags :[]
+      tags: props.tags ? props.tags : []
     }
 
     const fund = new Commodity(defaultValues, id)

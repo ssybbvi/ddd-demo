@@ -5,10 +5,10 @@ import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 import { ICommodityRepo } from '../iCommodityRepo'
 import { ICommodityDbModel } from '../../dbModels/commodityDbModel'
 import { Commodity } from '../../domain/commodity'
-import { CommodityMap } from '../../mappers/CommodityMap'
+import { CommodityMap } from '../../mappers/commodityMap'
 
 export class MongoCommodityRepo implements ICommodityRepo {
-  constructor() {}
+  constructor() { }
 
   private createCollection(): Collection<ICommodityDbModel> {
     return Global.instance.mongoDb.collection<ICommodityDbModel>('commodity')
@@ -46,21 +46,21 @@ export class MongoCommodityRepo implements ICommodityRepo {
     return !!commodity === true
   }
 
-  public async filter(name:string,tag:string): Promise<Commodity[]> {
-    let query:any={
-      $and:[
+  public async filter(name: string, tag: string): Promise<Commodity[]> {
+    let query: any = {
+      $and: [
         {
-          name:{
-            $regex:name
+          name: {
+            $regex: name
           }
         }
       ]
-     
+
     }
-    if(tag){
+    if (tag) {
       query.$and.push({
-        tags:{
-          $in:[tag]
+        tags: {
+          $in: [tag]
         }
       })
     }

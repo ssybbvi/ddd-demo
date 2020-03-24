@@ -1,37 +1,47 @@
 import { IHandle } from '../../../shared/domain/events/IHandle'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
 import { OrderPaymented } from '../../orders/domain/events/orderPaymented'
-import { SaleCommodityUseCase } from '../userCases/saleCommodity/saleCommodityUseCase'
+import { SaleCommodityUseCase } from '../userCases/commoditys/saleCommodity/saleCommodityUseCase'
+import { CreatePurchaseHistoryUseCase } from '../userCases/purchaseHistory/createPurchaseHistory/createPurchaseHistoryUseCase'
 
 export class AfterOrderPaymented implements IHandle<OrderPaymented> {
-    private saleCommodityUseCase: SaleCommodityUseCase
+  private saleCommodityUseCase: SaleCommodityUseCase
+  private createPurchaseHistoryUseCase: CreatePurchaseHistoryUseCase
 
-    constructor(saleCommodityUseCase: SaleCommodityUseCase ) {
-      this.setupSubscriptions()
-      this.saleCommodityUseCase = saleCommodityUseCase
-    }
-  
-    setupSubscriptions(): void {
-      // Register to the domain event
-      DomainEvents.register(this.onAfterOrderPaymented.bind(this), OrderPaymented.name)
-    }
-  
-    private async onAfterOrderPaymented(event: OrderPaymented): Promise<void> {
-      const { order } = event
-  
-      try {
+  constructor(saleCommodityUseCase: SaleCommodityUseCase, createPurchaseHistoryUseCase: CreatePurchaseHistoryUseCase) {
+    this.setupSubscriptions()
+    this.saleCommodityUseCase = saleCommodityUseCase
+    this.createPurchaseHistoryUseCase = createPurchaseHistoryUseCase
+  }
 
-        const orderItemList= order.orderItems
-        for(const item of orderItemList){
-          const useCaseResult=await this.saleCommodityUseCase.execute({commodityId:item.commodityId})
-          if(useCaseResult.isLeft()){
-            console.error(useCaseResult.value.error)
-          }
+  setupSubscriptions(): void {
+    // Register to the domain event
+    DomainEvents.register(this.onAfterOrderPaymented.bind(this), OrderPaymented.name)
+  }
+
+  private async onAfterOrderPaymented(event: OrderPaymented): Promise<void> {
+    const { order } = event
+
+    try {
+
+      const orderItemList = order.orderItems
+      for (const item of orderItemList) {
+        const commodityUseCaseResult = await this.saleCommodityUseCase.execute({ commodityId: item.commodityId })
+        if (commodityUseCaseResult.isLeft()) {
+          console.error(commodityUseCaseResult.value.error)
         }
-        console.log(`[OrderPaymented]: Successfully executed SaleCommodityUseCase use case OrderPaymented`)
-      } catch (err) {
-        console.log(`[OrderPaymented]: Failed to execute SaleCommodityUseCase use case OrderPaymented.`)
+
+        const createPurchaseHistoryUseCaseeResult = await this.createPurchaseHistoryUseCase.execute({
+          commodityId: item.commodityId,
+          userId: order.userId
+        })
+        if (createPurchaseHistoryUseCaseeResult.isLeft()) {
+          console.error(createPurchaseHistoryUseCaseeResult.value)
+        }
       }
+      console.log(`[OrderPaymented]: Successfully executed SaleCommodityUseCase use case OrderPaymented`)
+    } catch (err) {
+      console.log(`[OrderPaymented]: Failed to execute SaleCommodityUseCase use case OrderPaymented.`)
     }
   }
-  
+}
