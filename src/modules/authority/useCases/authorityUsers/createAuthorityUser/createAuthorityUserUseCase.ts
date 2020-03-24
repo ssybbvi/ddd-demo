@@ -1,7 +1,6 @@
 import { UseCase } from '../../../../../shared/core/UseCase'
 import { IAuthorityUserRepo } from '../../../repos/authorityUserRepo'
 import { CreateAuthorityUserDTO } from './createAuthorityUserDTO'
-import { IUserRepo } from '../../../../users/repos/userRepo'
 import { Either, Result, left, right } from '../../../../../shared/core/Result'
 import { AppError } from '../../../../../shared/core/AppError'
 import { CreateAuthorityUserErrors } from './createAuthorityUserErrors'
@@ -18,7 +17,7 @@ type Response = Either<
 export class CreateAuthorityUserUseCase implements UseCase<CreateAuthorityUserDTO, Promise<Response>> {
   private authorityUserRepo: IAuthorityUserRepo
 
-  constructor(userRepo: IUserRepo, authorityUserRepo: IAuthorityUserRepo) {
+  constructor(authorityUserRepo: IAuthorityUserRepo) {
     this.authorityUserRepo = authorityUserRepo
   }
 
