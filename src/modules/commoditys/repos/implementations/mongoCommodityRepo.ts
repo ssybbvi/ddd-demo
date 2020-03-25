@@ -8,7 +8,7 @@ import { Commodity } from '../../domain/commodity'
 import { CommodityMap } from '../../mappers/commodityMap'
 
 export class MongoCommodityRepo implements ICommodityRepo {
-  constructor() { }
+  constructor() {}
 
   private createCollection(): Collection<ICommodityDbModel> {
     return Global.instance.mongoDb.collection<ICommodityDbModel>('commodity')
@@ -56,7 +56,6 @@ export class MongoCommodityRepo implements ICommodityRepo {
           }
         }
       ]
-
     }
     if (tag) {
       query.$and.push({

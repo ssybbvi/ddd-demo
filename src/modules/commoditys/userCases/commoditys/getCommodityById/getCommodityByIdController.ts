@@ -7,8 +7,6 @@ import { GetCommodityByIdUseCase } from './getCommodityByIdUseCase'
 import { CommodityDto } from '../../../dtos/commodityDto'
 import { GetCommodityErrors } from './getCommodityErrors'
 
-
-
 export class GetCommodityByIdController extends BaseController {
   private useCase: GetCommodityByIdUseCase
 

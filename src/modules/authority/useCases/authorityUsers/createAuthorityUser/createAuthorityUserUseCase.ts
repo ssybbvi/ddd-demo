@@ -25,7 +25,6 @@ export class CreateAuthorityUserUseCase implements UseCase<CreateAuthorityUserDT
     let authorityUser: AuthorityUser
 
     try {
-
       const authorityUserOrError: Result<AuthorityUser> = AuthorityUser.create({
         name: request.name,
         roleIds: []
