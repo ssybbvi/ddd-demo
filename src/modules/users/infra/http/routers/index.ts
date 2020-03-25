@@ -8,9 +8,12 @@ import { logoutController } from '../../../useCases/logout'
 import { wxAuthorizationController } from '../../../useCases/wxAuthorization'
 import { getWxCurrentUserController } from '../../../useCases/getWxCurrentUser'
 import { testLoginController } from '../../../useCases/testLogin'
+import { adminAboutMeController } from '../../../useCases/adminAboutMe'
 const userRouter = express.Router()
 
 userRouter.get('/me', middleware.ensureAuthenticated(), (req, res) => getCurrentUserController.execute(req, res))
+
+userRouter.get('/admin/me', middleware.ensureAuthenticated(), (req, res) => adminAboutMeController.execute(req, res))
 
 userRouter.post('/logout', middleware.ensureAuthenticated(), (req, res) => logoutController.execute(req, res))
 

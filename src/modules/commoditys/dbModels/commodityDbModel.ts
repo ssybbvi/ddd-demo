@@ -8,4 +8,5 @@ export interface ICommodityDbModel {
   sales: number
   restrictedPurchaseQuantity: number
   tags: string[]
+  imgesDescrptionList: string[]
 }

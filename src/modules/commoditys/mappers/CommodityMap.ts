@@ -9,7 +9,7 @@ import { CommodityPrice } from '../domain/commodityPrice'
 export class CommodityMap implements IMapper<Commodity> {
   public static toDTO(commodity: Commodity): CommodityDto {
     return {
-      _id:commodity.id.toString(),
+      _id: commodity.id.toString(),
       name: commodity.name.value,
       price: commodity.price.value,
       descrption: commodity.descrption,
@@ -17,18 +17,19 @@ export class CommodityMap implements IMapper<Commodity> {
       fakePrice: commodity.fakePrice,
       sales: commodity.sales,
       restrictedPurchaseQuantity: commodity.restrictedPurchaseQuantity,
-      tags: commodity.tags
+      tags: commodity.tags,
+      imgesDescrptionList: commodity.imgesDescrptionList
     }
   }
 
   public static toDomain(raw: ICommodityDbModel): Commodity {
-    if(raw==null){
+    if (raw == null) {
       return null
     }
 
-    const commodityNameOrErrors= CommodityName.create({ name:raw.name })
-    const commdityPriceOrErrors=CommodityPrice.create({ price:raw.price })
- 
+    const commodityNameOrErrors = CommodityName.create({ name: raw.name })
+    const commdityPriceOrErrors = CommodityPrice.create({ price: raw.price })
+
     const commodityOrError = Commodity.create(
       {
         name: commodityNameOrErrors.getValue(),
@@ -38,7 +39,8 @@ export class CommodityMap implements IMapper<Commodity> {
         fakePrice: raw.fakePrice,
         sales: raw.sales,
         restrictedPurchaseQuantity: raw.restrictedPurchaseQuantity,
-        tags: raw.tags
+        tags: raw.tags,
+        imgesDescrptionList: raw.imgesDescrptionList
       },
       new UniqueEntityID(raw._id)
     )
@@ -57,7 +59,8 @@ export class CommodityMap implements IMapper<Commodity> {
       fakePrice: commodity.fakePrice,
       sales: commodity.sales,
       restrictedPurchaseQuantity: commodity.restrictedPurchaseQuantity,
-      tags: commodity.tags
+      tags: commodity.tags,
+      imgesDescrptionList: commodity.imgesDescrptionList
     }
   }
 }

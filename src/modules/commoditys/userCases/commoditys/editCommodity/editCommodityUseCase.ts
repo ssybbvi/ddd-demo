@@ -17,7 +17,7 @@ export class EditCommodityUseCase implements UseCase<IEditCommodityDto, Promise<
 
   public async execute(request: IEditCommodityDto): Promise<Response> {
     try {
-      const { _id, name, price, descrption, images, fakePrice, restrictedPurchaseQuantity, tags } = request
+      const { _id, name, price, descrption, images, fakePrice, restrictedPurchaseQuantity, tags, imgesDescrptionList } = request
 
       const commodity = await this.commodityRepo.getById(_id)
 
@@ -38,6 +38,7 @@ export class EditCommodityUseCase implements UseCase<IEditCommodityDto, Promise<
       commodity.updateImages(images)
       commodity.updateTags(tags)
       commodity.updateRestrictedPurchaseQuantity(restrictedPurchaseQuantity)
+      commodity.updateImgesDescrptionList(imgesDescrptionList)
 
       await this.commodityRepo.save(commodity)
       return right(Result.ok<void>())

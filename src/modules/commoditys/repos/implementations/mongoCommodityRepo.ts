@@ -32,7 +32,8 @@ export class MongoCommodityRepo implements ICommodityRepo {
           fakePrice: raw.fakePrice,
           sales: raw.sales,
           restrictedPurchaseQuantity: raw.restrictedPurchaseQuantity,
-          tags: raw.tags
+          tags: raw.tags,
+          imgesDescrptionList: raw.imgesDescrptionList
         }
       },
       { upsert: true }

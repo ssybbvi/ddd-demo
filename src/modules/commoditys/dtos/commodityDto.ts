@@ -1,5 +1,5 @@
 export interface CommodityDto {
-  _id:string
+  _id: string
   name: string
   price: number
   descrption: string
@@ -8,4 +8,5 @@ export interface CommodityDto {
   sales: number
   restrictedPurchaseQuantity: number
   tags: string[]
+  imgesDescrptionList: string[]
 }

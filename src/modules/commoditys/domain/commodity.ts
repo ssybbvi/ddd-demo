@@ -15,6 +15,7 @@ export interface ICommodityProps {
   sales: number
   restrictedPurchaseQuantity: number
   tags: string[]
+  imgesDescrptionList: string[]
 }
 
 export class Commodity extends AggregateRoot<ICommodityProps> {
@@ -54,6 +55,10 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     return this.props.restrictedPurchaseQuantity
   }
 
+  get imgesDescrptionList(): string[] {
+    return this.props.imgesDescrptionList
+  }
+
   public updateName(name: CommodityName) {
     this.props.name = name
   }
@@ -80,6 +85,10 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
 
   public updateRestrictedPurchaseQuantity(restrictedPurchaseQuantity: number) {
     return this.props.restrictedPurchaseQuantity = restrictedPurchaseQuantity
+  }
+
+  public updateImgesDescrptionList(imgesDescrptionList: string[]) {
+    return this.props.imgesDescrptionList = imgesDescrptionList
   }
 
   public sale(): void {

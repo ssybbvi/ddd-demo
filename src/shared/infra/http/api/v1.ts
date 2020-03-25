@@ -6,6 +6,7 @@ import { fundRouter, fundAccountRouter } from '../../../../modules/funds/infra/h
 import { commodityRouter, purchaseHistoryRouter } from '../../../../modules/commoditys/infra/http/routes'
 import { orderRouter } from '../../../../modules/orders/infra/http/routes'
 import { authorityUserRouter } from '../../../../modules/authority/infra/http/routes'
+import { Middleware } from '../utils/Middleware'
 
 const v1Router = express.Router()
 
@@ -22,6 +23,6 @@ v1Router.use('/commodity', commodityRouter)
 v1Router.use('/order', orderRouter)
 v1Router.use('/authority', authorityUserRouter)
 v1Router.use('/purchase/history', purchaseHistoryRouter)
-
+v1Router.use('/upload', Middleware.upload())
 
 export { v1Router }

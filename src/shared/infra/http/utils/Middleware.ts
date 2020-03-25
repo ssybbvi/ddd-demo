@@ -1,6 +1,10 @@
 import { isProduction } from '../../../../config'
 import { IAuthService } from '../../../../modules/users/services/authService'
 const rateLimit = require('express-rate-limit')
+import * as fs from 'fs'
+import formidable from 'formidable'
+import ossAliyun from 'ali-oss'
+import uuid from 'uuid/v4';
 
 export class Middleware {
   private authService: IAuthService
@@ -101,4 +105,47 @@ export class Middleware {
       return next()
     }
   }
+
+  public static upload() {//TODO 待优化
+    return async (req, res, next) => {
+
+      let client = new ossAliyun({
+        region: 'oss-cn-shenzhen',
+        accessKeyId: 'LTAI4FtmLY3CAR639p3otxJX',
+        accessKeySecret: 'zgbVP5Il45Z4nJROIHe8HQ968zRvAv',
+        bucket: 'xiaoailingdong'
+      });
+
+      var form = new formidable.IncomingForm();
+      form.parse(req, (error, fields, files) => {
+        console.log("error:", error);
+        console.log("fields", fields)
+        console.log(files.file.path);
+
+        const newFileName = `${uuid()}.png`
+        const newFilePath = `/JiFen-ZhuanLe/images/commodity/${newFileName}`
+        const newUrl = `http://oss.ixald.com${newFilePath}`
+
+        let stream = fs.createReadStream(files.file.path)
+        client.putStream(`/JiFen-ZhuanLe/images/commodity/${newFileName}`, stream).then(() => {
+          console.log("okokokok")
+          res.send({
+            "name": newFileName,
+            "status": "done",
+            "url": newUrl,
+            "thumbUrl": newUrl
+          })
+        }).catch((error) => {
+          console.log("errorerror", error)
+        })
+
+      });
+
+    }
+  }
+
+
+
+
+
 }

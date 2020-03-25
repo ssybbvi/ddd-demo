@@ -1,5 +1,5 @@
-export interface IEditCommodityDto{
-    _id:string
+export interface IEditCommodityDto {
+    _id: string
     name: string
     price: number
     descrption: string
@@ -7,4 +7,5 @@ export interface IEditCommodityDto{
     fakePrice: string
     restrictedPurchaseQuantity: number
     tags: string[]
+    imgesDescrptionList: string[]
 }

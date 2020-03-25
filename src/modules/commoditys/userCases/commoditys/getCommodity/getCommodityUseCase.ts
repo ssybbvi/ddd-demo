@@ -19,9 +19,8 @@ export class GetCommodityUseCase implements UseCase<GetCommodityDto, Promise<Res
   public async execute(request: GetCommodityDto): Promise<Response> {
     try {
       const { name, tag } = request
-
+      console.log(name, tag)
       const list = await this.commodityRepo.filter(name, tag)
-
       const dtoList = list.map(item => CommodityMap.toDTO(item))
 
       return right(Result.ok<CommodityDto[]>(dtoList))
