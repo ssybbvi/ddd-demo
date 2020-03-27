@@ -6,19 +6,23 @@ import { RefreshFundAccountUseCase } from '../userCases/fundAccounts/refreshFund
 export class AfterFundCreated implements IHandle<FundCreated> {
   private refreshFundAccountUseCase: RefreshFundAccountUseCase
 
-  constructor(
-    refreshFundAccountUseCase: RefreshFundAccountUseCase,
-  ) {
+  constructor(refreshFundAccountUseCase: RefreshFundAccountUseCase) {
     this.setupSubscriptions()
     this.refreshFundAccountUseCase = refreshFundAccountUseCase
   }
 
   setupSubscriptions(): void {
     // Register to the domain event
-    DomainEvents.register(this.onAfterLoginCreated.bind(this), FundCreated.name)
+    DomainEvents.register(
+      {
+        isNeedAwait: false,
+        domainEvenntFn: this.onAfterFundCreated.bind(this)
+      },
+      FundCreated.name
+    )
   }
 
-  private async onAfterLoginCreated(event: FundCreated): Promise<void> {
+  private async onAfterFundCreated(event: FundCreated): Promise<void> {
     const { fund } = event
 
     try {

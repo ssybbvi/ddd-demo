@@ -1,9 +1,14 @@
 import { IDomainEvent } from './IDomainEvent'
 import { AggregateRoot } from '../AggregateRoot'
 import { UniqueEntityID } from '../UniqueEntityID'
+import { DomainEvent } from './IHandle'
+
+interface IHandlersMap {
+  [eventClassName: string]: DomainEvent[]
+}
 
 export class DomainEvents {
-  private static handlersMap = {}
+  private static handlersMap: IHandlersMap = {}
   private static markedAggregates: AggregateRoot<any>[] = []
 
   /**
@@ -24,7 +29,7 @@ export class DomainEvents {
 
   private static async dispatchAggregateEvents(aggregate: AggregateRoot<any>): Promise<void> {
     for (let item of aggregate.domainEvents) {
-      this.dispatch(item)
+      await this.dispatch(item)
     }
     //aggregate.domainEvents.forEach((event: IDomainEvent) => this.dispatch(event))
   }
@@ -48,13 +53,13 @@ export class DomainEvents {
     const aggregate = this.findMarkedAggregateByID(aggregateRoot)
 
     if (aggregate) {
-      this.dispatchAggregateEvents(aggregate)
-      aggregate.clearEvents()
       this.removeAggregateFromMarkedDispatchList(aggregate)
+      await this.dispatchAggregateEvents(aggregate)
+      aggregate.clearEvents()
     }
   }
 
-  public static register(callback: (event: IDomainEvent) => void, eventClassName: string): void {
+  public static register(callback: DomainEvent, eventClassName: string): void {
     if (!this.handlersMap.hasOwnProperty(eventClassName)) {
       this.handlersMap[eventClassName] = []
     }
@@ -73,9 +78,13 @@ export class DomainEvents {
     const eventClassName: string = event.constructor.name
 
     if (this.handlersMap.hasOwnProperty(eventClassName)) {
-      const handlers: any[] = this.handlersMap[eventClassName]
-      for (let handler of handlers) {
-        handler(event)
+      const domainEvents: DomainEvent[] = this.handlersMap[eventClassName]
+      for (let handler of domainEvents) {
+        if (handler.isNeedAwait) {
+          await handler.domainEvenntFn(event)
+        } else {
+          handler.domainEvenntFn(event)
+        }
       }
     }
   }

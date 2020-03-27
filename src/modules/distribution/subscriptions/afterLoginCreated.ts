@@ -14,15 +14,19 @@ export class AfterLoginCreated implements IHandle<UserLoggedIn> {
 
   setupSubscriptions(): void {
     // Register to the domain event
-    DomainEvents.register(this.onAfterLoginCreated.bind(this), UserLoggedIn.name)
+    DomainEvents.register(
+      {
+        isNeedAwait: false,
+        domainEvenntFn: this.onAfterLoginCreated.bind(this)
+      },
+      UserLoggedIn.name
+    )
   }
 
   private async onAfterLoginCreated(event: UserLoggedIn): Promise<void> {
     const { user } = event
 
     try {
-      await FlowUtils.delay(5000) //TODO
-
       let dailySignInUseCaseValue = await this.dailySignInUseCase.execute({
         userId: user.id.toString()
       })

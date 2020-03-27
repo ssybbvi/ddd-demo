@@ -39,7 +39,7 @@ export class MongoCommodityRepo implements ICommodityRepo {
       { upsert: true }
     )
 
-    DomainEvents.dispatchEventsForAggregate(commodity)
+    await DomainEvents.dispatchEventsForAggregate(commodity)
   }
 
   public async exist(_id: string): Promise<boolean> {

@@ -13,14 +13,19 @@ export class AfterOrderCanceled implements IHandle<OrderCanceled> {
 
   setupSubscriptions(): void {
     // Register to the domain event
-    DomainEvents.register(this.onAfterOrderCanceled.bind(this), OrderCanceled.name)
+    DomainEvents.register(
+      {
+        isNeedAwait: false,
+        domainEvenntFn: this.onAfterOrderCanceled.bind(this)
+      },
+      OrderCanceled.name
+    )
   }
 
   private async onAfterOrderCanceled(event: OrderCanceled): Promise<void> {
     const { order } = event
 
     try {
-
       const orderItemList = order.orderItems
       for (const item of orderItemList) {
         const useCaseResult = await this.withdrawCommodityUseCase.execute({ commodityId: item.commodityId })

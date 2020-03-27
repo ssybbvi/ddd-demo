@@ -4,6 +4,7 @@ import { Global } from '../../../../shared/infra/database/mongodb'
 import { Collection } from 'mongodb'
 import { IRoleDbModel } from '../../dbModels/iRoleDbModel'
 import { RoleMap } from '../../mappers/roleMap'
+import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 
 export class MongoRoleRepo implements IRoleRepo {
   private createCollection(): Collection<IRoleDbModel> {
@@ -51,6 +52,8 @@ export class MongoRoleRepo implements IRoleRepo {
       },
       { upsert: true }
     )
+
+    await DomainEvents.dispatchEventsForAggregate(role)
   }
 
   public async deleteById(_id: string): Promise<void> {

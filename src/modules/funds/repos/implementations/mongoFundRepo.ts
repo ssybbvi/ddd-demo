@@ -41,7 +41,7 @@ export class MongoFundRepo implements IFundRepo {
       { upsert: true }
     )
 
-    DomainEvents.dispatchEventsForAggregate(fund)
+    await DomainEvents.dispatchEventsForAggregate(fund)
   }
 
   async filter(): Promise<Fund[]> {
@@ -67,7 +67,11 @@ export class MongoFundRepo implements IFundRepo {
     return list.map(item => FundMap.toDomain(item))
   }
 
-  async getDistributionList(recommendedUserId: string, type: FundType, createAt: number): Promise<TodayByRecommendedUserDto[]> {
+  async getDistributionList(
+    recommendedUserId: string,
+    type: FundType,
+    createAt: number
+  ): Promise<TodayByRecommendedUserDto[]> {
     let list = await Global.instance.mongoDb
       .collection('funds')
       .aggregate([

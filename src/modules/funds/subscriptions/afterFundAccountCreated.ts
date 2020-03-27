@@ -7,42 +7,46 @@ import { FundAccountCreated } from '../domain/events/fundAccountCreated'
 import { CreateFundUseCase } from '../userCases/funds/createFund/createFundUseCase'
 
 export class AfterFundAccountCreated implements IHandle<FundAccountCreated> {
+  private createFundUseCase: CreateFundUseCase
 
-  private createFundUseCase:CreateFundUseCase
- 
-  constructor(createFundUseCase:CreateFundUseCase  ) {
+  constructor(createFundUseCase: CreateFundUseCase) {
     this.setupSubscriptions()
-    this.createFundUseCase=createFundUseCase
+    this.createFundUseCase = createFundUseCase
   }
 
   setupSubscriptions(): void {
     // Register to the domain event
-    DomainEvents.register(this.onAfterFundAccountCreated.bind(this), FundAccountCreated.name)
+    DomainEvents.register(
+      {
+        isNeedAwait: false,
+        domainEvenntFn: this.onAfterFundAccountCreated.bind(this)
+      },
+      FundAccountCreated.name
+    )
   }
 
   private async onAfterFundAccountCreated(event: FundAccountCreated): Promise<void> {
     const { fundAccount } = event
 
     try {
-     
-      const createFundUseCaseByPrimaryDistributionResult=await  this.createFundUseCase.execute({ 
+      const createFundUseCaseByPrimaryDistributionResult = await this.createFundUseCase.execute({
         amount: 10,
         incomeUserId: fundAccount.id.toString(),
-        type: "primaryDistribution",
+        type: 'primaryDistribution',
         relationId: fundAccount.id.toString()
       })
-      if(createFundUseCaseByPrimaryDistributionResult.isLeft()){
+      if (createFundUseCaseByPrimaryDistributionResult.isLeft()) {
         console.error(createFundUseCaseByPrimaryDistributionResult.value)
         return
       }
 
-      const createFundSecondaryDistributionUseCaseResult=await  this.createFundUseCase.execute({ 
+      const createFundSecondaryDistributionUseCaseResult = await this.createFundUseCase.execute({
         amount: 1,
         incomeUserId: fundAccount.id.toString(),
-        type: "secondaryDistribution",
+        type: 'secondaryDistribution',
         relationId: fundAccount.id.toString()
       })
-      if(createFundSecondaryDistributionUseCaseResult.isLeft()){
+      if (createFundSecondaryDistributionUseCaseResult.isLeft()) {
         console.error(createFundSecondaryDistributionUseCaseResult.value)
         return
       }
@@ -52,5 +56,4 @@ export class AfterFundAccountCreated implements IHandle<FundAccountCreated> {
       console.log(`[AfterFundAccountCreated]: Failed to execute CreateFundUseCase use case AfterFundAccountCreated.`)
     }
   }
-
 }

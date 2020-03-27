@@ -14,21 +14,27 @@ export class AfterUserCreated implements IHandle<UserCreated> {
 
   setupSubscriptions(): void {
     // Register to the domain event
-    DomainEvents.register(this.onUserCreated.bind(this), UserCreated.name)
+    DomainEvents.register(
+      {
+        isNeedAwait: true,
+        domainEvenntFn: this.onUserCreated.bind(this)
+      },
+      UserCreated.name
+    )
   }
 
   private async onUserCreated(event: UserCreated): Promise<void> {
     const { user, extra } = event
 
     try {
-      const result=  await this.createRecommendedUser.execute({
+      const result = await this.createRecommendedUser.execute({
         userId: user.userId.id.toString(),
         inviteToken: extra ? extra.inviteToken : null
       })
 
-      if(result.isLeft()){
+      if (result.isLeft()) {
         console.error(result.value)
-        return 
+        return
       }
 
       console.log(`[AfterUserCreated]: Successfully executed CreateRecommendedUser use case AfterUserCreated`)

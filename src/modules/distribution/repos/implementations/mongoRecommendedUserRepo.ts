@@ -38,7 +38,7 @@ export class RecommendedUserRepo implements IRecommendedUserRepo {
       },
       { upsert: true }
     )
-    DomainEvents.dispatchEventsForAggregate(recommendedUser)
+    await DomainEvents.dispatchEventsForAggregate(recommendedUser)
   }
 
   public async existsByInviteToken(inviteToken: string): Promise<boolean> {

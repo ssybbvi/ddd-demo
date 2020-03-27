@@ -10,17 +10,24 @@ export class AfterUserCreated implements IHandle<UserCreated> {
     this.setupSubscriptions()
     this.createAuthorityUser = createAuthorityUser
   }
+  isNeedAwait: boolean
 
   setupSubscriptions(): void {
     // Register to the domain event
-    DomainEvents.register(this.onUserCreated.bind(this), UserCreated.name)
+    DomainEvents.register(
+      {
+        isNeedAwait: false,
+        domainEvenntFn: this.onUserCreated.bind(this)
+      },
+      UserCreated.name
+    )
   }
 
   private async onUserCreated(event: UserCreated): Promise<void> {
     const { user } = event
 
     try {
-      await this.createAuthorityUser.execute({ name: "", roleIds: [] })
+      await this.createAuthorityUser.execute({ name: '', roleIds: [] })
       console.log(`[AfterUserCreated]: Successfully executed CreateAuthorityUser use case AfterUserCreated`)
     } catch (err) {
       console.log(`[AfterUserCreated]: Failed to execute CreateAuthorityUser use case AfterUserCreated.`)

@@ -26,40 +26,40 @@ export class MongoOrderRepo implements IOrderRepo {
       { _id: raw._id },
       {
         $set: {
-          userId:raw.userId,
-          createAt:raw.createAt,
-          status:raw.status,
-          price:raw.price,
-          remark:raw.remark,
-          code:raw.code,
-      
-          userName:raw.userName,
-          provinceName : raw.provinceName,
-          cityName : raw.cityName,
-          countyName : raw.countyName,
-          detailAddressInfo : raw.detailAddressInfo,
-          nationalCode : raw.nationalCode,
-          telNumber :raw.telNumber,
-      
-          paymentTime:raw.paymentTime,
-          cancelTime:raw.cancelTime,
-      
-          customerServiceCancelTime:raw.customerServiceCancelTime,
-          customerServiceRemark:raw.customerServiceRemark,
-      
-          shippingTime:raw.shippingTime,
-          shippingNumber:raw.shippingNumber,
-          shippingType:raw.shippingType,
-      
-          finishTime:raw.finishTime,
-      
-          items:raw.items
+          userId: raw.userId,
+          createAt: raw.createAt,
+          status: raw.status,
+          price: raw.price,
+          remark: raw.remark,
+          code: raw.code,
+
+          userName: raw.userName,
+          provinceName: raw.provinceName,
+          cityName: raw.cityName,
+          countyName: raw.countyName,
+          detailAddressInfo: raw.detailAddressInfo,
+          nationalCode: raw.nationalCode,
+          telNumber: raw.telNumber,
+
+          paymentTime: raw.paymentTime,
+          cancelTime: raw.cancelTime,
+
+          customerServiceCancelTime: raw.customerServiceCancelTime,
+          customerServiceRemark: raw.customerServiceRemark,
+
+          shippingTime: raw.shippingTime,
+          shippingNumber: raw.shippingNumber,
+          shippingType: raw.shippingType,
+
+          finishTime: raw.finishTime,
+
+          items: raw.items
         }
       },
       { upsert: true }
     )
 
-    DomainEvents.dispatchEventsForAggregate(order)
+    await DomainEvents.dispatchEventsForAggregate(order)
   }
 
   public async exist(_id: string): Promise<boolean> {
@@ -67,14 +67,14 @@ export class MongoOrderRepo implements IOrderRepo {
     return !!order === true
   }
 
-  public async filter(orderStatus:OrderStatus|'',userId?:string): Promise<Order[]> {
-    let query:any={  }
-    if(!!orderStatus===true){
-      query.status=orderStatus
+  public async filter(orderStatus: OrderStatus | '', userId?: string): Promise<Order[]> {
+    let query: any = {}
+    if (!!orderStatus === true) {
+      query.status = orderStatus
     }
 
-    if(!!userId===true){
-      query.userId=userId
+    if (!!userId === true) {
+      query.userId = userId
     }
     let orderList = await this.createCollection()
       .find(query)
@@ -82,21 +82,23 @@ export class MongoOrderRepo implements IOrderRepo {
     return orderList.map(item => OrderMap.toDomain(item))
   }
 
-  public async cancelOrder(unpaidTime:number):Promise<void>{
-    await this.createCollection().update({
-      createAt:{
-          $lt:unpaidTime
+  public async cancelOrder(unpaidTime: number): Promise<void> {
+    await this.createCollection().update(
+      {
+        createAt: {
+          $lt: unpaidTime
+        },
+        status: 'unpaid'
       },
-      status:"unpaid"
-  },{
-    $set:{
-      status:"cancel",
-      cancelTime:Date.now()
-    }
-  },{
-    multi:true
-  })
+      {
+        $set: {
+          status: 'cancel',
+          cancelTime: Date.now()
+        }
+      },
+      {
+        multi: true
+      }
+    )
   }
-
- 
 }

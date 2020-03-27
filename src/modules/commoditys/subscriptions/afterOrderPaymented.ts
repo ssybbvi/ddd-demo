@@ -16,14 +16,19 @@ export class AfterOrderPaymented implements IHandle<OrderPaymented> {
 
   setupSubscriptions(): void {
     // Register to the domain event
-    DomainEvents.register(this.onAfterOrderPaymented.bind(this), OrderPaymented.name)
+    DomainEvents.register(
+      {
+        isNeedAwait: false,
+        domainEvenntFn: this.onAfterOrderPaymented.bind(this)
+      },
+      OrderPaymented.name
+    )
   }
 
   private async onAfterOrderPaymented(event: OrderPaymented): Promise<void> {
     const { order } = event
 
     try {
-
       const orderItemList = order.orderItems
       for (const item of orderItemList) {
         const commodityUseCaseResult = await this.saleCommodityUseCase.execute({ commodityId: item.commodityId })

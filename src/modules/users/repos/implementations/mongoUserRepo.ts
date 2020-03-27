@@ -59,7 +59,7 @@ export class MongoUserRepo implements IUserRepo {
       },
       { upsert: true }
     )
-    DomainEvents.dispatchEventsForAggregate(user)
+    await DomainEvents.dispatchEventsForAggregate(user)
   }
 
   async getUserByWxOpenId(wxOpenId: string): Promise<User> {

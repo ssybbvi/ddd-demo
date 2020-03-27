@@ -6,18 +6,22 @@ import { FundAmount } from '../domain/fundAmount'
 import { Fund } from '../domain/fund'
 
 export class AfterSignInSuperRewared implements IHandle<SignInSuperRewared> {
-  private fundService:FundService
- 
-  constructor(
-    fundService:FundService
-    ) {
+  private fundService: FundService
+
+  constructor(fundService: FundService) {
     this.setupSubscriptions()
-    this.fundService=fundService
+    this.fundService = fundService
   }
 
   setupSubscriptions(): void {
     // Register to the domain event
-    DomainEvents.register(this.onAfterSignInSuperRewared.bind(this), SignInSuperRewared.name)
+    DomainEvents.register(
+      {
+        isNeedAwait: false,
+        domainEvenntFn: this.onAfterSignInSuperRewared.bind(this)
+      },
+      SignInSuperRewared.name
+    )
   }
 
   private async onAfterSignInSuperRewared(event: SignInSuperRewared): Promise<void> {
@@ -29,23 +33,27 @@ export class AfterSignInSuperRewared implements IHandle<SignInSuperRewared> {
       })
       if (fundAmountOrError.isFailure) {
         console.error(fundAmountOrError.error)
-        return 
+        return
       }
-      const fundOrErrors= Fund.create({
-        incomeUserId:signIn.userId,
+      const fundOrErrors = Fund.create({
+        incomeUserId: signIn.userId,
         amount: fundAmountOrError.getValue(),
         type: 'signInSuperReward',
         relationId: signIn.id.toString()
       })
 
-      const distributionResult=await  this.fundService.distribution(fundOrErrors.getValue())
-      if(distributionResult.isLeft()){
+      const distributionResult = await this.fundService.distribution(fundOrErrors.getValue())
+      if (distributionResult.isLeft()) {
         console.error(distributionResult.value)
         return
       }
-      console.log(`[AfterSignInSuperRewared]: Successfully executed CreateRecommendedUser use case AfterSignInSuperRewared`)
+      console.log(
+        `[AfterSignInSuperRewared]: Successfully executed CreateRecommendedUser use case AfterSignInSuperRewared`
+      )
     } catch (err) {
-      console.log(`[AfterSignInSuperRewared]: Failed to execute CreateRecommendedUser use case AfterSignInSuperRewared.`)
+      console.log(
+        `[AfterSignInSuperRewared]: Failed to execute CreateRecommendedUser use case AfterSignInSuperRewared.`
+      )
     }
   }
 }

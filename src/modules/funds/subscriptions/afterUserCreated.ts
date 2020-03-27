@@ -13,7 +13,13 @@ export class AfterUserCreated implements IHandle<UserCreated> {
 
   setupSubscriptions(): void {
     // Register to the domain event
-    DomainEvents.register(this.onUserCreated.bind(this), UserCreated.name)
+    DomainEvents.register(
+      {
+        isNeedAwait: false,
+        domainEvenntFn: this.onUserCreated.bind(this)
+      },
+      UserCreated.name
+    )
   }
 
   private async onUserCreated(event: UserCreated): Promise<void> {
@@ -21,7 +27,7 @@ export class AfterUserCreated implements IHandle<UserCreated> {
 
     try {
       let createFundAccountUseCaseResult = await this.createFundAccountUseCase.execute({
-        recommendedUserId: user.userId.id.toString(),
+        recommendedUserId: user.userId.id.toString()
       })
       if (createFundAccountUseCaseResult.isLeft()) {
         console.error(createFundAccountUseCaseResult.value.getValue())

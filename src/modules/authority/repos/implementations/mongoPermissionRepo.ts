@@ -4,6 +4,7 @@ import { Global } from '../../../../shared/infra/database/mongodb'
 import { Collection } from 'mongodb'
 import { IPermissionDbModel } from '../../dbModels/iPermissionDbModel'
 import { PermissionMap } from '../../mappers/permissionMap'
+import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 
 export class MongoPermissionRepo implements IPermissionRepo {
   private createCollection(): Collection<IPermissionDbModel> {
@@ -36,6 +37,8 @@ export class MongoPermissionRepo implements IPermissionRepo {
       },
       { upsert: true }
     )
+
+    await DomainEvents.dispatchEventsForAggregate(permission)
   }
 
   public async deleteById(_id: string): Promise<void> {

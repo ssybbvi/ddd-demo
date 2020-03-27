@@ -8,7 +8,7 @@ import { PurchaseHistory } from '../../domain/purchaseHistory'
 import { PurchaseHistoryMap } from '../../mappers/purchaseHistoryMap'
 
 export class MongoPurchaseHistoryRepo implements IPurchaseHistoryRepo {
-  constructor() { }
+  constructor() {}
 
   private createCollection(): Collection<IPurchaseHistoryDbModel> {
     return Global.instance.mongoDb.collection<IPurchaseHistoryDbModel>('purchaseHistory')
@@ -36,7 +36,7 @@ export class MongoPurchaseHistoryRepo implements IPurchaseHistoryRepo {
       { upsert: true }
     )
 
-    DomainEvents.dispatchEventsForAggregate(purchaseHistory)
+    await DomainEvents.dispatchEventsForAggregate(purchaseHistory)
   }
 
   public async exist(_id: string): Promise<boolean> {

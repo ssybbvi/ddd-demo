@@ -12,11 +12,10 @@ import { IUserDbModels } from '../../../users/dbModels/iUserDbModels'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 
 export class AuthorityUserRepo implements IAuthorityUserRepo {
-  constructor() { }
+  constructor() {}
   private createCollection(): Collection<IAuthorityUserDbModel> {
     return Global.instance.mongoDb.collection<IAuthorityUserDbModel>('authorityUser')
   }
-
 
   public async filter(): Promise<AuthorityUser[]> {
     let list = await this.createCollection()
@@ -65,6 +64,6 @@ export class AuthorityUserRepo implements IAuthorityUserRepo {
       { upsert: true }
     )
 
-    DomainEvents.dispatchEventsForAggregate(authorityUser)
+    await DomainEvents.dispatchEventsForAggregate(authorityUser)
   }
 }

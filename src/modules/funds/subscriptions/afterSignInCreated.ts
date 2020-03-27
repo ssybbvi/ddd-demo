@@ -6,19 +6,22 @@ import { Fund } from '../domain/fund'
 import { FundAmount } from '../domain/fundAmount'
 
 export class AfterSignInCreated implements IHandle<SignInCreated> {
+  private fundService: FundService
 
-  private fundService:FundService
- 
-  constructor(
-    fundService:FundService
-    ) {
+  constructor(fundService: FundService) {
     this.setupSubscriptions()
-    this.fundService=fundService
+    this.fundService = fundService
   }
 
   setupSubscriptions(): void {
     // Register to the domain event
-    DomainEvents.register(this.onAfterSignInCreated.bind(this), SignInCreated.name)
+    DomainEvents.register(
+      {
+        isNeedAwait: false,
+        domainEvenntFn: this.onAfterSignInCreated.bind(this)
+      },
+      SignInCreated.name
+    )
   }
 
   private async onAfterSignInCreated(event: SignInCreated): Promise<void> {
@@ -30,17 +33,17 @@ export class AfterSignInCreated implements IHandle<SignInCreated> {
       })
       if (fundAmountOrError.isFailure) {
         console.error(fundAmountOrError.error)
-        return 
+        return
       }
-      const fundOrErrors= Fund.create({
-        incomeUserId:signIn.userId,
+      const fundOrErrors = Fund.create({
+        incomeUserId: signIn.userId,
         amount: fundAmountOrError.getValue(),
         type: 'signIn',
         relationId: signIn.id.toString()
       })
 
-      const distributionResult=await  this.fundService.distribution(fundOrErrors.getValue())
-      if(distributionResult.isLeft()){
+      const distributionResult = await this.fundService.distribution(fundOrErrors.getValue())
+      if (distributionResult.isLeft()) {
         console.error(distributionResult.value)
         return
       }
@@ -50,5 +53,4 @@ export class AfterSignInCreated implements IHandle<SignInCreated> {
       console.log(`[AfterSignInCreated]: Failed to execute CreateRecommendedUser use case AfterSignInCreated.`)
     }
   }
-
 }

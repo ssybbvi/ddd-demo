@@ -13,18 +13,33 @@ export class AfterRecommendedUserCreated implements IHandle<RecommendedUserCreat
 
   setupSubscriptions(): void {
     // Register to the domain event
-    DomainEvents.register(this.onUserCreated.bind(this), RecommendedUserCreated.name)
+    DomainEvents.register(
+      {
+        isNeedAwait: true,
+        domainEvenntFn: this.onUserCreated.bind(this)
+      },
+      RecommendedUserCreated.name
+    )
   }
 
   private async onUserCreated(event: RecommendedUserCreated): Promise<void> {
     const { recommendedUser } = event
     try {
-      await this.createRecommendedUserDistributionRelationUseCase.execute({
+      const useCaseResult = await this.createRecommendedUserDistributionRelationUseCase.execute({
         recommendedUserId: recommendedUser.id.toString()
       })
-      console.log(`[AfterRecommendedUserCreated]: Successfully executed CreateRecommendedUser use case AfterRecommendedUserCreated`)
+
+      if (useCaseResult.isLeft()) {
+        console.error(useCaseResult.value)
+      }
+
+      console.log(
+        `[AfterRecommendedUserCreated]: Successfully executed CreateRecommendedUser use case AfterRecommendedUserCreated`
+      )
     } catch (err) {
-      console.log(`[AfterRecommendedUserCreated]: Failed to execute CreateRecommendedUser use case AfterRecommendedUserCreated.`)
+      console.log(
+        `[AfterRecommendedUserCreated]: Failed to execute CreateRecommendedUser use case AfterRecommendedUserCreated.`
+      )
     }
   }
 }
