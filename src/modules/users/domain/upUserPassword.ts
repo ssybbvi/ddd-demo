@@ -3,19 +3,19 @@ import { ValueObject } from '../../../shared/domain/ValueObject'
 import { Guard } from '../../../shared/core/Guard'
 import { Result } from '../../../shared/core/Result'
 
-export interface IUserPasswordProps {
+export interface IUpUserPasswordProps {
   value: string
   hashed?: boolean
 }
 
-export class UserPassword extends ValueObject<IUserPasswordProps> {
+export class UpUserPassword extends ValueObject<IUpUserPasswordProps> {
   public static minLength: number = 6
 
   get value(): string {
     return this.props.value
   }
 
-  private constructor(props: IUserPasswordProps) {
+  private constructor(props: IUpUserPasswordProps) {
     super(props)
   }
 
@@ -70,20 +70,20 @@ export class UserPassword extends ValueObject<IUserPasswordProps> {
     })
   }
 
-  public static create(props: IUserPasswordProps): Result<UserPassword> {
+  public static create(props: IUpUserPasswordProps): Result<UpUserPassword> {
     const propsResult = Guard.againstNullOrUndefined(props.value, 'password')
 
     if (!propsResult.succeeded) {
-      return Result.fail<UserPassword>(propsResult.message)
+      return Result.fail<UpUserPassword>(propsResult.message)
     } else {
       if (!props.hashed) {
         if (!this.isAppropriateLength(props.value)) {
-          return Result.fail<UserPassword>('Password doesnt meet criteria [8 chars min].')
+          return Result.fail<UpUserPassword>('Password doesnt meet criteria [8 chars min].')
         }
       }
 
-      return Result.ok<UserPassword>(
-        new UserPassword({
+      return Result.ok<UpUserPassword>(
+        new UpUserPassword({
           value: props.value,
           hashed: !!props.hashed === true
         })

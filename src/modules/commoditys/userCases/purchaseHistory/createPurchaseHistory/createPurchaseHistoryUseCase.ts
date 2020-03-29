@@ -5,30 +5,31 @@ import { PurchaseHistory } from '../../../domain/purchaseHistory'
 import { IPurchaseHistoryRepo } from '../../../repos/iPurchaseHistoryRepo'
 import { CreatePurchaseHistoryDto } from './createPurchaseHistoryDto'
 import { IUserRepo } from '../../../../users/repos/userRepo'
+import { IWxUserRepo } from '../../../../users/repos/wxUserRepo'
 
 type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 
 export class CreatePurchaseHistoryUseCase implements UseCase<CreatePurchaseHistoryDto, Promise<Response>> {
   private purchaseHistoryRepo: IPurchaseHistoryRepo
-  private userRepo: IUserRepo
+  private wxUserRepo: IWxUserRepo
 
-  constructor(purchaseHistoryRepo: IPurchaseHistoryRepo, userRepo: IUserRepo) {
+  constructor(purchaseHistoryRepo: IPurchaseHistoryRepo, wxUserRepo: IWxUserRepo) {
     this.purchaseHistoryRepo = purchaseHistoryRepo
-    this.userRepo = userRepo
+    this.wxUserRepo = wxUserRepo
   }
 
   public async execute(request: CreatePurchaseHistoryDto): Promise<Response> {
     try {
       const { userId, commodityId } = request
 
-      const user = await this.userRepo.getById(userId)
+      const wxUser = await this.wxUserRepo.getById(userId)
 
       const purchaseHistoryOrEerros = PurchaseHistory.create({
         userId: userId,
         commodityId: commodityId,
-        nickName: user.platform.wx!.value.nickName,
-        avatarUrl: user.platform.wx!.value.avatarUrl,
-        gender: user.platform.wx!.value.gender,
+        nickName: wxUser.nickName,
+        avatarUrl: wxUser.avatarUrl,
+        gender: wxUser.gender
       })
 
       if (purchaseHistoryOrEerros.isFailure) {

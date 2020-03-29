@@ -2,10 +2,12 @@ import { GetDistributionRecommendedUserUseCase } from './getDistributionRecommen
 import { recommendedUserRepo, signInRepo } from '../../../repos'
 import { GetDistributionRecommendedUserController } from './getDistributionRecommendedUserController'
 import { fundRepo } from '../../../../funds/repos'
-import { userRepo } from '../../../../users/repos'
+import { wxUserRepo } from '../../../../users/repos'
 
-const getDistributionRecommendedUserUseCase = new GetDistributionRecommendedUserUseCase(fundRepo, userRepo)
+const getDistributionRecommendedUserUseCase = new GetDistributionRecommendedUserUseCase(fundRepo, wxUserRepo)
 
-const getDistributionRecommendedUserController = new GetDistributionRecommendedUserController(getDistributionRecommendedUserUseCase)
+const getDistributionRecommendedUserController = new GetDistributionRecommendedUserController(
+  getDistributionRecommendedUserUseCase
+)
 
 export { getDistributionRecommendedUserUseCase, getDistributionRecommendedUserController }

@@ -24,12 +24,12 @@ export class AfterUserCreated implements IHandle<UserCreated> {
   }
 
   private async onUserCreated(event: UserCreated): Promise<void> {
-    const { user, extra } = event
+    const { user } = event
 
     try {
       const result = await this.createRecommendedUser.execute({
         userId: user.userId.id.toString(),
-        inviteToken: extra ? extra.inviteToken : null
+        inviteToken: null
       })
 
       if (result.isLeft()) {

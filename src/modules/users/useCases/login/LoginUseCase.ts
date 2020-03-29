@@ -6,9 +6,9 @@ import { UseCase } from '../../../../shared/core/UseCase'
 import { IUserRepo } from '../../repos/userRepo'
 import { IAuthService } from '../../services/authService'
 import { User } from '../../domain/user'
-import { UserName } from '../../domain/userName'
-import { UserPassword } from '../../domain/userPassword'
 import { JWTToken, RefreshToken } from '../../domain/jwt'
+import { UpUserName } from '../../domain/upUserName'
+import { UpUserPassword } from '../../domain/upUserPassword'
 
 type Response = Either<
   LoginUseCaseErrors.PasswordDoesntMatchError | LoginUseCaseErrors.UserNameDoesntExistError | AppError.UnexpectedError,
@@ -26,12 +26,12 @@ export class LoginUserUseCase implements UseCase<LoginDTO, Promise<Response>> {
 
   public async execute(request: LoginDTO): Promise<Response> {
     let user: User
-    let userName: UserName
-    let password: UserPassword
+    let userName: UpUserName
+    let password: UpUserPassword
 
     try {
-      const usernameOrError = UserName.create({ name: request.userName })
-      const passwordOrError = UserPassword.create({ value: request.password })
+      const usernameOrError = UpUserName.create({ name: request.userName })
+      const passwordOrError = UpUserPassword.create({ value: request.password })
       const payloadResult = Result.combine([usernameOrError, passwordOrError])
 
       if (payloadResult.isFailure) {
@@ -70,8 +70,8 @@ export class LoginUserUseCase implements UseCase<LoginDTO, Promise<Response>> {
 
       return right(
         Result.ok<LoginDTOResponse>({
-          accessToken: "",
-          refreshToken: ""
+          accessToken: '',
+          refreshToken: ''
         })
       )
     } catch (err) {

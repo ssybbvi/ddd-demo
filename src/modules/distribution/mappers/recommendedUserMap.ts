@@ -18,9 +18,6 @@ export class RecommendedUserMap implements IMapper<RecommendedUser> {
 
     const recommendedUserOrError = RecommendedUser.create(
       {
-        createAt: raw.createAt,
-        inviteToken: raw.inviteToken,
-        inviteRecommendedUserId: raw.inviteRecommendedUserId,
         distributionRelationList: distributionRelationList
       },
       new UniqueEntityID(raw._id)
@@ -42,9 +39,6 @@ export class RecommendedUserMap implements IMapper<RecommendedUser> {
 
     return {
       _id: recommendedUser.id.toString(),
-      inviteRecommendedUserId: recommendedUser.inviteRecommendedUserId,
-      createAt: recommendedUser.createAt,
-      inviteToken: recommendedUser.inviteToken,
       distributionRelationList: distributionRelationList
     }
   }
@@ -60,9 +54,6 @@ export class RecommendedUserMap implements IMapper<RecommendedUser> {
 
     return {
       _id: recommendedUser.id.toString(),
-      inviteRecommendedUserId: recommendedUser.inviteRecommendedUserId,
-      createAt: recommendedUser.createAt,
-      inviteToken: recommendedUser.inviteToken,
       distributionRelationList: distributionRelationList
     }
   }

@@ -9,6 +9,8 @@ import { WxAuthrizationService, WxJsCodeToSessionResult } from '../../services/w
 import { WxAuthorizationErrors } from './wxAuthorizationErrors'
 import { WxUser } from '../../domain/wxUser'
 import { WxAuthorizationDtoResult } from './wxAuthorizationDtoResult'
+import { IWxUserRepo } from '../../repos/wxUserRepo'
+import { UniqueEntityID } from '../../../../shared/domain/UniqueEntityID'
 
 type Response = Either<
   WxAuthorizationErrors.WxJsCodeToSessionError | AppError.UnexpectedError | Result<any>,
@@ -17,15 +19,18 @@ type Response = Either<
 
 export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promise<Response>> {
   private userRepo: IUserRepo
+  private wxUserRepo: IWxUserRepo
   private authorizationService: AuthorizationService
   private wxAuthrizationService: WxAuthrizationService
 
   constructor(
     userRepo: IUserRepo,
+    wxUserRepo: IWxUserRepo,
     authorizationService: AuthorizationService,
     wxAuthrizationService: WxAuthrizationService
   ) {
     this.userRepo = userRepo
+    this.wxUserRepo = wxUserRepo
     this.authorizationService = authorizationService
     this.wxAuthrizationService = wxAuthrizationService
   }
@@ -41,7 +46,7 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
       }
 
       let wxJsCodeToSessionResult: WxJsCodeToSessionResult = jsCodeToSessionValue.getValue()
-      const isExist = await this.userRepo.existsWxOpenId(wxJsCodeToSessionResult.openid)
+      const isExist = await this.wxUserRepo.existsWxOpenId(wxJsCodeToSessionResult.openid)
 
       if (!isExist) {
         const wxUserOrError = WxUser.create({
@@ -57,31 +62,30 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
           return left(Result.fail<User>(wxUserOrError.error.toString())) as Response
         }
 
-        let userOrError = User.create(
+        await this.wxUserRepo.save(wxUserOrError.getValue())
+
+        User.create(
           {
-            from: '',
-            platform: {
-              wx: wxUserOrError.getValue()
-            }
+            //inviteRecommendedUserId: request.inviteToken
           },
-          null,
-          {
-            inviteToken: inviteToken
-          }
+          wxUserOrError.getValue().id
         )
 
-        if (userOrError.isFailure) {
-          return left(Result.fail<User>(userOrError.error.toString())) as Response
-        }
-        let user = userOrError.getValue()
-        await this.userRepo.save(user)
+        // if (userOrError.isFailure) {
+        //   return left(Result.fail<User>(userOrError.error.toString())) as Response
+        // }
+        // let user = userOrError.getValue()
+        // await this.userRepo.save(user)
       }
 
-      let user = await this.userRepo.getUserByWxOpenId(wxJsCodeToSessionResult.openid)
-      let loginDTOResponse: WxAuthorizationDtoResult = await this.authorizationService.getAceessTokenWithRefreshToken(
-        user
-      )
-      await this.userRepo.save(user)
+      //  let user = await this.userRepo.getUserByWxOpenId(wxJsCodeToSessionResult.openid)
+      let loginDTOResponse: WxAuthorizationDtoResult = {
+        accessToken: '',
+        refreshToken: ''
+      } // await this.authorizationService.getAceessTokenWithRefreshToken(
+      //   user
+      // )
+      // await this.userRepo.save(user)
 
       return right(Result.ok<WxAuthorizationDtoResult>(loginDTOResponse))
     } catch (err) {

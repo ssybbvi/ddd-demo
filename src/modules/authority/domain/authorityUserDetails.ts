@@ -1,10 +1,10 @@
 import { ValueObject } from '../../../shared/domain/ValueObject'
 import { Result } from '../../../shared/core/Result'
 import { Guard } from '../../../shared/core/Guard'
-import { UserName } from '../../users/domain/userName'
+import { UpUserName } from '../../users/domain/upUserName'
 
 interface AuthorityUserDetailsProps {
-  username: UserName
+  username: UpUserName
   reputation: number
   isAdminUser?: boolean
   isDeleted?: boolean
@@ -15,7 +15,7 @@ interface AuthorityUserDetailsProps {
  */
 
 export class AuthorityUserDetails extends ValueObject<AuthorityUserDetailsProps> {
-  get username(): UserName {
+  get username(): UpUserName {
     return this.props.username
   }
 

@@ -4,9 +4,9 @@ import { Db, MongoClient, Collection } from 'mongodb'
 
 import { IUserDbModels } from '../../dbModels/iUserDbModels'
 import { Global } from '../../../../shared/infra/database/mongodb'
-import { UserMap } from '../../mappers/userMap'
-import { UserName } from '../../domain/userName'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
+import { UpUserName } from '../../domain/upUserName'
+import { UserMap } from '../../mappers/userMap'
 
 export class MongoUserRepo implements IUserRepo {
   constructor() {}
@@ -27,9 +27,9 @@ export class MongoUserRepo implements IUserRepo {
     return list.map(item => UserMap.toDomain(item))
   }
 
-  async getUserByUserName(userName: UserName | string): Promise<User> {
+  async getUserByUserName(userName: UpUserName | string): Promise<User> {
     const baseUser = await this.createCollection().findOne({
-      username: userName instanceof UserName ? (<UserName>userName).value : userName
+      username: userName instanceof UpUserName ? (<UpUserName>userName).value : userName
     })
     if (!!baseUser === false) throw new Error('User not found.')
     return UserMap.toDomain(baseUser)
@@ -49,31 +49,16 @@ export class MongoUserRepo implements IUserRepo {
       { _id: raw._id },
       {
         $set: {
-          from: raw.from,
           accessToken: raw.accessToken,
           refreshToken: raw.refreshToken,
           isDeleted: raw.isDeleted,
           lastLogin: raw.lastLogin,
-          platform: raw.platform
+          inviteRecommendedUserId: raw.inviteRecommendedUserId,
+          inviteToken: raw.inviteRecommendedUserId
         }
       },
       { upsert: true }
     )
     await DomainEvents.dispatchEventsForAggregate(user)
-  }
-
-  async getUserByWxOpenId(wxOpenId: string): Promise<User> {
-    const baseUser = await this.createCollection().findOne({
-      'platform.wx.openId': wxOpenId
-    })
-    if (!!baseUser === false) throw new Error('User not found.')
-    return UserMap.toDomain(baseUser)
-  }
-
-  async existsWxOpenId(wxOpenId: string): Promise<boolean> {
-    const baseUser = await this.createCollection().findOne({
-      'platform.wx.openId': wxOpenId
-    })
-    return !!baseUser === true
   }
 }

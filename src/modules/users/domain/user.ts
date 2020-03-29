@@ -1,7 +1,5 @@
-import { UserName } from './userName'
 import { UserId } from './userId'
-import { UserCreated, UserCreatedEventExtra } from './events/userCreated'
-import { UserPassword } from './userPassword'
+import { UserCreated } from './events/userCreated'
 import { JWTToken, RefreshToken } from './jwt'
 import { UserLoggedIn } from './events/userLoggedIn'
 import { UserDeleted } from './events/userDeleted'
@@ -17,27 +15,19 @@ import { UserFrom } from './userFrom'
 //   password: UserPassword
 // }
 
-export interface PlatformProps {
-  wx?: WxUser
-  //password?: PasswordProps
-}
-
 export interface UserProps {
-  from?: UserFrom
   accessToken?: JWTToken
   refreshToken?: RefreshToken
   isDeleted?: boolean
   lastLogin?: Date
-  platform: PlatformProps
+  createAt?: number
+  inviteToken?: string
+  inviteRecommendedUserId?: string
 }
 
 export class User extends AggregateRoot<UserProps> {
   get userId(): UserId {
     return UserId.create(this._id).getValue()
-  }
-
-  get from(): UserFrom {
-    return this.props.from
   }
 
   get accessToken(): string {
@@ -56,8 +46,16 @@ export class User extends AggregateRoot<UserProps> {
     return this.props.refreshToken
   }
 
-  get platform(): PlatformProps {
-    return this.props.platform
+  get createAt(): number {
+    return this.props.createAt
+  }
+
+  get inviteToken(): string {
+    return this.props.inviteToken
+  }
+
+  get inviteRecommendedUserId(): string {
+    return this.props.inviteRecommendedUserId
   }
 
   public isLoggedIn(): boolean {
@@ -71,10 +69,6 @@ export class User extends AggregateRoot<UserProps> {
     this.props.lastLogin = new Date()
   }
 
-  public updatePlatformWx(wx: WxUser): void {
-    this.props.platform.wx = wx
-  }
-
   public delete(): void {
     if (!this.props.isDeleted) {
       this.addDomainEvent(new UserDeleted(this))
@@ -86,7 +80,7 @@ export class User extends AggregateRoot<UserProps> {
     super(props, id)
   }
 
-  public static create(props: UserProps, id?: UniqueEntityID, extra?: UserCreatedEventExtra): Result<User> {
+  public static create(props: UserProps, id?: UniqueEntityID): Result<User> {
     const isNewUser = !!id === false
     const user = new User(
       {
@@ -97,7 +91,7 @@ export class User extends AggregateRoot<UserProps> {
     )
 
     if (isNewUser) {
-      user.addDomainEvent(new UserCreated(user, extra))
+      user.addDomainEvent(new UserCreated(user))
     }
 
     return Result.ok<User>(user)

@@ -6,17 +6,18 @@ import { GetDistributionRecommendedUserDtoResult } from './getDistributionRecomm
 import { TermDTO } from '../../../dtos/termDTO'
 import { IFundRepo } from '../../../../funds/repos/iFundRepo'
 import { FundType } from '../../../../funds/domain/fundType'
-import { IUserRepo } from '../../../../users/repos/userRepo'
+import { IWxUserRepo } from '../../../../users/repos/wxUserRepo'
 
 type Response = Either<AppError.UnexpectedError | Result<any>, Result<GetDistributionRecommendedUserDtoResult>>
 
-export class GetDistributionRecommendedUserUseCase implements UseCase<GetDistributionRecommendedUserDto, Promise<Response>> {
+export class GetDistributionRecommendedUserUseCase
+  implements UseCase<GetDistributionRecommendedUserDto, Promise<Response>> {
   private fundRepo: IFundRepo
-  private userRepo: IUserRepo
+  private wxUserRepo: IWxUserRepo
 
-  constructor(fundRepo: IFundRepo, userRepo: IUserRepo) {
+  constructor(fundRepo: IFundRepo, wxUserRepo: IWxUserRepo) {
     this.fundRepo = fundRepo
-    this.userRepo = userRepo
+    this.wxUserRepo = wxUserRepo
   }
 
   public async execute(request: GetDistributionRecommendedUserDto): Promise<Response> {
@@ -57,27 +58,29 @@ export class GetDistributionRecommendedUserUseCase implements UseCase<GetDistrib
 
     let termDtoList: TermDTO[] = []
     for (let item of distributionList) {
-      if(item.paymentUserId=="0"){
+      if (item.paymentUserId == '0') {
         termDtoList.push({
           recommendedUserId: item.paymentUserId,
-          nickName: type==="primaryDistribution"?"赚赚":"乐乐",
-          avatarUrl:  type==="primaryDistribution"?"https://pic2.zhimg.com/v2-8b0006ebf42e8ee2df8ef1d538e74d64_xl.jpg":"https://profile.csdnimg.cn/2/6/3/3_woshidamimi0",
+          nickName: type === 'primaryDistribution' ? '赚赚' : '乐乐',
+          avatarUrl:
+            type === 'primaryDistribution'
+              ? 'https://pic2.zhimg.com/v2-8b0006ebf42e8ee2df8ef1d538e74d64_xl.jpg'
+              : 'https://profile.csdnimg.cn/2/6/3/3_woshidamimi0',
           gender: 1,
           integral: item.totalAmount
         })
-      }else{
-        let user = await this.userRepo.getById(item.paymentUserId)
+      } else {
+        let wxUser = await this.wxUserRepo.getById(item.paymentUserId)
         termDtoList.push({
           recommendedUserId: item.paymentUserId,
-          nickName: user.platform.wx ? user.platform.wx.value.nickName : '',
-          avatarUrl: user.platform.wx ? user.platform.wx.value.avatarUrl : '',
-          gender: user.platform.wx ? user.platform.wx.value.gender : 1,
+          nickName: wxUser.nickName,
+          avatarUrl: wxUser.avatarUrl,
+          gender: wxUser.gender,
           integral: item.totalAmount
         })
       }
     }
 
- 
     return termDtoList
   }
 }

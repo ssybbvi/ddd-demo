@@ -1,8 +1,5 @@
 export interface RecommendedUserDTO {
   _id: string
-  inviteRecommendedUserId?: string
-  createAt: number
-  inviteToken: string
   distributionRelationList: DistributionRelationDTO[]
 }
 

@@ -6,6 +6,7 @@ import { RecommendedUserDistributionRelation } from '../../../domain/recommended
 import { FundType } from '../../../../funds/domain/fundType'
 import { CreateRecommendedUserDistributionRelationDto } from './createRecommendedUserDistributionRelationDto'
 import { CreateRecommendedUserErrors } from '../createRecommendedUser/CreateRecommendedUserErrors'
+import { IUserRepo } from '../../../../users/repos/userRepo'
 
 type Response = Either<
   CreateRecommendedUserErrors.RecommendedUserAlreadyExistsError | AppError.UnexpectedError | Result<any>,
@@ -25,6 +26,7 @@ interface inviteDistributionRewardRelation {
 export class CreateRecommendedUserDistributionRelationUseCase
   implements UseCase<CreateRecommendedUserDistributionRelationDto, Promise<Response>> {
   private recommendedUserRepo: IRecommendedUserRepo
+  private userRepo: IUserRepo
   private inviteDistributionRewardRelationList: inviteDistributionRewardRelation[] = [
     {
       distributionRate: 0.1,
@@ -36,8 +38,9 @@ export class CreateRecommendedUserDistributionRelationUseCase
     }
   ]
 
-  constructor(recommendedUserRepo: IRecommendedUserRepo) {
+  constructor(recommendedUserRepo: IRecommendedUserRepo, userRepo: IUserRepo) {
     this.recommendedUserRepo = recommendedUserRepo
+    this.userRepo = userRepo
   }
 
   public async execute(request: CreateRecommendedUserDistributionRelationDto): Promise<Response> {
@@ -54,7 +57,8 @@ export class CreateRecommendedUserDistributionRelationUseCase
         []
       )
 
-      let createRecommendedUserDistributionRelationResponseValue = createRecommendedUserDistributionRelationResponse.value
+      let createRecommendedUserDistributionRelationResponseValue =
+        createRecommendedUserDistributionRelationResponse.value
       if (createRecommendedUserDistributionRelationResponse.isLeft()) {
         return left(createRecommendedUserDistributionRelationResponseValue)
       }
@@ -77,13 +81,13 @@ export class CreateRecommendedUserDistributionRelationUseCase
     if (!existRecommendedUser) {
       return right(Result.ok<RecommendedUserDistributionRelation[]>(recommendedUserDistributionRelationList))
     }
-    let recommendedUser = await this.recommendedUserRepo.getById(recommendedUserId)
+    let user = await this.userRepo.getById(recommendedUserId)
 
-    if (!!recommendedUser.inviteRecommendedUserId && !!inviteDistributionRewardRelationList.length) {
+    if (!!user.inviteRecommendedUserId && !!inviteDistributionRewardRelationList.length) {
       let inviteDistributionRewardRelation = inviteDistributionRewardRelationList.shift()
 
       let recommendedUserDistributionRelationOrErrors = RecommendedUserDistributionRelation.create({
-        recommendedUserId: recommendedUser.inviteRecommendedUserId,
+        recommendedUserId: user.inviteRecommendedUserId,
         distributionRate: inviteDistributionRewardRelation.distributionRate,
         fundType: inviteDistributionRewardRelation.fundType
       })
@@ -95,7 +99,7 @@ export class CreateRecommendedUserDistributionRelationUseCase
       recommendedUserDistributionRelationList.push(recommendedUserDistributionRelationOrErrors.getValue())
 
       await this.createRecommendedUserDistributionRelation(
-        recommendedUser.inviteRecommendedUserId,
+        user.inviteRecommendedUserId,
         inviteDistributionRewardRelationList,
         recommendedUserDistributionRelationList
       )

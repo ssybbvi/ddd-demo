@@ -6,9 +6,6 @@ import { RecommendedUserId } from './recommendedUserId'
 import { RecommendedUserDistributionRelation } from './recommendedUserDistributionRelation'
 
 interface RecommendedUserProps {
-  inviteRecommendedUserId?: string
-  createAt?: number
-  inviteToken: string
   distributionRelationList: RecommendedUserDistributionRelation[]
 }
 
@@ -21,30 +18,23 @@ export class RecommendedUser extends AggregateRoot<RecommendedUserProps> {
     return RecommendedUserId.create(this._id).getValue()
   }
 
-  get inviteRecommendedUserId(): string {
-    return this.props.inviteRecommendedUserId
-  }
-
-  get createAt(): number {
-    return this.props.createAt
-  }
-
-  get inviteToken(): string {
-    return this.props.inviteToken
-  }
-
   get distributionRelationList(): RecommendedUserDistributionRelation[] {
     return this.props.distributionRelationList
   }
 
-  public updateDistributionRelationList(recommendedUserDistributionRelationList: RecommendedUserDistributionRelation[]): void {
+  public updateDistributionRelationList(
+    recommendedUserDistributionRelationList: RecommendedUserDistributionRelation[]
+  ): void {
     this.props.distributionRelationList = recommendedUserDistributionRelationList
   }
 
-  public static create(props: RecommendedUserProps, id?: UniqueEntityID, isAddDomainEvent: boolean = false): Result<RecommendedUser> {
+  public static create(
+    props: RecommendedUserProps,
+    id?: UniqueEntityID,
+    isAddDomainEvent: boolean = false
+  ): Result<RecommendedUser> {
     const defaultValues: RecommendedUserProps = {
-      ...props,
-      createAt: props.createAt ? props.createAt : Date.now()
+      ...props
     }
 
     const recommendedUser = new RecommendedUser(defaultValues, id)

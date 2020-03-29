@@ -1,6 +1,6 @@
 import { Result } from '../../../shared/core/Result'
-import { ValueObject } from '../../../shared/domain/ValueObject'
-import { Guard } from '../../../shared/core/Guard'
+import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
+import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 
 interface WxUserProps {
   openId: string
@@ -11,16 +11,44 @@ interface WxUserProps {
   gender?: number
 }
 
-export class WxUser extends ValueObject<WxUserProps> {
-  get value(): WxUserProps {
-    return this.props
+export class WxUser extends AggregateRoot<WxUserProps> {
+  get openId(): string {
+    return this.props.openId
   }
 
-  private constructor(props: WxUserProps) {
-    super(props)
+  get unionId(): string {
+    return this.props.unionId
   }
 
-  public static create(props: WxUserProps): Result<WxUser> {
-    return Result.ok<WxUser>(new WxUser(props))
+  get sessionKey(): string {
+    return this.props.sessionKey
+  }
+
+  get nickName(): string {
+    return this.props.nickName
+  }
+
+  get avatarUrl(): string {
+    return this.props.avatarUrl
+  }
+
+  get gender(): number {
+    return this.props.gender
+  }
+
+  private constructor(props: WxUserProps, id?: UniqueEntityID) {
+    super(props, id)
+  }
+
+  public static create(props: WxUserProps, id?: UniqueEntityID): Result<WxUser> {
+    const isNewUser = !!id === false
+    const user = new WxUser(
+      {
+        ...props
+      },
+      id
+    )
+
+    return Result.ok<WxUser>(user)
   }
 }

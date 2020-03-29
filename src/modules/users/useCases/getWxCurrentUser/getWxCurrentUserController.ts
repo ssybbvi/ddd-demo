@@ -23,7 +23,7 @@ export class GetWxCurrentUserController extends BaseController {
       } else {
         const user = result.value.getValue()
         return this.ok(res, {
-          user: UserMap.toWxLoginMe(user)
+          user: null //UserMap.toWxLoginMe(user)
         })
       }
     } catch (err) {

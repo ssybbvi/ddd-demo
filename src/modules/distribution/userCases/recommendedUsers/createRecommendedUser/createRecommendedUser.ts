@@ -52,8 +52,6 @@ export class CreateRecommendedUser implements UseCase<CreateRecommendedUserDTO, 
 
       const recommendedUserOrError: Result<RecommendedUser> = RecommendedUser.create(
         {
-          inviteRecommendedUserId: inviteRecommendedUserId,
-          inviteToken: userId,
           distributionRelationList: []
         },
         new UniqueEntityID(userId),

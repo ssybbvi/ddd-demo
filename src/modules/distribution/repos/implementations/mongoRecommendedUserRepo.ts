@@ -30,9 +30,6 @@ export class RecommendedUserRepo implements IRecommendedUserRepo {
       { _id: raw._id },
       {
         $set: {
-          inviteRecommendedUserId: raw.inviteRecommendedUserId,
-          createAt: raw.createAt,
-          inviteToken: raw.inviteToken,
           distributionRelationList: raw.distributionRelationList
         }
       },

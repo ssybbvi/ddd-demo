@@ -2,11 +2,11 @@ import { Result } from '../../../shared/core/Result'
 import { ValueObject } from '../../../shared/domain/ValueObject'
 import { Guard } from '../../../shared/core/Guard'
 
-interface UserNameProps {
+interface IUpUserNameProps {
   name: string
 }
 
-export class UserName extends ValueObject<UserNameProps> {
+export class UpUserName extends ValueObject<IUpUserNameProps> {
   public static maxLength: number = 15
   public static minLength: number = 2
 
@@ -14,26 +14,26 @@ export class UserName extends ValueObject<UserNameProps> {
     return this.props.name
   }
 
-  private constructor(props: UserNameProps) {
+  private constructor(props: IUpUserNameProps) {
     super(props)
   }
 
-  public static create(props: UserNameProps): Result<UserName> {
+  public static create(props: IUpUserNameProps): Result<UpUserName> {
     const usernameResult = Guard.againstNullOrUndefined(props.name, '用户名')
     if (!usernameResult.succeeded) {
-      return Result.fail<UserName>(usernameResult.message)
+      return Result.fail<UpUserName>(usernameResult.message)
     }
 
     const minLengthResult = Guard.againstAtLeast(this.minLength, props.name)
     if (!minLengthResult.succeeded) {
-      return Result.fail<UserName>(minLengthResult.message)
+      return Result.fail<UpUserName>(minLengthResult.message)
     }
 
     const maxLengthResult = Guard.againstAtMost(this.maxLength, props.name)
     if (!maxLengthResult.succeeded) {
-      return Result.fail<UserName>(minLengthResult.message)
+      return Result.fail<UpUserName>(minLengthResult.message)
     }
 
-    return Result.ok<UserName>(new UserName(props))
+    return Result.ok<UpUserName>(new UpUserName(props))
   }
 }
