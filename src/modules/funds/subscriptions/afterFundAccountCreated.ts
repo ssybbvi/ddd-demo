@@ -29,6 +29,19 @@ export class AfterFundAccountCreated implements IHandle<FundAccountCreated> {
     const { fundAccount } = event
 
     try {
+
+      const createFundRegisteredUseCaseResult = await this.createFundUseCase.execute({
+        amount: 200,
+        incomeUserId: fundAccount.id.toString(),
+        type: 'registered',
+        relationId: fundAccount.id.toString()
+      })
+      if (createFundRegisteredUseCaseResult.isLeft()) {
+        console.error(createFundRegisteredUseCaseResult.value)
+        return
+      }
+
+
       const createFundUseCaseByPrimaryDistributionResult = await this.createFundUseCase.execute({
         amount: 10,
         incomeUserId: fundAccount.id.toString(),

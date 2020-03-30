@@ -4,6 +4,7 @@ import { Result } from '../../../shared/core/Result'
 import { RecommendedUserCreated } from './events/recommendedUserCreated'
 import { RecommendedUserId } from './recommendedUserId'
 import { RecommendedUserDistributionRelation } from './recommendedUserDistributionRelation'
+import { InviteRecommendedUser } from './events/InviteRecommendedUser'
 
 interface RecommendedUserProps {
   inviteRecommendedUserId?: string
