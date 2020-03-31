@@ -5,5 +5,6 @@ export interface IDayDayTaskDbModels {
   createAt: number
   userId: string
   isReward: boolean
+  isOneTime: boolean
 }
 

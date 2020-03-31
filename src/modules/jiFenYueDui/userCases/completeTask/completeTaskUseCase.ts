@@ -29,12 +29,14 @@ export class CompleteTaskUseCase implements UseCase<CompleteTaskDto, Promise<Res
 
       const dayDayTaskType = type as DayDayTaskType
       const reward = this.dayDayTaskService.getRewardByTaskType(dayDayTaskType)
+      const isOneTime = this.dayDayTaskService.getIsOneTimeByType(dayDayTaskType)
 
       const dayDayTaskOrErrors = DayDayTask.create({
         type: dayDayTaskType,
         reward: reward,
         userId: userId,
-        isReward: false
+        isReward: false,
+        isOneTime
       })
 
       if (dayDayTaskOrErrors.isFailure) {

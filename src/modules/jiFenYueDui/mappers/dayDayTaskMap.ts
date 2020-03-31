@@ -12,7 +12,8 @@ export class DayDayTaskMap implements IMapper<DayDayTask>{
       reward: dayDayTask.reward,
       createAt: dayDayTask.createAt,
       userId: dayDayTask.userId,
-      isReward: dayDayTask.isReward
+      isReward: dayDayTask.isReward,
+      isOneTime: dayDayTask.isOneTime
     }
   }
 
@@ -27,7 +28,8 @@ export class DayDayTaskMap implements IMapper<DayDayTask>{
         reward: raw.reward,
         createAt: raw.createAt,
         userId: raw.userId,
-        isReward: raw.isReward
+        isReward: raw.isReward,
+        isOneTime: raw.isOneTime,
       },
       new UniqueEntityID(raw._id)
     )
@@ -43,7 +45,8 @@ export class DayDayTaskMap implements IMapper<DayDayTask>{
       reward: dayDayTask.reward,
       createAt: dayDayTask.createAt,
       userId: dayDayTask.userId,
-      isReward: dayDayTask.isReward
+      isReward: dayDayTask.isReward,
+      isOneTime: dayDayTask.isOneTime
     }
   }
 }

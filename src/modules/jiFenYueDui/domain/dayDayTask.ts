@@ -11,6 +11,7 @@ interface IDayDayTaskProps {
   createAt?: number
   userId: string
   isReward: boolean
+  isOneTime: boolean
 }
 
 
@@ -37,6 +38,10 @@ export class DayDayTask extends AggregateRoot<IDayDayTaskProps> {
 
   get isReward(): boolean {
     return this.props.isReward
+  }
+
+  get isOneTime(): boolean {
+    return this.props.isOneTime
   }
 
   public receiveReward(): void {

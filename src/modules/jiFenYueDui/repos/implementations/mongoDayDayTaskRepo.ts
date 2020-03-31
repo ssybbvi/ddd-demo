@@ -29,7 +29,8 @@ export class MongoDayDayTaskRepo implements IDayDayTaskRepo {
           reward: raw.reward,
           createAt: raw.createAt,
           userId: raw.userId,
-          isReward: raw.isReward
+          isReward: raw.isReward,
+          isOneTime: raw.isOneTime
         }
       },
       { upsert: true }
@@ -46,9 +47,16 @@ export class MongoDayDayTaskRepo implements IDayDayTaskRepo {
   public async filter(userId: string): Promise<DayDayTask[]> {
     let query: any = {
       userId,
-      createAt: {
-        $gt: new Date().setHours(0, 0, 0, 0)
-      }
+      $or: [
+        {
+          createAt: {
+            $gt: new Date().setHours(0, 0, 0, 0)
+          }
+        }, {
+          isOneTime: true
+        }
+      ]
+
     }
 
     let dayDayTaskList = await this.createCollection()
@@ -61,9 +69,15 @@ export class MongoDayDayTaskRepo implements IDayDayTaskRepo {
     let query: any = {
       userId,
       type,
-      createAt: {
-        $gt: new Date().setHours(0, 0, 0, 0)
-      }
+      $or: [
+        {
+          createAt: {
+            $gt: new Date().setHours(0, 0, 0, 0)
+          }
+        }, {
+          isOneTime: true
+        }
+      ]
     }
 
     let dayDayTask = await this.createCollection()

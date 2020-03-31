@@ -40,7 +40,6 @@ export class AfterRecommendedUserCreated implements IHandle<RecommendedUserCreat
         console.error(useCaseResult.value)
       }
 
-
       const recommendedUserList = useCaseResult.value.getValue() as RecommendedUser[]
 
       const todayRecommendedUserTotal = recommendedUserList.reduce((acc, item) => { return acc += item.createAt > new Date().setHours(0, 0, 0, 0) ? 1 : 0 }, 0)
@@ -80,4 +79,6 @@ export class AfterRecommendedUserCreated implements IHandle<RecommendedUserCreat
       )
     }
   }
+
+
 }

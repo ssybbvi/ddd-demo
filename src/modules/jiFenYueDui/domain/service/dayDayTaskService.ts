@@ -2,7 +2,20 @@ import { DayDayTaskType } from "../dayDayTaskType";
 
 export class DayDayTaskService {
 
+  public getIsOneTimeByType(type: DayDayTaskType) {
+    return ["registered", "phoneAuthorization"].includes(type)
+  }
+
   public getRewardByTaskType(type: DayDayTaskType): number {
+
+    if (type === "registered") {
+      return 200
+    }
+
+    if (type === "phoneAuthorization") {
+      return 100
+    }
+
     if (type === "order") {
       return 100
     }
