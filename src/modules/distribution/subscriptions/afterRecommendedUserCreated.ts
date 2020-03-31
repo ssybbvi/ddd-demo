@@ -34,11 +34,11 @@ export class AfterRecommendedUserCreated implements IHandle<RecommendedUserCreat
       }
 
       console.log(
-        `[AfterRecommendedUserCreated]: Successfully executed CreateRecommendedUser use case AfterRecommendedUserCreated`
+        `[AfterRecommendedUserCreated]: 新用户计算分销关系`
       )
     } catch (err) {
       console.log(
-        `[AfterRecommendedUserCreated]: Failed to execute CreateRecommendedUser use case AfterRecommendedUserCreated.`
+        `[AfterRecommendedUserCreated]: 新用户计算分销关系 ${err}`
       )
     }
   }

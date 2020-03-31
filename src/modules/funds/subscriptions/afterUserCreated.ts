@@ -33,9 +33,9 @@ export class AfterUserCreated implements IHandle<UserCreated> {
         console.error(createFundAccountUseCaseResult.value.getValue())
       }
 
-      console.log(`[AfterUserCreated]: Successfully executed CreateFundAccountUseCase use case AfterUserCreated`)
+      console.log(`[AfterUserCreated]: 新用户，创建资金汇总记录`)
     } catch (err) {
-      console.log(`[AfterUserCreated]: Failed to execute CreateFundAccountUseCase use case AfterUserCreated.`)
+      console.log(`[AfterUserCreated]:  新用户，创建资金汇总记录 ${err}`)
     }
   }
 }

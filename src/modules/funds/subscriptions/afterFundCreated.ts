@@ -28,9 +28,9 @@ export class AfterFundCreated implements IHandle<FundCreated> {
     try {
       await this.refreshFundAccount(fund.incomeUserId)
       await this.refreshFundAccount(fund.paymentUserId)
-      console.log(`[AfterFundCreated]: Successfully executed AfterFundCreated use case AfterFundCreated`)
+      console.log(`[AfterFundCreated]: 资金变动 重新统计总金额`)
     } catch (err) {
-      console.log(`[AfterFundCreated]: Failed to execute AfterFundCreated use case AfterFundCreated.`)
+      console.log(`[AfterFundCreated]: 资金变动 重新统计总金额 ${err}`)
     }
   }
 

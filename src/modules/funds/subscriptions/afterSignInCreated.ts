@@ -48,9 +48,9 @@ export class AfterSignInCreated implements IHandle<SignInCreated> {
         return
       }
 
-      console.log(`[AfterSignInCreated]: Successfully executed CreateRecommendedUser use case AfterSignInCreated`)
+      console.log(`[AfterSignInCreated]: 签到成功，增加奖励资金记录`)
     } catch (err) {
-      console.log(`[AfterSignInCreated]: Failed to execute CreateRecommendedUser use case AfterSignInCreated.`)
+      console.log(`[AfterSignInCreated]: 签到成功，增加奖励资金记录 ${err}`)
     }
   }
 }

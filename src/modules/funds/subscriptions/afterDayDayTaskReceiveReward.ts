@@ -49,9 +49,9 @@ export class AfterDayDayTaskReceiveReward implements IHandle<DayDayTaskReceiveRe
         return
       }
 
-      console.log(`[DayDayTaskReceiveReward]: Successfully executed CreateRecommendedUser use case DayDayTaskReceiveReward`)
+      console.log(`[DayDayTaskReceiveReward]: 完成任务奖励积分`)
     } catch (err) {
-      console.log(`[DayDayTaskReceiveReward]: Failed to execute CreateRecommendedUser use case DayDayTaskReceiveReward.`)
+      console.log(`[DayDayTaskReceiveReward]: 完成任务奖励积分 ${err}`)
     }
   }
 }

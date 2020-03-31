@@ -37,9 +37,9 @@ export class AfterUserCreated implements IHandle<UserCreated> {
         return
       }
 
-      console.log(`[AfterUserCreated]: Successfully executed CreateRecommendedUser use case AfterUserCreated`)
+      console.log(`[AfterUserCreated]: 新用户创建推荐记录`)
     } catch (err) {
-      console.log(`[AfterUserCreated]: Failed to execute CreateRecommendedUser use case AfterUserCreated.`)
+      console.log(`[AfterUserCreated]: 新用户创建推荐记录 ${err}`)
     }
   }
 }

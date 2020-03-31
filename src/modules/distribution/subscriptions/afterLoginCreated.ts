@@ -35,9 +35,9 @@ export class AfterLoginCreated implements IHandle<UserLoggedIn> {
         console.error(dailySignInUseCaseValue.value)
       }
 
-      console.log(`[AfterLoginCreated]: Successfully executed CreateRecommendedUser use case AfterLoginCreated`)
+      console.log(`[AfterLoginCreated]: 登录后签到`)
     } catch (err) {
-      console.log(`[AfterLoginCreated]: Failed to execute CreateRecommendedUser use case AfterLoginCreated.`)
+      console.log(`[AfterLoginCreated]: 登录后签到 ${err}`)
     }
   }
 }

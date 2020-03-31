@@ -44,9 +44,9 @@ export class AfterOrderPaymented implements IHandle<OrderPaymented> {
           console.error(createPurchaseHistoryUseCaseeResult.value)
         }
       }
-      console.log(`[OrderPaymented]: Successfully executed SaleCommodityUseCase use case OrderPaymented`)
+      console.log(`[OrderPaymented]: 支付订单，增加商品销量`)
     } catch (err) {
-      console.log(`[OrderPaymented]: Failed to execute SaleCommodityUseCase use case OrderPaymented.`)
+      console.log(`[OrderPaymented]: 支付订单，增加商品销量. ${err}`)
     }
   }
 }

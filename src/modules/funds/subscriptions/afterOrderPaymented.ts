@@ -38,9 +38,9 @@ export class AfterOrderPaymented implements IHandle<OrderPaymented> {
       if (result.isLeft()) {
         console.error(result.value)
       }
-      console.log(`[OrderPaymented]: Successfully executed CreateRecommendedUser use case OrderPaymented`)
+      console.log(`[OrderPaymented]: 支付订单，增加支出资金流水`)
     } catch (err) {
-      console.log(`[OrderPaymented]: Failed to execute CreateRecommendedUser use case OrderPaymented.`)
+      console.log(`[OrderPaymented]: 支付订单，增加支出资金流水 ${err}`)
     }
   }
 }
