@@ -33,9 +33,9 @@ export class AfterOrderCanceled implements IHandle<OrderCanceled> {
           console.error(useCaseResult.value.error)
         }
       }
-      console.log(`[OrderCanceled]: Successfully executed SaleCommodityUseCase use case OrderCanceled`)
+      console.log(`[OrderCanceled]: 取消订单恢复xxx`)
     } catch (err) {
-      console.log(`[OrderCanceled]: Failed to execute SaleCommodityUseCase use case OrderCanceled.`)
+      console.log(`[OrderCanceled]: 取消订单恢复xxx. ${err}`)
     }
   }
 }

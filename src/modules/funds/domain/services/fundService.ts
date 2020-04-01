@@ -32,7 +32,7 @@ export class FundService {
     let fundList: Fund[] = [fund]
     for (let item of recommendedUser.distributionRelationList) {
       const fundAmountOrError = FundAmount.create({
-        fundAmount: Math.ceil(fund.amount.value * item.distributionRate)
+        fundAmount: fund.amount.value * item.distributionRate
       })
 
       if (fundAmountOrError.isFailure) {
@@ -50,6 +50,7 @@ export class FundService {
       if (fundOrErrors.isFailure) {
         return left(fundOrErrors)
       }
+
       fundList.push(fundOrErrors.getValue())
     }
 

@@ -48,11 +48,11 @@ export class AfterSignInSuperRewared implements IHandle<SignInSuperRewared> {
         return
       }
       console.log(
-        `[AfterSignInSuperRewared]: Successfully executed CreateRecommendedUser use case AfterSignInSuperRewared`
+        `[AfterSignInSuperRewared]: 超级签到，增加资金记录`
       )
     } catch (err) {
       console.log(
-        `[AfterSignInSuperRewared]: Failed to execute CreateRecommendedUser use case AfterSignInSuperRewared.`
+        `[AfterSignInSuperRewared]: 超级签到，增加资金记录 ${err}`
       )
     }
   }

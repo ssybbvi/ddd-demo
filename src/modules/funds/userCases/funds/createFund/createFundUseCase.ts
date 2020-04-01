@@ -19,7 +19,7 @@ export class CreateFundUseCase implements UseCase<CreateFundDto, Promise<Respons
 
   public async execute(request: CreateFundDto): Promise<Response> {
     try {
-      const {amount,
+      const { amount,
         incomeUserId,
         paymentUserId,
         status,
@@ -27,28 +27,34 @@ export class CreateFundUseCase implements UseCase<CreateFundDto, Promise<Respons
         type,
         relationId, } = request
 
-    const fundAmountOrError = FundAmount.create({ fundAmount: amount })
-    
-    if (fundAmountOrError.isFailure) {
-        return left(fundAmountOrError)
-    }
+      const newAmount = Math.floor(amount)//去小数点后面的值
+      if (newAmount < 1) {
+        console.log("小于1的资金变动不记录")
+        return right(Result.ok<void>())
+      }
 
-    let fundOrErrors = Fund.create({
+      const fundAmountOrError = FundAmount.create({ fundAmount: newAmount })
+
+      if (fundAmountOrError.isFailure) {
+        return left(fundAmountOrError)
+      }
+
+      let fundOrErrors = Fund.create({
         amount: fundAmountOrError.getValue(),
-        status:status as FundStatus,
+        status: status as FundStatus,
         incomeUserId: incomeUserId,
         paymentUserId: paymentUserId,
         descrpiton: descrption,
         type: type as FundType,
         relationId
-    })
+      })
 
-    if (fundOrErrors.isFailure) {
+      if (fundOrErrors.isFailure) {
         return left(fundOrErrors)
-    }
+      }
 
-    await this.fundRepo.save(fundOrErrors.getValue())
-     
+      await this.fundRepo.save(fundOrErrors.getValue())
+
       return right(Result.ok<void>())
     } catch (err) {
       return left(new AppError.UnexpectedError(err))

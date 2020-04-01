@@ -10,6 +10,7 @@ import { AfterOrderPaymented } from './afterOrderPaymented'
 import { createFundUseCase } from '../userCases/funds/createFund'
 import { AfterFundAccountCreated } from './afterFundAccountCreated'
 import { createFundAccountUseCase } from '../userCases/fundAccounts/createFundAccount'
+import { AfterDayDayTaskReceiveReward } from './afterDayDayTaskReceiveReward'
 
 // Subscriptions
 new AfterUserCreated(createFundAccountUseCase)
@@ -18,3 +19,4 @@ new AfterSignInSuperRewared(fundService)
 new AfterFundCreated(refreshFundAccountUseCase)
 new AfterOrderPaymented(createFundUseCase)
 new AfterFundAccountCreated(createFundUseCase)
+new AfterDayDayTaskReceiveReward(fundService)

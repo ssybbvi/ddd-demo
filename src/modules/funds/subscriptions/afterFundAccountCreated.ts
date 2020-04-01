@@ -51,9 +51,9 @@ export class AfterFundAccountCreated implements IHandle<FundAccountCreated> {
         return
       }
 
-      console.log(`[AfterFundAccountCreated]: Successfully executed CreateFundUseCase use case AfterFundAccountCreated`)
+      console.log(`[AfterFundAccountCreated]: 新用户积分奖励`)
     } catch (err) {
-      console.log(`[AfterFundAccountCreated]: Failed to execute CreateFundUseCase use case AfterFundAccountCreated.`)
+      console.log(`[AfterFundAccountCreated]: 新用户积分奖励 ${err}`)
     }
   }
 }
