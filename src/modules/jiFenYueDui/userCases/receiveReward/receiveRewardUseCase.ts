@@ -31,7 +31,7 @@ export class ReceiveRewardUseCase implements UseCase<ReceiveRewardDto, Promise<R
       }
 
       dayDayTask.receiveReward()
-      this.dayDayTaskRepo.save(dayDayTask)
+      await this.dayDayTaskRepo.save(dayDayTask)
 
       return right(Result.ok<DayDayTask>(dayDayTask))
     } catch (err) {

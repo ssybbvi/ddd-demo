@@ -1,25 +1,25 @@
 import { BaseController } from '../../../../shared/infra/http/models/BaseController'
 import * as express from 'express'
-import { ShippingOrderUseCase } from './shippingOrderUseCase'
-import { ShippingOrderDto } from './shippingOrderDto'
-import { ShippingOrderErrors } from './shippingOrderErrors'
+import { ShippedOrderUseCase } from './shippedOrderUseCase'
+import { ShippedOrderDto } from './shippedOrderDto'
+import { ShippedOrderErrors } from './shippedOrderErrors'
 
-export class ShippingOrderController extends BaseController {
-  private useCase: ShippingOrderUseCase
+export class ShippedOrderController extends BaseController {
+  private useCase: ShippedOrderUseCase
 
-  constructor(useCase: ShippingOrderUseCase) {
+  constructor(useCase: ShippedOrderUseCase) {
     super()
     this.useCase = useCase
   }
 
   async executeImpl(req: any, res: express.Response): Promise<any> {
 
-    const { shippingNumber, shippingType } = req.body
+    const { shippedNumber, shippedType } = req.body
 
-    const dto: ShippingOrderDto = {
+    const dto: ShippedOrderDto = {
       orderId: req.body.orderId,
-      shippingNumber,
-      shippingType
+      shippedNumber,
+      shippedType
     }
 
     try {
@@ -29,7 +29,7 @@ export class ShippingOrderController extends BaseController {
         const error = useCaseValue
 
         switch (error.constructor) {
-          case ShippingOrderErrors.OrderNotPayment:
+          case ShippedOrderErrors.OrderNotPayment:
             return this.notFound(res, error.errorValue().message)
           default:
             return this.fail(res, error.errorValue() + '')

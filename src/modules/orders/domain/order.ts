@@ -11,7 +11,8 @@ import { OrderPaymented } from "./events/orderPaymented";
 import { OrderShipped } from "./events/orderShipped";
 import { OrderCreated } from "./events/orderCreated";
 import { CancelOrderErrors } from "../userCases/cancelOrder/CancelOrderErrors";
-import { ShippingOrderErrors } from "../userCases/shippingOrder/shippingOrderErrors";
+import { ShippedOrderErrors } from "../userCases/shippedOrder/shippedOrderErrors";
+import { ReceivedOrderErrors } from "../userCases/receivedOrder/receivedErrors";
 
 
 export type CancelOrderResult = Either<
@@ -21,12 +22,18 @@ export type CancelOrderResult = Either<
 >
 
 
-export type ShippingOrderResult = Either<
-    ShippingOrderErrors.OrderNotPayment |
+export type ShippedOrderResult = Either<
+    ShippedOrderErrors.OrderNotPayment |
     Result<any>,
     Result<void>
 >
 
+
+export type ReceivedOrderResult = Either<
+    ReceivedOrderErrors.OrderNotShipping |
+    Result<any>,
+    Result<void>
+>
 
 export interface OrderProps {
     userId: string
@@ -151,13 +158,9 @@ export class Order extends AggregateRoot<OrderProps>{
         this.addDomainEvent(new OrderPaymented(this))
     }
 
-    public isShipped() {
-
-    }
-
-    public shipped(shippingNumber: string, shippingType: string): ShippingOrderResult {
+    public shipped(shippingNumber: string, shippingType: string): ShippedOrderResult {
         if (!this.isShipping()) {
-            return left(new ShippingOrderErrors.OrderNotPayment())
+            return left(new ShippedOrderErrors.OrderNotPayment())
         }
 
         this.props.shippingTime = Date.now()
@@ -165,12 +168,18 @@ export class Order extends AggregateRoot<OrderProps>{
         this.props.shippingNumber = shippingNumber
         this.props.shippingType = shippingType
         this.addDomainEvent(new OrderShipped(this))
+        return right(Result.ok<void>())
     }
 
-    public received() {
+
+    public received(): ReceivedOrderResult {
+        if (!this.isShipped()) {
+            return left(new ReceivedOrderErrors.OrderNotShipping())
+        }
         this.props.finishTime = Date.now()
         this.props.status = 'received'
         this.addDomainEvent(new OrderReceived(this))
+        return right(Result.ok<void>())
     }
 
     public isAtPaymentTime(): boolean {
@@ -192,6 +201,10 @@ export class Order extends AggregateRoot<OrderProps>{
 
     public isUnPaid(): boolean {
         return this.props.status === "unpaid"
+    }
+
+    public isShipped(): boolean {
+        return this.props.status === 'shipped'
     }
 
     private calculationOrderItemPriceTotal(): void {

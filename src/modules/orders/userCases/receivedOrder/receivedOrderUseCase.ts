@@ -2,26 +2,33 @@ import { Either, Result, right, left } from '../../../../shared/core/Result'
 import { AppError } from '../../../../shared/core/AppError'
 import { UseCase } from '../../../../shared/core/UseCase'
 import { IOrderRepo } from '../../repos/orderRepo'
-import { IFundAccountRepo } from '../../../funds/repos/iFundAccountRepo'
-import { ShippingOrderDto } from './shippingOrderDto'
+import { ReceivedOrderDto } from './receivedOrderDto'
+import { ReceivedOrderErrors } from './receivedErrors'
 
 type Response = Either<
-  | AppError.UnexpectedError | Result<any>, Result<void>>
+  | AppError.UnexpectedError | ReceivedOrderErrors.OrderNotShipping | Result<any>, Result<void>>
 
-export class ShippingOrderUseCase implements UseCase<ShippingOrderDto, Promise<Response>> {
+export class ReceivedOrderUseCase implements UseCase<ReceivedOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo
 
   constructor(orderRepo: IOrderRepo) {
     this.orderRepo = orderRepo
   }
 
-  public async execute(request: ShippingOrderDto): Promise<Response> {
+  public async execute(request: ReceivedOrderDto): Promise<Response> {
     try {
-      const { orderId, shippingNumber, shippingType } = request
+      const { orderId } = request
 
       const order = await this.orderRepo.getById(orderId)
 
-      order.shipped(shippingNumber, shippingType)
+      if (!!order === false) {
+        return left(new ReceivedOrderErrors.OrderNotFound())
+      }
+
+      const result = order.received()
+      if (result.isLeft()) {
+        return result.value.getValue()
+      }
 
       await this.orderRepo.save(order)
 
