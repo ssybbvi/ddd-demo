@@ -13,6 +13,15 @@ import { OrderCreated } from "./events/orderCreated";
 import { CancelOrderErrors } from "../userCases/cancelOrder/CancelOrderErrors";
 import { ShippedOrderErrors } from "../userCases/shippedOrder/shippedOrderErrors";
 import { ReceivedOrderErrors } from "../userCases/receivedOrder/receivedErrors";
+import { PaymentOrderErrors } from "../userCases/paymentOrder/paymentOrderErrors";
+
+
+export type PaymentOrderResult = Either<
+    PaymentOrderErrors.OrderStatusNotPaid |
+    PaymentOrderErrors.PaymentTimeExpired |
+    Result<any>,
+    Result<void>
+>
 
 
 export type CancelOrderResult = Either<
@@ -34,6 +43,7 @@ export type ReceivedOrderResult = Either<
     Result<any>,
     Result<void>
 >
+
 
 export interface OrderProps {
     userId: string
@@ -152,10 +162,19 @@ export class Order extends AggregateRoot<OrderProps>{
         return right(Result.ok<void>())
     }
 
-    public payment() {
+    public payment(): PaymentOrderResult {
+        if (!this.isUnPaid()) {
+            return left(new PaymentOrderErrors.OrderStatusNotPaid())
+        }
+
+        if (!this.isAtPaymentTime()) {
+            return left(new PaymentOrderErrors.PaymentTimeExpired())
+        }
+
         this.props.paymentTime = Date.now()
         this.props.status = 'shipping'
         this.addDomainEvent(new OrderPaymented(this))
+        return right(Result.ok<void>())
     }
 
     public shipped(shippingNumber: string, shippingType: string): ShippedOrderResult {
@@ -185,10 +204,6 @@ export class Order extends AggregateRoot<OrderProps>{
     public isAtPaymentTime(): boolean {
         const lastPaymentTime = Date.now() - 1000 * 60 * 15
         return this.props.createAt > lastPaymentTime;
-    }
-
-    public isAllowPyamnet(): boolean {
-        return this.isAtPaymentTime() && this.isUnPaid()
     }
 
     public isAllowCancel(): boolean {
