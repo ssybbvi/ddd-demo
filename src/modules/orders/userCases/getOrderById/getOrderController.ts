@@ -17,13 +17,11 @@ export class GetOrderByIdController extends BaseController {
   }
 
   async executeImpl(req: DecodedExpressRequest, res: express.Response): Promise<any> {
-    const { userId } = req.decoded;
+    //const { userId } = req.decoded;
     const dto: GetOrderByIdDto = {
       orderId: req.params.orderId,
-      userId: userId
+      //userId: userId
     }
-
-    console.log(dto)
 
     try {
       const result = await this.useCase.execute(dto)

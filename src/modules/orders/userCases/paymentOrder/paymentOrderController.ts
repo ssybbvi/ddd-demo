@@ -35,6 +35,8 @@ export class PaymentOrderController extends BaseController {
             return this.notFound(res, error.errorValue().message)
           case PaymentOrderErrors.UnableToPaid:
             return this.notFound(res, error.errorValue().message)
+          case PaymentOrderErrors.PaymentTimeExpired:
+            return this.notFound(res, error.errorValue().message)
           default:
             return this.fail(res, error.errorValue() + '')
         }

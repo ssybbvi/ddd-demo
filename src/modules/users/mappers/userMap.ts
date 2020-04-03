@@ -16,12 +16,15 @@ export class UserMap implements IMapper<User> {
   }
 
   public static toDomain(raw: IUserDbModels): User {
+    if (raw === null) {
+      return null
+    }
     const userOrError = User.create(
       {
         accessToken: raw.accessToken,
         refreshToken: raw.refreshToken,
         isDeleted: raw.isDeleted,
-        lastLogin: new Date(raw.lastLogin),
+        lastLogin: raw.lastLogin,
         createAt: raw.createAt,
         inviteToken: raw.inviteToken,
         inviteRecommendedUserId: raw.inviteRecommendedUserId
@@ -42,7 +45,8 @@ export class UserMap implements IMapper<User> {
       isDeleted: user.isDeleted,
       createAt: user.createAt,
       inviteToken: user.inviteToken,
-      inviteRecommendedUserId: user.inviteRecommendedUserId
+      inviteRecommendedUserId: user.inviteRecommendedUserId,
+      lastLogin: user.lastLogin
     }
   }
 

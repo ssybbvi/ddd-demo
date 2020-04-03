@@ -26,6 +26,14 @@ export namespace PaymentOrderErrors {
     }
   }
 
+  export class PaymentTimeExpired extends Result<UseCaseError> {
+    constructor() {
+      super(false, {
+        message: `支付时间已过期`
+      } as UseCaseError)
+    }
+  }
+
   export class DoesNotBelongToYou extends Result<UseCaseError> {
     constructor() {
       super(false, {

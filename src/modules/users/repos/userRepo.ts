@@ -7,4 +7,5 @@ export interface IUserRepo {
   getUserByUserName(userName: UpUserName | string): Promise<User>
   save(user: User): Promise<void>
   getById(_id: string): Promise<User>
+  getUserByInviteRecommendedUserId(userId: string): Promise<User[]>
 }

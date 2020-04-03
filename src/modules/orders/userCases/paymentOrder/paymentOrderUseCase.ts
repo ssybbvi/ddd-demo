@@ -31,16 +31,13 @@ export class PaymentOrderUseCase implements UseCase<PaymentOrderDto, Promise<Res
         return left(new PaymentOrderErrors.OrderNotFound())
       }
 
-      if (!!order.isAllowPyamnet() === false) {
-        return left(new PaymentOrderErrors.OrderStatusNotPaid())
-      }
-
       if (order.userId !== userId) {
         return left(new PaymentOrderErrors.DoesNotBelongToYou())
       }
 
-      if (!!order.isUnPaid() === false) {
-        return left(new PaymentOrderErrors.OrderStatusNotPaid())
+      const paymentResult = order.payment()
+      if (paymentResult.isLeft()) {
+        return paymentResult.value.getValue()
       }
 
       const fundAccount = await this.fundAccountRepo.getById(userId)
@@ -48,7 +45,6 @@ export class PaymentOrderUseCase implements UseCase<PaymentOrderDto, Promise<Res
         return left(new PaymentOrderErrors.UnableToPaid())
       }
 
-      order.payment()
       await this.orderRepo.save(order)
 
       return right(Result.ok<void>())

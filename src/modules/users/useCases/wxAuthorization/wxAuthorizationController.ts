@@ -25,6 +25,10 @@ export class WxAuthorizationController extends BaseController {
         switch (error.constructor) {
           case WxAuthorizationErrors.WxJsCodeToSessionError:
             return this.notFound(res, error.errorValue().message)
+          case WxAuthorizationErrors.InviteTokenInValidError:
+            return this.notFound(res, error.errorValue().message)
+          case WxAuthorizationErrors.LoginForbidInviteTokenError:
+            return this.notFound(res, error.errorValue().message)
           default:
             return this.fail(res, error.errorValue() + '')
         }

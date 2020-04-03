@@ -27,7 +27,7 @@ export class DailySignInUseCase implements UseCase<DailySignInDto, Promise<Respo
         return left(new DailySignInErrors.TodayAlreadySignInError())
       }
 
-      let reward = 100
+      let reward = 10
       const signInOrError = SignIn.create({
         userId: request.userId,
         reward: reward,

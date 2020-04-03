@@ -39,7 +39,6 @@ export class MongoUserRepo implements IUserRepo {
     const baseUser = await this.createCollection().findOne({
       _id: userId
     })
-    if (!!baseUser === false) throw new Error('User not found.')
     return UserMap.toDomain(baseUser)
   }
 
@@ -54,11 +53,20 @@ export class MongoUserRepo implements IUserRepo {
           isDeleted: raw.isDeleted,
           lastLogin: raw.lastLogin,
           inviteRecommendedUserId: raw.inviteRecommendedUserId,
-          inviteToken: raw.inviteRecommendedUserId
+          inviteToken: raw.inviteToken
         }
       },
       { upsert: true }
     )
     await DomainEvents.dispatchEventsForAggregate(user)
+  }
+
+  public async getUserByInviteRecommendedUserId(userId: string): Promise<User[]> {
+    let userList = await this.createCollection()
+      .find({
+        inviteRecommendedUserId: userId
+      })
+      .toArray()
+    return userList.map(item => UserMap.toDomain(item))
   }
 }

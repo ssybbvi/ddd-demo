@@ -5,21 +5,13 @@ import { UserLoggedIn } from './events/userLoggedIn'
 import { UserDeleted } from './events/userDeleted'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { Result } from '../../../shared/core/Result'
-import { Guard } from '../../../shared/core/Guard'
 import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
-import { WxUser } from './wxUser'
-import { UserFrom } from './userFrom'
-
-// export interface PasswordProps {
-//   username: UserName
-//   password: UserPassword
-// }
 
 export interface UserProps {
   accessToken?: JWTToken
   refreshToken?: RefreshToken
   isDeleted?: boolean
-  lastLogin?: Date
+  lastLogin?: number
   createAt?: number
   inviteToken?: string
   inviteRecommendedUserId?: string
@@ -38,7 +30,7 @@ export class User extends AggregateRoot<UserProps> {
     return this.props.isDeleted
   }
 
-  get lastLogin(): Date {
+  get lastLogin(): number {
     return this.props.lastLogin
   }
 
@@ -66,7 +58,7 @@ export class User extends AggregateRoot<UserProps> {
     this.addDomainEvent(new UserLoggedIn(this))
     this.props.accessToken = token
     this.props.refreshToken = refreshToken
-    this.props.lastLogin = new Date()
+    this.props.lastLogin = Date.now()
   }
 
   public delete(): void {
@@ -80,17 +72,19 @@ export class User extends AggregateRoot<UserProps> {
     super(props, id)
   }
 
-  public static create(props: UserProps, id?: UniqueEntityID): Result<User> {
+  public static create(props: UserProps, id?: UniqueEntityID, isAddDomainEvent: boolean = false): Result<User> {
     const isNewUser = !!id === false
     const user = new User(
       {
         ...props,
-        isDeleted: props.isDeleted ? props.isDeleted : false
+        isDeleted: props.isDeleted ? props.isDeleted : false,
+        inviteToken: props.inviteToken ? props.inviteToken : id.toString(),
+        createAt: props.createAt ? props.createAt : Date.now()
       },
       id
     )
 
-    if (isNewUser) {
+    if (isNewUser || isAddDomainEvent) {
       user.addDomainEvent(new UserCreated(user))
     }
 

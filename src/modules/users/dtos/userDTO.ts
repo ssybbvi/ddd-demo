@@ -1,6 +1,6 @@
 export interface UserDTO {
   _id: string
-  lastLogin?: Date
+  lastLogin?: number
   createAt?: number
   inviteToken?: string
   inviteRecommendedUserId?: string
