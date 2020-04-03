@@ -78,6 +78,7 @@ export class MongoOrderRepo implements IOrderRepo {
     }
     let orderList = await this.createCollection()
       .find(query)
+      .sort({ createAt: -1 })
       .toArray()
     return orderList.map(item => OrderMap.toDomain(item))
   }
