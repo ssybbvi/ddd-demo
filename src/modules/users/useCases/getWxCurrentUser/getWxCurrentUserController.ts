@@ -22,9 +22,9 @@ export class GetWxCurrentUserController extends BaseController {
       if (result.isLeft()) {
         return this.fail(res, result.value.errorValue().message)
       } else {
-        const user = result.value.getValue()
+        const wxuser = result.value.getValue()
         return this.ok(res, {
-          user: WxUserMap.toDTO(user)
+          user: WxUserMap.toDTO(wxuser)
         })
       }
     } catch (err) {
