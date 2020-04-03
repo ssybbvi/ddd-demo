@@ -12,7 +12,7 @@ export class WxUserMap {
       openId: wxUser.props.openId,
       unionId: wxUser.props.unionId,
       sessionKey: wxUser.props.sessionKey,
-      nickName: wxUser.props.sessionKey,
+      nickName: wxUser.props.nickName,
       avatarUrl: wxUser.props.avatarUrl,
       gender: wxUser.props.gender
     }
