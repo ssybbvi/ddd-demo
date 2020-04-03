@@ -9,12 +9,13 @@ export class WxUserMap {
       return null
     }
     return {
-      openId: wxUser.props.openId,
-      unionId: wxUser.props.unionId,
-      sessionKey: wxUser.props.sessionKey,
-      nickName: wxUser.props.nickName,
-      avatarUrl: wxUser.props.avatarUrl,
-      gender: wxUser.props.gender
+      _id: wxUser.id.toString(),
+      openId: wxUser.openId,
+      unionId: wxUser.unionId,
+      sessionKey: wxUser.sessionKey,
+      nickName: wxUser.nickName,
+      avatarUrl: wxUser.avatarUrl,
+      gender: wxUser.gender
     }
   }
 
