@@ -63,6 +63,7 @@ export class MongoFundRepo implements IFundRepo {
           }
         ]
       })
+      .sort({ createAt: -1 })
       .toArray()
     return list.map(item => FundMap.toDomain(item))
   }
