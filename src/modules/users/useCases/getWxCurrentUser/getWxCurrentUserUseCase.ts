@@ -4,21 +4,23 @@ import { UseCase } from '../../../../shared/core/UseCase'
 import { AppError } from '../../../../shared/core/AppError'
 import { User } from '../../domain/user'
 import { GetWxCurrentUserDto } from './getWxCurrentUserDto'
+import { IWxUserRepo } from '../../repos/wxUserRepo'
+import { WxUser } from '../../domain/wxUser'
 
-type Response = Either<AppError.UnexpectedError, Result<User>>
+type Response = Either<AppError.UnexpectedError, Result<WxUser>>
 
 export class GetWxCurrentUserUseCase implements UseCase<GetWxCurrentUserDto, Promise<Response>> {
-  private userRepo: IUserRepo
+  private wxUserRepo: IWxUserRepo
 
-  constructor(userRepo: IUserRepo) {
-    this.userRepo = userRepo
+  constructor(wxUserRepo: IWxUserRepo) {
+    this.wxUserRepo = wxUserRepo
   }
 
   public async execute(request: GetWxCurrentUserDto): Promise<Response> {
     try {
-      const user = await this.userRepo.getById(request.userId)
+      const wxUser = await this.wxUserRepo.getById(request.userId)
 
-      return right(Result.ok<User>(user))
+      return right(Result.ok<WxUser>(wxUser))
     } catch (err) {
       return left(new AppError.UnexpectedError(err))
     }

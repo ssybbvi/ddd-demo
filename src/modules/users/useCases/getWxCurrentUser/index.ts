@@ -1,8 +1,8 @@
-import { userRepo } from '../../repos'
+import { userRepo, wxUserRepo } from '../../repos'
 import { GetWxCurrentUserUseCase } from './getWxCurrentUserUseCase'
 import { GetWxCurrentUserController } from './getWxCurrentUserController'
 
-const getWxCurrentUserUseCase = new GetWxCurrentUserUseCase(userRepo)
+const getWxCurrentUserUseCase = new GetWxCurrentUserUseCase(wxUserRepo)
 
 const getWxCurrentUserController = new GetWxCurrentUserController(getWxCurrentUserUseCase)
 
