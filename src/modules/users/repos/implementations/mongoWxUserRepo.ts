@@ -34,7 +34,7 @@ export class MongoWxUserRepo implements IWxUserRepo {
           openId: wxUser.openId,
           unionId: wxUser.unionId,
           sessionKey: wxUser.sessionKey,
-          nickName: wxUser.sessionKey,
+          nickName: wxUser.nickName,
           avatarUrl: wxUser.avatarUrl,
           gender: wxUser.gender
         }
