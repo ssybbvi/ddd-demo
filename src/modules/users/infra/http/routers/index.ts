@@ -1,14 +1,14 @@
 import express from 'express'
-import { deleteUserController } from '../../../useCases/deleteUser'
-import { getUserByUserNameController } from '../../../useCases/getUserByUserName'
+import { deleteUserController } from '../../../useCases/user/deleteUser'
+import { getUserByUserNameController } from '../../../useCases/user/getUserByUserName'
 import { middleware } from '../../../../../shared/infra/http'
-import { getCurrentUserController } from '../../../useCases/getCurrentUser'
-import { refreshAccessTokenController } from '../../../useCases/refreshAccessToken'
-import { logoutController } from '../../../useCases/logout'
-import { wxAuthorizationController } from '../../../useCases/wxAuthorization'
-import { getWxCurrentUserController } from '../../../useCases/getWxCurrentUser'
-import { testLoginController } from '../../../useCases/testLogin'
-import { adminAboutMeController } from '../../../useCases/adminAboutMe'
+import { getCurrentUserController } from '../../../useCases/user/getCurrentUser'
+import { refreshAccessTokenController } from '../../../useCases/user/refreshAccessToken'
+import { logoutController } from '../../../useCases/user/logout'
+import { wxAuthorizationController } from '../../../useCases/wxUser/wxAuthorization'
+import { getWxCurrentUserController } from '../../../useCases/wxUser/getWxCurrentUser'
+import { testLoginController } from '../../../useCases/user/testLogin'
+import { adminAboutMeController } from '../../../useCases/upUser/adminAboutMe'
 const userRouter = express.Router()
 
 userRouter.get('/me', middleware.ensureAuthenticated(), (req, res) => getCurrentUserController.execute(req, res))

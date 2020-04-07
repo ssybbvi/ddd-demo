@@ -3,7 +3,7 @@ import { IHandle } from '../../../shared/domain/events/IHandle'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
 import { CompleteTaskUseCase } from '../userCases/completeTask/completeTaskUseCase'
 import { CompleteTaskDto } from '../userCases/completeTask/completeTaskDto'
-import { GetUserByInviteRecommendedUserIdUseCase } from '../../users/useCases/getUserByInviteRecommendedUserId/getUserByInviteRecommendedUserIdUseCase'
+import { GetUserByInviteRecommendedUserIdUseCase } from '../../users/useCases/user/getUserByInviteRecommendedUserId/getUserByInviteRecommendedUserIdUseCase'
 import { User } from '../../users/domain/user'
 
 export class AfterUserCreated implements IHandle<UserCreated> {

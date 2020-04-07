@@ -84,11 +84,11 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
   }
 
   public updateRestrictedPurchaseQuantity(restrictedPurchaseQuantity: number) {
-    return this.props.restrictedPurchaseQuantity = restrictedPurchaseQuantity
+    return (this.props.restrictedPurchaseQuantity = restrictedPurchaseQuantity)
   }
 
   public updateImgesDescrptionList(imgesDescrptionList: string[]) {
-    return this.props.imgesDescrptionList = imgesDescrptionList
+    return (this.props.imgesDescrptionList = imgesDescrptionList)
   }
 
   public sale(): void {
@@ -121,12 +121,12 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
       tags: props.tags ? props.tags : []
     }
 
-    const fund = new Commodity(defaultValues, id)
+    const commodity = new Commodity(defaultValues, id)
 
     const isNew = !!id === false
     if (isNew) {
-      fund.addDomainEvent(new CommodityCreated(fund))
+      commodity.addDomainEvent(new CommodityCreated(commodity))
     }
-    return Result.ok<Commodity>(fund)
+    return Result.ok<Commodity>(commodity)
   }
 }

@@ -1,6 +1,7 @@
 import { Result } from '../../../shared/core/Result'
 import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
+import { WxUserCreated } from './events/wxUserCreated'
 
 interface WxUserProps {
   openId: string
@@ -48,6 +49,10 @@ export class WxUser extends AggregateRoot<WxUserProps> {
       },
       id
     )
+
+    if (isNewUser) {
+      user.addDomainEvent(new WxUserCreated(user))
+    }
 
     return Result.ok<WxUser>(user)
   }

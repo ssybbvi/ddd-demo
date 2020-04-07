@@ -1,11 +1,9 @@
 import axios from 'axios'
 
 import { Either, Result, left, right } from '../../../shared/core/Result'
-import { WxAuthorizationErrors } from '../useCases/wxAuthorization/wxAuthorizationErrors'
+import { WxAuthorizationErrors } from '../useCases/wxUser/wxAuthorization/wxAuthorizationErrors'
 import { AppError } from '../../../shared/core/AppError'
 import { URLSearchParams } from 'url'
-import { authConfig } from '../../../config'
-import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 
 export type Response = Either<
   WxAuthorizationErrors.WxJsCodeToSessionError | AppError.UnexpectedError | Result<any>,

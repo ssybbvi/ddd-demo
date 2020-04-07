@@ -6,6 +6,7 @@ import { UserDeleted } from './events/userDeleted'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { Result } from '../../../shared/core/Result'
 import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
+import { UserUpdateInviteRecommendedUserIded } from './events/userUpdateInviteRecommendedUserIded'
 
 export interface UserProps {
   accessToken?: JWTToken
@@ -48,6 +49,11 @@ export class User extends AggregateRoot<UserProps> {
 
   get inviteRecommendedUserId(): string {
     return this.props.inviteRecommendedUserId
+  }
+
+  public setInviteRecommendedUserId(inviteRecommendedUserId: string) {
+    this.props.inviteRecommendedUserId = inviteRecommendedUserId
+    this.addDomainEvent(new UserUpdateInviteRecommendedUserIded(this))
   }
 
   public isLoggedIn(): boolean {

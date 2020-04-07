@@ -3,6 +3,7 @@ import { UpUserPassword } from './upUserPassword'
 import { UpUserName } from './upUserName'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { Result } from '../../../shared/core/Result'
+import { UpUserCreated } from './events/upUserCreated'
 
 export interface IUpUserProps {
   userName: UpUserName
@@ -29,13 +30,17 @@ export class UpUser extends AggregateRoot<IUpUserProps> {
 
   public static create(props: IUpUserProps, id?: UniqueEntityID): Result<UpUser> {
     const isNewUser = !!id === false
-    const user = new UpUser(
+    const upUser = new UpUser(
       {
         ...props
       },
       id
     )
 
-    return Result.ok<UpUser>(user)
+    if (isNewUser) {
+      upUser.addDomainEvent(new UpUserCreated(upUser))
+    }
+
+    return Result.ok<UpUser>(upUser)
   }
 }

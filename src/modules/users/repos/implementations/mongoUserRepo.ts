@@ -27,14 +27,6 @@ export class MongoUserRepo implements IUserRepo {
     return list.map(item => UserMap.toDomain(item))
   }
 
-  async getUserByUserName(userName: UpUserName | string): Promise<User> {
-    const baseUser = await this.createCollection().findOne({
-      username: userName instanceof UpUserName ? (<UpUserName>userName).value : userName
-    })
-    if (!!baseUser === false) throw new Error('User not found.')
-    return UserMap.toDomain(baseUser)
-  }
-
   async getUserByUserId(userId: string): Promise<User> {
     const baseUser = await this.createCollection().findOne({
       _id: userId
