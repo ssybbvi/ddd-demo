@@ -2,6 +2,7 @@ import { Result } from '../../../shared/core/Result'
 import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { WxUserCreated } from './events/wxUserCreated'
+import { WxUserBindingPhoneNumber } from './events/wxUserBindingPhoneNumber'
 
 interface WxUserProps {
   openId: string
@@ -48,6 +49,7 @@ export class WxUser extends AggregateRoot<WxUserProps> {
 
   public refreshSessionKey(sessionKey: string) {
     this.props.sessionKey = sessionKey
+    this.addDomainEvent(new WxUserBindingPhoneNumber(this))
   }
 
   private constructor(props: WxUserProps, id?: UniqueEntityID) {
