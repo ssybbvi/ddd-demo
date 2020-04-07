@@ -1,7 +1,7 @@
 import { IHandle } from '../../../shared/domain/events/IHandle'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
 import { OrderPaymented } from '../../orders/domain/events/orderPaymented'
-import { CompleteTaskUseCase } from '../userCases/completeTask/completeTaskUseCase'
+import { CompleteTaskUseCase } from '../userCases/dayDayTask/completeTask/completeTaskUseCase'
 
 export class AfterOrderPaymented implements IHandle<OrderPaymented> {
   private completeTaskUseCase: CompleteTaskUseCase
@@ -26,7 +26,7 @@ export class AfterOrderPaymented implements IHandle<OrderPaymented> {
     const { order } = event
 
     try {
-      let result = await this.completeTaskUseCase.execute({ userId: order.userId, type: "order" })
+      let result = await this.completeTaskUseCase.execute({ userId: order.userId, type: 'order' })
       if (result.isLeft()) {
         console.error(result.value)
       }

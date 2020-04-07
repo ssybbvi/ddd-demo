@@ -1,3 +1,4 @@
-import { dayDayTaskRouter } from "./dayDayTask";
+import { dayDayTaskRouter } from './dayDayTask'
+import { scheduleTaskRouter } from './scheduledTask'
 
-export { dayDayTaskRouter }
+export { dayDayTaskRouter, scheduleTaskRouter }

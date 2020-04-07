@@ -1,4 +1,4 @@
-import { DayDayTaskType } from "../../domain/dayDayTaskType";
+import { DayDayTaskType } from '../../../domain/dayDayTaskType'
 
 export interface CompleteTaskDto {
   userId: string

@@ -1,11 +1,9 @@
-import { Result, Either, left, right } from "../../../../shared/core/Result"
-import { IDayDayTaskRepo } from "../../repos/dayDayRepo"
-import { AppError } from "../../../../shared/core/AppError"
-import { UseCase } from "../../../../shared/core/UseCase"
-import { GetDayDayTaskDto } from "./getDayDayTaskListDto"
-import { DayDayTask } from "../../domain/dayDayTask"
-
-
+import { Result, Either, left, right } from '../../../../../shared/core/Result'
+import { IDayDayTaskRepo } from '../../../repos/dayDayRepo'
+import { AppError } from '../../../../../shared/core/AppError'
+import { UseCase } from '../../../../../shared/core/UseCase'
+import { GetDayDayTaskDto } from './getDayDayTaskListDto'
+import { DayDayTask } from '../../../domain/dayDayTask'
 
 type Response = Either<AppError.UnexpectedError | Result<any>, Result<DayDayTask[]>>
 

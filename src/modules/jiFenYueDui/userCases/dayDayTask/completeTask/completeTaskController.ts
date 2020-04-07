@@ -1,11 +1,11 @@
-import { BaseController } from "../../../../shared/infra/http/models/BaseController"
+import { BaseController } from '../../../../../shared/infra/http/models/BaseController'
 import * as express from 'express'
-import { DecodedExpressRequest } from "../../../users/infra/http/models/decodedRequest"
-import { DayDayTaskDto } from "../../dtos/dayDayTaskDto"
-import { DayDayTask } from "../../domain/dayDayTask"
-import { DayDayTaskMap } from "../../mappers/dayDayTaskMap"
-import { CompleteTaskUseCase } from "./completeTaskUseCase"
-import { CompleteTaskDto } from "./completeTaskDto"
+import { DecodedExpressRequest } from '../../../../users/infra/http/models/decodedRequest'
+import { DayDayTaskDto } from '../../../dtos/dayDayTaskDto'
+import { DayDayTask } from '../../../domain/dayDayTask'
+import { DayDayTaskMap } from '../../../mappers/dayDayTaskMap'
+import { CompleteTaskUseCase } from './completeTaskUseCase'
+import { CompleteTaskDto } from './completeTaskDto'
 
 export class CompleteTaskController extends BaseController {
   private useCase: CompleteTaskUseCase

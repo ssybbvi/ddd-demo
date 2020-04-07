@@ -7,7 +7,7 @@ import { commodityRouter, purchaseHistoryRouter } from '../../../../modules/comm
 import { orderRouter } from '../../../../modules/orders/infra/http/routes'
 import { authorityUserRouter } from '../../../../modules/authority/infra/http/routes'
 import { Middleware } from '../utils/Middleware'
-import { dayDayTaskRouter } from '../../../../modules/jiFenYueDui/infra/http/routes'
+import { dayDayTaskRouter, scheduleTaskRouter } from '../../../../modules/jiFenYueDui/infra/http/routes'
 
 const v1Router = express.Router()
 
@@ -26,4 +26,5 @@ v1Router.use('/authority', authorityUserRouter)
 v1Router.use('/purchase/history', purchaseHistoryRouter)
 v1Router.use('/upload', Middleware.upload())
 v1Router.use('/dayDayTask', dayDayTaskRouter)
+v1Router.use('/scheduleTask', scheduleTaskRouter)
 export { v1Router }

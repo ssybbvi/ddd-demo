@@ -1,14 +1,18 @@
-import { Result, Either, left, right } from "../../../../shared/core/Result"
-import { IDayDayTaskRepo } from "../../repos/dayDayRepo"
-import { AppError } from "../../../../shared/core/AppError"
-import { UseCase } from "../../../../shared/core/UseCase"
-import { DayDayTask } from "../../domain/dayDayTask"
-import { ReceiveRewardDto } from "./receiveRewardDto"
-import { ReceiveRewardErrors } from "./receiveRewardErrors"
+import { Result, Either, left, right } from '../../../../../shared/core/Result'
+import { IDayDayTaskRepo } from '../../../repos/dayDayRepo'
+import { AppError } from '../../../../../shared/core/AppError'
+import { UseCase } from '../../../../../shared/core/UseCase'
+import { DayDayTask } from '../../../domain/dayDayTask'
+import { ReceiveRewardDto } from './receiveRewardDto'
+import { ReceiveRewardErrors } from './receiveRewardErrors'
 
-
-
-type Response = Either<AppError.UnexpectedError | ReceiveRewardErrors.DayDayTaskNotFound | ReceiveRewardErrors.RewardAlreadyReceive | Result<any>, Result<DayDayTask>>
+type Response = Either<
+  | AppError.UnexpectedError
+  | ReceiveRewardErrors.DayDayTaskNotFound
+  | ReceiveRewardErrors.RewardAlreadyReceive
+  | Result<any>,
+  Result<DayDayTask>
+>
 
 export class ReceiveRewardUseCase implements UseCase<ReceiveRewardDto, Promise<Response>> {
   private dayDayTaskRepo: IDayDayTaskRepo

@@ -1,5 +1,5 @@
-import { UseCaseError } from '../../../../shared/core/UseCaseError'
-import { Result } from '../../../../shared/core/Result'
+import { UseCaseError } from '../../../../../shared/core/UseCaseError'
+import { Result } from '../../../../../shared/core/Result'
 
 export namespace ReceiveRewardErrors {
   export class DayDayTaskNotFound extends Result<UseCaseError> {

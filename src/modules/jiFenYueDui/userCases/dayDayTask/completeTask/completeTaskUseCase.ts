@@ -1,11 +1,12 @@
-import { Result, Either, left, right } from "../../../../shared/core/Result"
-import { IDayDayTaskRepo } from "../../repos/dayDayRepo"
-import { AppError } from "../../../../shared/core/AppError"
-import { UseCase } from "../../../../shared/core/UseCase"
-import { DayDayTask } from "../../domain/dayDayTask"
-import { CompleteTaskDto } from "./completeTaskDto"
-import { DayDayTaskType } from "../../domain/dayDayTaskType"
-import { DayDayTaskService } from "../../domain/service/dayDayTaskService"
+import { Result, Either, left, right } from '../../../../../shared/core/Result'
+import { IDayDayTaskRepo } from '../../../repos/dayDayRepo'
+import { AppError } from '../../../../../shared/core/AppError'
+import { UseCase } from '../../../../../shared/core/UseCase'
+import { DayDayTask } from '../../../domain/dayDayTask'
+import { CompleteTaskDto } from './completeTaskDto'
+import { DayDayTaskType } from '../../../domain/dayDayTaskType'
+import { DayDayTaskService } from '../../../domain/service/dayDayTaskService'
+import { CreateScheduledTaskUseCase } from '../../scheduledTask/createScheduledTask/createScheduledTaskUseCase'
 
 type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 
@@ -50,6 +51,4 @@ export class CompleteTaskUseCase implements UseCase<CompleteTaskDto, Promise<Res
       return left(new AppError.UnexpectedError(err))
     }
   }
-
-
 }

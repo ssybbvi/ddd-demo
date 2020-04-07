@@ -69,4 +69,11 @@ export class MongoSignInRepo implements ISignInRepo {
 
     return SignInMap.toDomain(signIn)
   }
+
+  public async getCountByUserId(userId: string): Promise<number> {
+    let count = await this.createCollection().count({
+      userId: userId
+    })
+    return count
+  }
 }

@@ -1,8 +1,8 @@
 import { UserCreated } from '../../users/domain/events/userCreated'
 import { IHandle } from '../../../shared/domain/events/IHandle'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
-import { CompleteTaskUseCase } from '../userCases/completeTask/completeTaskUseCase'
-import { CompleteTaskDto } from '../userCases/completeTask/completeTaskDto'
+import { CompleteTaskUseCase } from '../userCases/dayDayTask/completeTask/completeTaskUseCase'
+import { CompleteTaskDto } from '../userCases/dayDayTask/completeTask/completeTaskDto'
 import { GetUserByInviteRecommendedUserIdUseCase } from '../../users/useCases/user/getUserByInviteRecommendedUserId/getUserByInviteRecommendedUserIdUseCase'
 import { User } from '../../users/domain/user'
 
