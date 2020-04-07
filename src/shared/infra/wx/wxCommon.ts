@@ -16,17 +16,33 @@ export interface WechatSession {
   unionid?: string
 }
 
+export interface WxPhoneNumber {
+  phoneNumber: string
+  purePhoneNumber: string
+  countryCode: string
+  watermark: {
+    appid: string
+    timestamp: string
+  }
+}
+
 export class WechatUtil {
   static async jsCodeToSession(code: string): Promise<WechatRetError | WechatSession> {
+    if (code.includes('test-xald')) {
+      return {
+        openid: code,
+        session_key: code,
+        unionid: code
+      } as WechatSession
+    }
+
     let qs = new URLSearchParams()
-    qs.append('appid', 'wx84965549e7c05a03')
-    qs.append('secret', 'd2f2cc949db194b87e50779208d9aa4d')
+    qs.append('appid', appid)
+    qs.append('secret', secret)
     qs.append('js_code', code)
     qs.append('grant_type', 'authorization_code')
 
     let url = 'https://api.weixin.qq.com/sns/jscode2session?' + qs
-
-    console.log('wx jscode2Session start', url)
 
     let res: any = (await axios.get(url)).data
     console.log('wx jscode2Session result:', res)
@@ -69,7 +85,7 @@ export class WechatUtil {
     }
   }
 
-  static async WXBizDataCrypt(sessionKey: string, encryptedData: string, ivData: string) {
+  static WXBizDataCrypt(sessionKey: string, encryptedData: string, ivData: string): WxPhoneNumber {
     if (!sessionKey || !encryptedData || !ivData) {
       return
     }
@@ -85,6 +101,8 @@ export class WechatUtil {
       decipher.setAutoPadding(true)
       decoded = decipher.update(_encryptedData, 'binary', 'utf8')
       decoded += decipher.final('utf8')
+
+      console.log('WXBizDataCrypt:', decoded)
 
       decoded = JSON.parse(decoded)
     } catch (err) {

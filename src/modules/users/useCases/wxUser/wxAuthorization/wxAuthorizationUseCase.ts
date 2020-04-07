@@ -4,13 +4,14 @@ import { UseCase } from '../../../../../shared/core/UseCase'
 import { IUserRepo } from '../../../repos/userRepo'
 
 import { WxAuthorizationDto } from './wxAuthorizationDto'
-import { WxAuthrizationService, WxJsCodeToSessionResult } from '../../../services/wxAuthrizationService'
 import { WxAuthorizationErrors } from './wxAuthorizationErrors'
 import { IWxUserRepo } from '../../../repos/wxUserRepo'
 import { CreateWxUserUseCase } from '../createWxUser/createWxUserUseCase'
 import { RecommendedByInviteTokenUseCase } from '../../user/recommendedByInviteToken/recommendedByInviteTokenUseCase'
 import { LoginDTOResponse } from '../../user/login/LoginDTO'
 import { LoginUserUseCase } from '../../user/login/LoginUseCase'
+import { RefreshSessionKeyUseCase } from '../refreshSessionKey/refreshSessionKeyUseCase'
+import { WechatUtil, WechatRetError, WechatSession } from '../../../../../shared/infra/wx/wxCommon'
 
 type Response = Either<
   | WxAuthorizationErrors.WxJsCodeToSessionError
@@ -25,51 +26,50 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
   private userRepo: IUserRepo
   private wxUserRepo: IWxUserRepo
   private loginUserUseCase: LoginUserUseCase
-  private wxAuthrizationService: WxAuthrizationService
   private createWxUserUseCase: CreateWxUserUseCase
   private recommendedByInviteTokenUseCase: RecommendedByInviteTokenUseCase
+  private refreshSessionKeyUseCase: RefreshSessionKeyUseCase
 
   constructor(
     userRepo: IUserRepo,
     wxUserRepo: IWxUserRepo,
     loginUserUseCase: LoginUserUseCase,
-    wxAuthrizationService: WxAuthrizationService,
     createWxUserUseCase: CreateWxUserUseCase,
-    recommendedByInviteTokenUseCase: RecommendedByInviteTokenUseCase
+    recommendedByInviteTokenUseCase: RecommendedByInviteTokenUseCase,
+    refreshSessionKeyUseCase: RefreshSessionKeyUseCase
   ) {
     this.userRepo = userRepo
     this.wxUserRepo = wxUserRepo
     this.loginUserUseCase = loginUserUseCase
-    this.wxAuthrizationService = wxAuthrizationService
     this.createWxUserUseCase = createWxUserUseCase
     this.recommendedByInviteTokenUseCase = recommendedByInviteTokenUseCase
+    this.refreshSessionKeyUseCase = refreshSessionKeyUseCase
   }
 
   public async execute(request: WxAuthorizationDto): Promise<Response> {
     try {
       const { code, inviteToken, nickName, avatarUrl, gender } = request
 
-      let jsCodeToSessionResult = await this.wxAuthrizationService.jsCodeToSession(code)
-      let jsCodeToSessionValue = jsCodeToSessionResult.value
-      if (jsCodeToSessionResult.isLeft()) {
-        return left(jsCodeToSessionValue)
+      let jsCodeToSessionResult = await WechatUtil.jsCodeToSession(code)
+      if ('errmsg' in jsCodeToSessionResult) {
+        return left(Result.fail<WechatRetError>(JSON.stringify(jsCodeToSessionResult)))
       }
 
-      let wxJsCodeToSessionResult: WxJsCodeToSessionResult = jsCodeToSessionValue.getValue()
-      const isExist = await this.wxUserRepo.existsWxOpenId(wxJsCodeToSessionResult.openid)
+      const wechatSession = jsCodeToSessionResult as WechatSession
 
-      if (!isExist) {
-        if (request.inviteToken) {
-          const inviteRecommendedUser = await this.userRepo.getUserByUserId(request.inviteToken)
+      const wxUser = await this.wxUserRepo.getUserByWxOpenId(wechatSession.openid)
+      if (!wxUser) {
+        if (inviteToken) {
+          const inviteRecommendedUser = await this.userRepo.getUserByUserId(inviteToken)
           if (!inviteRecommendedUser) {
             return left(new WxAuthorizationErrors.InviteTokenInValidError())
           }
         }
 
         const createWxUserUseCaseResult = await this.createWxUserUseCase.execute({
-          openId: wxJsCodeToSessionResult.openid,
-          unionId: wxJsCodeToSessionResult.unionid,
-          sessionKey: wxJsCodeToSessionResult.session_key,
+          openId: wechatSession.openid,
+          unionId: wechatSession.unionid,
+          sessionKey: wechatSession.session_key,
           nickName: nickName,
           avatarUrl: avatarUrl,
           gender: gender
@@ -82,9 +82,14 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
         // if (inviteToken) {
         //   return left(new WxAuthorizationErrors.LoginForbidInviteTokenError())
         // }
+        const refreshSessionKeyUseCaseResult = await this.refreshSessionKeyUseCase.execute({
+          userId: wxUser.id.toString(),
+          sessionKey: wechatSession.session_key
+        })
+        if (refreshSessionKeyUseCaseResult.isLeft()) {
+          return left(refreshSessionKeyUseCaseResult.value)
+        }
       }
-
-      const wxUser = await this.wxUserRepo.getUserByWxOpenId(wxJsCodeToSessionResult.openid)
 
       if (inviteToken) {
         const recommendedByInviteTokenUseCaseResult = await this.recommendedByInviteTokenUseCase.execute({

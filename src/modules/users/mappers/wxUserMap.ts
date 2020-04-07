@@ -15,7 +15,8 @@ export class WxUserMap {
       sessionKey: wxUser.sessionKey,
       nickName: wxUser.nickName,
       avatarUrl: wxUser.avatarUrl,
-      gender: wxUser.gender
+      gender: wxUser.gender,
+      phoneNumber: wxUser.phoneNumber
     }
   }
 
@@ -31,7 +32,8 @@ export class WxUserMap {
         sessionKey: raw.sessionKey,
         nickName: raw.nickName,
         avatarUrl: raw.avatarUrl,
-        gender: raw.gender
+        gender: raw.gender,
+        phoneNumber: raw.phoneNumber
       },
       new UniqueEntityID(raw._id)
     )
@@ -52,7 +54,8 @@ export class WxUserMap {
       sessionKey: wxUser.sessionKey,
       nickName: wxUser.nickName,
       avatarUrl: wxUser.avatarUrl,
-      gender: wxUser.gender
+      gender: wxUser.gender,
+      phoneNumber: wxUser.phoneNumber
     }
   }
 }

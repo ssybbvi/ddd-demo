@@ -6,4 +6,5 @@ export interface WxUserDTO {
   nickName?: string
   avatarUrl?: string
   gender?: number
+  phoneNumber?: string
 }

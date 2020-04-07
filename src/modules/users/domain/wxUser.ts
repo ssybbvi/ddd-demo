@@ -10,6 +10,7 @@ interface WxUserProps {
   nickName?: string
   avatarUrl?: string
   gender?: number
+  phoneNumber?: string
 }
 
 export class WxUser extends AggregateRoot<WxUserProps> {
@@ -35,6 +36,18 @@ export class WxUser extends AggregateRoot<WxUserProps> {
 
   get gender(): number {
     return this.props.gender
+  }
+
+  get phoneNumber(): string {
+    return this.props.phoneNumber
+  }
+
+  public bindingPhoneNumber(phoneNumber: string) {
+    this.props.phoneNumber = phoneNumber
+  }
+
+  public refreshSessionKey(sessionKey: string) {
+    this.props.sessionKey = sessionKey
   }
 
   private constructor(props: WxUserProps, id?: UniqueEntityID) {

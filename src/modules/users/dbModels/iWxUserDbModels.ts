@@ -6,4 +6,5 @@ export interface IWxUserDbModels {
   nickName?: string
   avatarUrl?: string
   gender?: number
+  phoneNumber?: string
 }

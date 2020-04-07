@@ -9,6 +9,7 @@ import { wxAuthorizationController } from '../../../useCases/wxUser/wxAuthorizat
 import { getWxCurrentUserController } from '../../../useCases/wxUser/getWxCurrentUser'
 import { testLoginController } from '../../../useCases/user/testLogin'
 import { adminAboutMeController } from '../../../useCases/upUser/adminAboutMe'
+import { bindingPhoneNumberController } from '../../../useCases/wxUser/bindingPhoneNumber'
 const userRouter = express.Router()
 
 userRouter.get('/me', middleware.ensureAuthenticated(), (req, res) => getCurrentUserController.execute(req, res))
@@ -30,5 +31,9 @@ userRouter.post('/wx/authorization', (req, res) => wxAuthorizationController.exe
 userRouter.get('/wx/me', middleware.ensureAuthenticated(), (req, res) => getWxCurrentUserController.execute(req, res))
 
 userRouter.post('/test/login', (req, res) => testLoginController.execute(req, res))
+
+userRouter.put('/bindingPhoneNumber', middleware.ensureAuthenticated(), (req, res) =>
+  bindingPhoneNumberController.execute(req, res)
+)
 
 export { userRouter }

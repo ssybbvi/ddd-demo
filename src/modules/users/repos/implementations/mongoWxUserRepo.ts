@@ -36,7 +36,8 @@ export class MongoWxUserRepo implements IWxUserRepo {
           sessionKey: wxUser.sessionKey,
           nickName: wxUser.nickName,
           avatarUrl: wxUser.avatarUrl,
-          gender: wxUser.gender
+          gender: wxUser.gender,
+          phoneNumber: wxUser.phoneNumber
         }
       },
       { upsert: true }
@@ -48,7 +49,6 @@ export class MongoWxUserRepo implements IWxUserRepo {
     const baseUser = await this.createCollection().findOne({
       openId: wxOpenId
     })
-    if (!!baseUser === false) throw new Error('User not found.')
     return WxUserMap.toDomain(baseUser)
   }
 
