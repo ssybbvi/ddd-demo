@@ -45,6 +45,7 @@ export class WxUser extends AggregateRoot<WxUserProps> {
 
   public bindingPhoneNumber(phoneNumber: string) {
     this.props.phoneNumber = phoneNumber
+    this.addDomainEvent(new WxUserBindingPhoneNumber(this))
   }
 
   public refreshSessionKey(sessionKey: string) {
