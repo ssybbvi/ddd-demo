@@ -21,7 +21,7 @@ export class CompleteTaskController extends BaseController {
     const dto: CompleteTaskDto = { userId, type }
 
     try {
-      if (!['browseMall', 'playGame'].includes(type)) {
+      if (!['browseMall', 'playGame', 'remind'].includes(type)) {
         return this.fail(res, '错误的任务类型')
       }
       const result = await this.useCase.execute(dto)
