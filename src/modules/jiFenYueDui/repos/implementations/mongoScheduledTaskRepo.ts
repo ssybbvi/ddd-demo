@@ -58,7 +58,7 @@ export class MongoScheduledTaskRepo implements IScheduledTaskRepo {
 
   public async filterByExecutable(): Promise<ScheduledTask[]> {
     let query: any = {
-      executionTime: { $gt: Date.now() }
+      executionTime: { $lt: Date.now() }
     }
 
     let scheduledTaskList = await this.createCollection()
