@@ -8,4 +8,5 @@ export interface IScheduledTaskDbModels {
   createAt?: number
   isSuccess?: boolean
   result?: string
+  relationId: string
 }

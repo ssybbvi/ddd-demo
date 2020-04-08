@@ -16,7 +16,7 @@ export class DeleteUserUseCase implements UseCase<DeleteUserDTO, Promise<Respons
 
   public async execute(request: DeleteUserDTO): Promise<any> {
     try {
-      const user = await this.userRepo.getUserByUserId(request.userId)
+      const user = await this.userRepo.getById(request.userId)
       const userFound = !!user === true
 
       if (!userFound) {

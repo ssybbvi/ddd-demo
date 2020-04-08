@@ -24,7 +24,7 @@ export class LogoutUseCase implements UseCase<LogoutDTO, Promise<Response>> {
 
     try {
       try {
-        user = await this.userRepo.getUserByUserId(userId)
+        user = await this.userRepo.getById(userId)
       } catch (err) {
         return left(new LogoutErrors.UserNotFoundOrDeletedError())
       }

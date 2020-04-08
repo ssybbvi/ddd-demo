@@ -15,7 +15,7 @@ export class AfterWxUserBindingPhoneNumber implements IHandle<WxUserBindingPhone
     // Register to the domain event
     DomainEvents.register(
       {
-        isNeedAwait: false,
+        isNeedAwait: true,
         domainEvenntFn: this.onWxUserBindingPhoneNumber.bind(this)
       },
       WxUserBindingPhoneNumber.name

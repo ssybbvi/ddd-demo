@@ -6,4 +6,5 @@ export interface CreateScheduledTaskDto {
   userId: string
   type: ScheduledTaskType
   executionTime: number
+  relationId: string
 }

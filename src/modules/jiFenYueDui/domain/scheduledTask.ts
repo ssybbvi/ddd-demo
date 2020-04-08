@@ -20,6 +20,7 @@ interface IScheduledTasksProps {
   createAt?: number
   isSuccess?: boolean
   result?: string
+  relationId: string
 }
 
 export class ScheduledTask extends AggregateRoot<IScheduledTasksProps> {
@@ -59,6 +60,10 @@ export class ScheduledTask extends AggregateRoot<IScheduledTasksProps> {
     return this.props.result
   }
 
+  get relationId(): string {
+    return this.props.relationId
+  }
+
   public updateTaskResult(result: string, isSuccess?: boolean) {
     this.props.isExecuted = true
     this.props.isSuccess = isSuccess
@@ -70,7 +75,8 @@ export class ScheduledTask extends AggregateRoot<IScheduledTasksProps> {
       { argument: props.argument, argumentName: '任务参数' },
       { argument: props.userId, argumentName: '用户编号' },
       { argument: props.type, argumentName: '任务类型' },
-      { argument: props.executionTime, argumentName: '执行时间' }
+      { argument: props.executionTime, argumentName: '执行时间' },
+      { argument: props.relationId, argumentName: '关联Id' }
     ]
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)

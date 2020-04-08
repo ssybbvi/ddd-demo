@@ -27,9 +27,9 @@ export class MongoUserRepo implements IUserRepo {
     return list.map(item => UserMap.toDomain(item))
   }
 
-  async getUserByUserId(userId: string): Promise<User> {
+  public async getUserByInviteToken(inviteToken: string): Promise<User> {
     const baseUser = await this.createCollection().findOne({
-      _id: userId
+      inviteToken: inviteToken
     })
     return UserMap.toDomain(baseUser)
   }

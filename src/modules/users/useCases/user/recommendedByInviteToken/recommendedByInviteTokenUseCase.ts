@@ -20,7 +20,7 @@ export class RecommendedByInviteTokenUseCase implements UseCase<RecommendedByInv
   public async execute(request: RecommendedByInviteTokenDto): Promise<Response> {
     try {
       const { userId, inviteToken } = request
-      const inviteRecommendedUser = await this.userRepo.getUserByUserId(inviteToken)
+      const inviteRecommendedUser = await this.userRepo.getUserByInviteToken(inviteToken)
       if (!inviteRecommendedUser) {
         return left(new RecommendedByInviteTokenErrors.InviteTokenInValidError())
       }

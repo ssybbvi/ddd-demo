@@ -3,56 +3,64 @@ import { IRecommendedUserRepo } from '../../../repos/recommendedUserRepo'
 import { CreateRecommendedUserDTO } from './CreateRecommendedUserDTO'
 import { Either, Result, left, right } from '../../../../../shared/core/Result'
 import { AppError } from '../../../../../shared/core/AppError'
-import { CreateRecommendedUserErrors } from './CreateRecommendedUserErrors'
 import { RecommendedUser } from '../../../domain/recommendedUser'
-import { RecommendedUserId } from '../../../domain/recommendedUserId'
-import { UserId } from '../../../../users/domain/userId'
 import { UniqueEntityID } from '../../../../../shared/domain/UniqueEntityID'
 import { FundType } from '../../../../funds/domain/fundType'
+import { RecommendedUserDistributionRelation } from '../../../domain/recommendedUserDistributionRelation'
+import { IUserRepo } from '../../../../users/repos/userRepo'
 
-type Response = Either<
-  | CreateRecommendedUserErrors.RecommendedUserAlreadyExistsError
-  | CreateRecommendedUserErrors.UserDoesntExistError
-  | CreateRecommendedUserErrors.InviteRecommendedUserNotExists
-  | AppError.UnexpectedError
-  | Result<any>,
-  Result<void>
+type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
+type CreateRecommendedUserDistributionRelationResponse = Either<
+  AppError.UnexpectedError | Result<any>,
+  Result<RecommendedUserDistributionRelation[]>
 >
+
+interface inviteDistributionRewardRelation {
+  distributionRate: number
+  fundType: FundType
+}
 
 export class CreateRecommendedUser implements UseCase<CreateRecommendedUserDTO, Promise<Response>> {
   private recommendedUserRepo: IRecommendedUserRepo
+  private userRepo: IUserRepo
+  private inviteDistributionRewardRelationList: inviteDistributionRewardRelation[] = [
+    {
+      distributionRate: 0.1,
+      fundType: 'primaryDistribution'
+    },
+    {
+      distributionRate: 0.05,
+      fundType: 'secondaryDistribution'
+    }
+  ]
 
-  constructor(recommendedUserRepo: IRecommendedUserRepo) {
+  constructor(recommendedUserRepo: IRecommendedUserRepo, userRepo: IUserRepo) {
     this.recommendedUserRepo = recommendedUserRepo
+    this.userRepo = userRepo
   }
 
   public async execute(request: CreateRecommendedUserDTO): Promise<Response> {
-    const { userId, inviteToken } = request
+    const { userId } = request
 
     try {
-      let recommendedUserExists = await this.recommendedUserRepo.existsById(userId)
-      if (recommendedUserExists) {
-        return left(new CreateRecommendedUserErrors.RecommendedUserAlreadyExistsError(userId))
-      }
+      let inviteDistributionRewardRelationListTemp = JSON.parse(
+        JSON.stringify(this.inviteDistributionRewardRelationList)
+      )
+      let createRecommendedUserDistributionRelationResult = await this.createRecommendedUserDistributionRelation(
+        userId,
+        inviteDistributionRewardRelationListTemp,
+        []
+      )
 
-      let inviteRecommendedUserId: string = null //inviteToken //TODO
-      if (!!inviteToken) {
-        let inviteRecommendedUserExists = await this.recommendedUserRepo.existsByInviteToken(inviteToken)
-        // if (!inviteRecommendedUserExists) {
-        //   return left(new CreateRecommendedUserErrors.InviteRecommendedUserNotExists(request.inviteToken))
-        // }
-
-        if (inviteRecommendedUserExists) {
-          let inviteRecommendedUser = await this.recommendedUserRepo.getByInviteToken(inviteToken)
-          inviteRecommendedUserId = inviteRecommendedUser.recommendedUserId.id.toString()
-        } else {
-          console.log(`找不到邀请人:${inviteToken}`)
-        }
+      let createRecommendedUserDistributionRelationResultValue = createRecommendedUserDistributionRelationResult.value
+      if (createRecommendedUserDistributionRelationResult.isLeft()) {
+        return left(createRecommendedUserDistributionRelationResultValue)
       }
+      const distributionRelationList = createRecommendedUserDistributionRelationResultValue.getValue()
 
       const recommendedUserOrError: Result<RecommendedUser> = RecommendedUser.create(
         {
-          distributionRelationList: []
+          distributionRelationList: distributionRelationList
         },
         new UniqueEntityID(userId),
         true
@@ -62,13 +70,43 @@ export class CreateRecommendedUser implements UseCase<CreateRecommendedUserDTO, 
         return left(recommendedUserOrError)
       }
 
-      let recommendedUser = recommendedUserOrError.getValue()
-
-      await this.recommendedUserRepo.save(recommendedUser)
+      await this.recommendedUserRepo.save(recommendedUserOrError.getValue())
 
       return right(Result.ok<void>())
     } catch (err) {
       return left(new AppError.UnexpectedError(err))
     }
+  }
+
+  private async createRecommendedUserDistributionRelation(
+    recommendedUserId: string,
+    inviteDistributionRewardRelationList: inviteDistributionRewardRelation[],
+    recommendedUserDistributionRelationList: RecommendedUserDistributionRelation[]
+  ): Promise<CreateRecommendedUserDistributionRelationResponse> {
+    let user = await this.userRepo.getById(recommendedUserId)
+
+    if (!!user.inviteRecommendedUserId && !!inviteDistributionRewardRelationList.length) {
+      let inviteDistributionRewardRelation = inviteDistributionRewardRelationList.shift()
+
+      let recommendedUserDistributionRelationOrErrors = RecommendedUserDistributionRelation.create({
+        recommendedUserId: user.inviteRecommendedUserId,
+        distributionRate: inviteDistributionRewardRelation.distributionRate,
+        fundType: inviteDistributionRewardRelation.fundType
+      })
+
+      if (recommendedUserDistributionRelationOrErrors.isFailure) {
+        return left(recommendedUserDistributionRelationOrErrors)
+      }
+
+      recommendedUserDistributionRelationList.push(recommendedUserDistributionRelationOrErrors.getValue())
+
+      await this.createRecommendedUserDistributionRelation(
+        user.inviteRecommendedUserId,
+        inviteDistributionRewardRelationList,
+        recommendedUserDistributionRelationList
+      )
+    }
+
+    return right(Result.ok<RecommendedUserDistributionRelation[]>(recommendedUserDistributionRelationList))
   }
 }

@@ -31,7 +31,8 @@ export class ScheduledTaskMap implements IMapper<ScheduledTask> {
         isExecuted: raw.isExecuted,
         createAt: raw.createAt,
         isSuccess: raw.isSuccess,
-        result: raw.result
+        result: raw.result,
+        relationId: raw.relationId
       },
       new UniqueEntityID(raw._id)
     )
@@ -50,7 +51,8 @@ export class ScheduledTaskMap implements IMapper<ScheduledTask> {
       isExecuted: scheduledTask.isExecuted,
       createAt: scheduledTask.createAt,
       isSuccess: scheduledTask.isSuccess,
-      result: scheduledTask.result
+      result: scheduledTask.result,
+      relationId: scheduledTask.relationId
     }
   }
 }

@@ -16,13 +16,14 @@ export class CreateScheduledTaskUseCase implements UseCase<CreateScheduledTaskDt
 
   public async execute(request: CreateScheduledTaskDto): Promise<Response> {
     try {
-      const { argument, userId, type, executionTime } = request
+      const { argument, userId, type, executionTime, relationId } = request
 
       const scheduledTaskOrErrors = ScheduledTask.create({
         argument,
         userId,
         type,
-        executionTime
+        executionTime,
+        relationId
       })
 
       if (scheduledTaskOrErrors.isFailure) {

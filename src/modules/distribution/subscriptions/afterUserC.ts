@@ -1,9 +1,9 @@
 import { IHandle } from '../../../shared/domain/events/IHandle'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
 import { CreateRecommendedUser } from '../userCases/recommendedUsers/createRecommendedUser/createRecommendedUser'
-import { UserUpdateInviteRecommendedUserIded } from '../../users/domain/events/userUpdateInviteRecommendedUserIded'
+import { UserCreated } from '../../users/domain/events/userCreated'
 
-export class AfterUserUpdateInviteRecommendedUserIded implements IHandle<UserUpdateInviteRecommendedUserIded> {
+export class AfterUserCreated implements IHandle<UserCreated> {
   private createRecommendedUser: CreateRecommendedUser
 
   constructor(createRecommendedUser: CreateRecommendedUser) {
@@ -16,13 +16,13 @@ export class AfterUserUpdateInviteRecommendedUserIded implements IHandle<UserUpd
     DomainEvents.register(
       {
         isNeedAwait: true,
-        domainEvenntFn: this.onAfterUserUpdateInviteRecommendedUserIded.bind(this)
+        domainEvenntFn: this.onAfterUserCreated.bind(this)
       },
-      UserUpdateInviteRecommendedUserIded.name
+      UserCreated.name
     )
   }
 
-  private async onAfterUserUpdateInviteRecommendedUserIded(event: UserUpdateInviteRecommendedUserIded): Promise<void> {
+  private async onAfterUserCreated(event: UserCreated): Promise<void> {
     const { user } = event
 
     try {
@@ -34,9 +34,9 @@ export class AfterUserUpdateInviteRecommendedUserIded implements IHandle<UserUpd
         console.error(createRecommendedUserUseCaseValue.value)
       }
 
-      console.log(`[AfterUserUpdateInviteRecommendedUserIded]: 根据推荐人创建分销关系`)
+      console.log(`[AfterUserCreated]: 新用户创建分销空记录关系`)
     } catch (err) {
-      console.log(`[AfterUserUpdateInviteRecommendedUserIded]: 根据推荐人创建分销关系 ${err}`)
+      console.log(`[AfterUserCreated]: 新用户创建分销空记录关系 ${err}`)
     }
   }
 }

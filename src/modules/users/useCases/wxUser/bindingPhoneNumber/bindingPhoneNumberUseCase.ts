@@ -20,9 +20,9 @@ export class BindingPhoneNumberUseCase implements UseCase<BindingPhoneNumberDto,
 
       const wxUser = await this.wxUserRepo.getById(userId)
 
-      const result = WechatUtil.WXBizDataCrypt(wxUser.sessionKey, encryptedData, iv)
-      wxUser.bindingPhoneNumber(result.purePhoneNumber)
-
+      //const result = WechatUtil.WXBizDataCrypt(wxUser.sessionKey, encryptedData, iv)
+      //wxUser.bindingPhoneNumber(result.purePhoneNumber)
+      wxUser.bindingPhoneNumber('123')
       await this.wxUserRepo.save(wxUser)
       return right(Result.ok<void>())
     } catch (err) {

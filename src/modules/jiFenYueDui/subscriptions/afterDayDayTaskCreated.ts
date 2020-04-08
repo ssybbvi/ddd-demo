@@ -94,7 +94,8 @@ export class AfterDayDayTaskCreated implements IHandle<DayDayTaskCreated> {
       argument: argument,
       userId: dayDayTask.userId,
       type: 'notificationWxSubscribe',
-      executionTime: executionTime
+      executionTime: executionTime,
+      relationId: dayDayTask.id.toString()
     })
 
     if (result.isLeft()) {

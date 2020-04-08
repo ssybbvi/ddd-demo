@@ -1,8 +1,5 @@
 import { IHandle } from '../../../shared/domain/events/IHandle'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
-import { FundService } from '../domain/services/fundService'
-import { Fund } from '../domain/fund'
-import { FundAmount } from '../domain/fundAmount'
 import { FundAccountCreated } from '../domain/events/fundAccountCreated'
 import { CreateFundUseCase } from '../userCases/funds/createFund/createFundUseCase'
 

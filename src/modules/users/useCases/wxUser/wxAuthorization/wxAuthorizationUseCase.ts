@@ -57,10 +57,10 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
 
       const wechatSession = jsCodeToSessionResult as WechatSession
 
-      const wxUser = await this.wxUserRepo.getUserByWxOpenId(wechatSession.openid)
+      let wxUser = await this.wxUserRepo.getUserByWxOpenId(wechatSession.openid)
       if (!wxUser) {
         if (inviteToken) {
-          const inviteRecommendedUser = await this.userRepo.getUserByUserId(inviteToken)
+          const inviteRecommendedUser = await this.userRepo.getUserByInviteToken(inviteToken)
           if (!inviteRecommendedUser) {
             return left(new WxAuthorizationErrors.InviteTokenInValidError())
           }
@@ -78,6 +78,18 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
         if (createWxUserUseCaseResult.isLeft()) {
           return left(createWxUserUseCaseResult.value)
         }
+        wxUser = await this.wxUserRepo.getUserByWxOpenId(wechatSession.openid)
+
+        if (inviteToken) {
+          const recommendedByInviteTokenUseCaseResult = await this.recommendedByInviteTokenUseCase.execute({
+            userId: wxUser.id.toString(),
+            inviteToken: inviteToken
+          })
+
+          if (recommendedByInviteTokenUseCaseResult.isLeft()) {
+            return left(recommendedByInviteTokenUseCaseResult.value)
+          }
+        }
       } else {
         // if (inviteToken) {
         //   return left(new WxAuthorizationErrors.LoginForbidInviteTokenError())
@@ -88,17 +100,6 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
         })
         if (refreshSessionKeyUseCaseResult.isLeft()) {
           return left(refreshSessionKeyUseCaseResult.value)
-        }
-      }
-
-      if (inviteToken) {
-        const recommendedByInviteTokenUseCaseResult = await this.recommendedByInviteTokenUseCase.execute({
-          userId: wxUser.id.toString(),
-          inviteToken: inviteToken
-        })
-
-        if (recommendedByInviteTokenUseCaseResult.isLeft()) {
-          return left(recommendedByInviteTokenUseCaseResult.value)
         }
       }
 
