@@ -79,11 +79,11 @@ export class AfterDayDayTaskCreated implements IHandle<DayDayTaskCreated> {
         thing2: {
           value: '积分'
         },
-        date2: {
-          value: `您一共签到${signInCount}次`
+        number3: {
+          value: signInCount
         },
         thing4: {
-          value: '连续签到5天可开积分大礼包，最高领取100积分奖励哦'
+          value: '连续签到5天有惊喜，可领积分大礼包'
         }
       }
     }
