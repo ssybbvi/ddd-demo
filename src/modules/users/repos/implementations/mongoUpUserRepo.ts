@@ -8,7 +8,7 @@ import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 import { UpUserName } from '../../domain/upUserName'
 
 export class MongoUpUserRepo implements IUpUserRepo {
-  constructor() {}
+  constructor() { }
 
   private createCollection(): Collection<IUpUserDbModels> {
     return Global.instance.mongoDb.collection<IUpUserDbModels>('upUser')
@@ -43,10 +43,10 @@ export class MongoUpUserRepo implements IUpUserRepo {
   }
 
   async getUserByUserName(userName: UpUserName | string): Promise<UpUser> {
+    const _userName = userName instanceof UpUserName ? (<UpUserName>userName).value : userName
     const baseUser = await this.createCollection().findOne({
-      username: userName instanceof UpUserName ? (<UpUserName>userName).value : userName
+      userName: _userName
     })
-    if (!!baseUser === false) throw new Error('User not found.')
     return UpUserMap.toDomain(baseUser)
   }
 }

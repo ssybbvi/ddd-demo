@@ -56,7 +56,6 @@ export class WxUser extends AggregateRoot<WxUserProps> {
 
   public refreshSessionKey(sessionKey: string) {
     this.props.sessionKey = sessionKey
-    this.addDomainEvent(new WxUserBindingPhoneNumber(this))
   }
 
   private constructor(props: WxUserProps, id?: UniqueEntityID) {

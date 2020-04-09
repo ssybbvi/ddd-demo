@@ -14,6 +14,9 @@ export class UpUserMap implements IMapper<UpUser> {
   }
 
   public static toDomain(raw: IUpUserDbModels): UpUser {
+    if (raw === null) {
+      return null
+    }
     const upUserNameOrError = UpUserName.create({ name: raw.userName })
     const upPasswordError = UpUserPassword.create({ value: raw.userName })
 
