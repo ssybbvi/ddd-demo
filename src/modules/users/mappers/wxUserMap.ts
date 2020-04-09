@@ -10,9 +10,6 @@ export class WxUserMap {
     }
     return {
       _id: wxUser.id.toString(),
-      openId: wxUser.openId,
-      unionId: wxUser.unionId,
-      sessionKey: wxUser.sessionKey,
       nickName: wxUser.nickName,
       avatarUrl: wxUser.avatarUrl,
       gender: wxUser.gender,

@@ -24,7 +24,7 @@ export class CreateWxUserUseCase implements UseCase<CreateWxUserDto, Promise<Res
 
   public async execute(request: CreateWxUserDto): Promise<Response> {
     try {
-      const { openId, unionId, sessionKey, nickName, avatarUrl, gender } = request
+      const { openId, unionId, sessionKey } = request
 
       const isExist = await this.wxUserRepo.existsWxOpenId(openId)
       if (isExist) {
@@ -35,9 +35,6 @@ export class CreateWxUserUseCase implements UseCase<CreateWxUserDto, Promise<Res
         openId: openId,
         unionId: unionId,
         sessionKey: sessionKey,
-        nickName: nickName,
-        avatarUrl: avatarUrl,
-        gender: gender
       })
 
       if (wxUserOrError.isFailure) {

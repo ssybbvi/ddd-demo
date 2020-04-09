@@ -1,6 +1,7 @@
 import { RecommendedByInviteTokenUseCase } from './recommendedByInviteTokenUseCase'
 import { userRepo } from '../../../repos'
+import { RecommendedByInviteTokenController } from './recommendedByInviteTokenController'
 
 const recommendedByInviteTokenUseCase = new RecommendedByInviteTokenUseCase(userRepo)
-
-export { recommendedByInviteTokenUseCase }
+const recommendedByInviteTokenController = new RecommendedByInviteTokenController(recommendedByInviteTokenUseCase)
+export { recommendedByInviteTokenUseCase, recommendedByInviteTokenController }

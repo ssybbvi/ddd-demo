@@ -6,7 +6,9 @@ import { RecommendedByInviteTokenDto } from './recommendedByInviteTokenDto'
 import { RecommendedByInviteTokenErrors } from './recommendedByInviteTokenErrors'
 
 type Response = Either<
-  AppError.UnexpectedError | RecommendedByInviteTokenErrors.InviteTokenInValidError | Result<any>,
+  AppError.UnexpectedError | RecommendedByInviteTokenErrors.InviteTokenInValidError
+  | RecommendedByInviteTokenErrors.DontRecommendMyself
+  | Result<any>,
   Result<void>
 >
 
@@ -25,7 +27,15 @@ export class RecommendedByInviteTokenUseCase implements UseCase<RecommendedByInv
         return left(new RecommendedByInviteTokenErrors.InviteTokenInValidError())
       }
 
+      if (inviteRecommendedUser.id.toString() === userId) {
+        return left(new RecommendedByInviteTokenErrors.DontRecommendMyself())
+      }
+
       const user = await this.userRepo.getById(userId)
+      if (user.inviteRecommendedUserId) {
+        return left(new RecommendedByInviteTokenErrors.DontRepeatRecommend())
+      }
+
       user.setInviteRecommendedUserId(inviteRecommendedUser.id.toString())
       await this.userRepo.save(user)
 

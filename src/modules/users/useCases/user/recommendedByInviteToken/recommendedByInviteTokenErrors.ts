@@ -9,4 +9,20 @@ export namespace RecommendedByInviteTokenErrors {
       } as UseCaseError)
     }
   }
+
+  export class DontRecommendMyself extends Result<UseCaseError> {
+    constructor() {
+      super(false, {
+        message: `无法推荐自己`
+      } as UseCaseError)
+    }
+  }
+
+  export class DontRepeatRecommend extends Result<UseCaseError> {
+    constructor() {
+      super(false, {
+        message: `无法重复推荐`
+      } as UseCaseError)
+    }
+  }
 }

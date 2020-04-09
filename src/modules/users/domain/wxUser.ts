@@ -48,6 +48,12 @@ export class WxUser extends AggregateRoot<WxUserProps> {
     this.addDomainEvent(new WxUserBindingPhoneNumber(this))
   }
 
+  public bindindUserInfo(nickName: string, avatarUrl: string, gender: number) {
+    this.props.nickName = nickName
+    this.props.avatarUrl = avatarUrl
+    this.props.gender = gender
+  }
+
   public refreshSessionKey(sessionKey: string) {
     this.props.sessionKey = sessionKey
     this.addDomainEvent(new WxUserBindingPhoneNumber(this))
