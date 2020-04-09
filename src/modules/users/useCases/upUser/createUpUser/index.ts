@@ -1,5 +1,7 @@
 import { upUserRepo } from '../../../repos'
-import { CreateUpUseCase } from './createUpUserUseCase'
+import { CreateUpUserUseCase } from './createUpUserUseCase'
+import { CreateUpUserController } from './createUpUserController'
 
-const createUpUseCase = new CreateUpUseCase(upUserRepo)
-export { createUpUseCase }
+const createUpUserUseCase = new CreateUpUserUseCase(upUserRepo)
+const createUpUserController = new CreateUpUserController(createUpUserUseCase)
+export { createUpUserUseCase, createUpUserController }

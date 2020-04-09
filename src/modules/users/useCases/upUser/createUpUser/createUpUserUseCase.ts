@@ -10,7 +10,7 @@ import { CreateUpUserErrors } from './createUpUserErrors'
 
 type Response = Either<CreateUpUserErrors.UserNameExistError | AppError.UnexpectedError | Result<any>, Result<void>>
 
-export class CreateUpUseCase implements UseCase<CreateUpUserUseDto, Promise<Response>> {
+export class CreateUpUserUseCase implements UseCase<CreateUpUserUseDto, Promise<Response>> {
   private upUserRepo: IUpUserRepo
 
   constructor(upUserRepo: IUpUserRepo) {

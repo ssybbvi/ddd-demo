@@ -1,4 +1,4 @@
 import { userRouter } from './user'
 import { wxUserRouter } from './wxUser'
-
-export { userRouter, wxUserRouter }
+import { upUserRouter } from './upUser'
+export { userRouter, wxUserRouter, upUserRouter }

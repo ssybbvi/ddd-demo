@@ -124,11 +124,9 @@ export class Order extends AggregateRoot<OrderProps> {
     if (!this.isUnPaid()) {
       return left(new CancelOrderErrors.StatusNotUnPaid())
     }
-
     if (this.isAtPaymentTime()) {
       return left(new PaymentOrderErrors.PaymentTimeExpired())
     }
-
     this.props.cancelTime = Date.now()
     this.props.status = 'cancel'
     this.addDomainEvent(new OrderCanceled(this))
@@ -175,8 +173,7 @@ export class Order extends AggregateRoot<OrderProps> {
   }
 
   public isAtPaymentTime(): boolean {
-    const lastPaymentTime = Date.now() - 1000 * 60 * 15
-    return this.props.createAt > lastPaymentTime
+    return this.props.createAt + 1000 * 60 * 15 > Date.now()
   }
 
   public isAllowCancel(): boolean {

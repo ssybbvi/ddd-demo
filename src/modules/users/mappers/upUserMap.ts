@@ -40,9 +40,24 @@ export class UpUserMap implements IMapper<UpUser> {
     }
   }
 
-  public static toLoginMe(user: UpUser) {
+  public static toAdminDto(user: UpUser) {
     return {
-      id: user.id.toString()
+      id: user.id.toString(),
+      avatar: 'test-avatar',
+      email: 'xxxxx',
+      name: 'xxxx',
+      title: 'test-title',
+      group: 'test-group',
+      signature: 'test-signature',
+      tags: [
+        {
+          key: 'test-key',
+          label: 'test-label',
+        },
+      ],
+      userid: '11',
+      unreadCount: 123,
+      notifyCount: 123,
     }
   }
 }
