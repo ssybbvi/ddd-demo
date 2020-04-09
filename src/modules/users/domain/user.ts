@@ -52,8 +52,10 @@ export class User extends AggregateRoot<UserProps> {
   }
 
   public setInviteRecommendedUserId(inviteRecommendedUserId: string) {
-    this.props.inviteRecommendedUserId = inviteRecommendedUserId
-    this.addDomainEvent(new UserUpdateInviteRecommendedUserIded(this))
+    if (this.props.createAt + 1000 * 60 > Date.now()) {
+      this.props.inviteRecommendedUserId = inviteRecommendedUserId
+      this.addDomainEvent(new UserUpdateInviteRecommendedUserIded(this))
+    }
   }
 
   public isLoggedIn(): boolean {
