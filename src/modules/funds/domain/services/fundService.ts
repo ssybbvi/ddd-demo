@@ -28,9 +28,10 @@ export class FundService {
       return left(getRecommendedUserUseCaseResult.value)
     }
     const recommendedUser = getRecommendedUserUseCaseResultValue.getValue() as RecommendedUser
+    const distributionRelationList = recommendedUser ? recommendedUser.distributionRelationList : []
 
     let fundList: Fund[] = [fund]
-    for (let item of recommendedUser.distributionRelationList) {
+    for (let item of distributionRelationList) {
       const fundAmountOrError = FundAmount.create({
         fundAmount: fund.amount.value * item.distributionRate
       })

@@ -7,6 +7,9 @@ import { RecommendedUserDistributionRelation } from '../domain/recommendedUserDi
 
 export class RecommendedUserMap implements IMapper<RecommendedUser> {
   public static toDomain(raw: IRecommendedUserDbModel): RecommendedUser {
+    if (raw === null) {
+      return null
+    }
     let distributionRelationList = raw.distributionRelationList.map(item => {
       let recommendedUserDistributionRelationOrErrors = RecommendedUserDistributionRelation.create({
         recommendedUserId: item.recommendedUserId,
