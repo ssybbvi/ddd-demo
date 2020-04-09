@@ -18,7 +18,7 @@ export class UpUserMap implements IMapper<UpUser> {
       return null
     }
     const upUserNameOrError = UpUserName.create({ name: raw.userName })
-    const upPasswordError = UpUserPassword.create({ value: raw.userName })
+    const upPasswordError = UpUserPassword.create({ value: raw.password })
 
     const userOrError = UpUser.create(
       {

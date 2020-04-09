@@ -27,10 +27,6 @@ export class UpAuthorizationUseCase implements UseCase<UpAuthorizationDto, Promi
   }
 
   public async execute(request: UpAuthorizationDto): Promise<Response> {
-    let upUser: UpUser
-    let userName: UpUserName
-    let password: UpUserPassword
-
     try {
       const usernameOrError = UpUserName.create({ name: request.userName })
       const passwordOrError = UpUserPassword.create({ value: request.password })
@@ -40,10 +36,10 @@ export class UpAuthorizationUseCase implements UseCase<UpAuthorizationDto, Promi
         return left(Result.fail<any>(payloadResult.error))
       }
 
-      userName = usernameOrError.getValue()
-      password = passwordOrError.getValue()
+      const userName: UpUserName = usernameOrError.getValue()
+      const password: UpUserPassword = passwordOrError.getValue()
 
-      upUser = await this.upUserRepo.getUserByUserName(userName)
+      const upUser: UpUser = await this.upUserRepo.getUserByUserName(userName)
       const userFound = !!upUser
 
       if (!userFound) {

@@ -11,7 +11,7 @@ upUserRouter.post('/', (req, res) => createUpUserController.execute(req, res))
 
 upUserRouter.post('/authorization', (req, res) => upAuthorizationController.execute(req, res))
 
-upUserRouter.get('admin/me', middleware.ensureAuthenticated(), (req, res) =>
+upUserRouter.get('/admin/me', middleware.ensureAuthenticated(), (req, res) =>
   getUpCurrentUserController.execute(req, res)
 )
 
