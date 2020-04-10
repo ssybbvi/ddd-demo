@@ -7,6 +7,9 @@ import { IGuardArgument, Guard } from '../../../shared/core/Guard'
 import { FundType } from './fundType'
 import { FundCreated } from './events/fundCreated'
 import { FundId } from './fundId'
+import { FundFreezed } from './events/fundFreezed'
+import { FundInvalided } from './events/fundInvalided'
+import { FundValided } from './events/fundValided'
 
 export interface IFundProps {
   amount: FundAmount
@@ -60,19 +63,19 @@ export class Fund extends AggregateRoot<IFundProps> {
     return this.props.relationId
   }
 
-  public toFreeze(): Result<void> {
+  public toFreeze() {
     this.props.status = 'freeze'
-    return Result.ok<void>()
+    this.addDomainEvent(new FundFreezed(this))
   }
 
-  public toValid(): Result<void> {
+  public toValid() {
     this.props.status = 'valid'
-    return Result.ok<void>()
+    this.addDomainEvent(new FundValided(this))
   }
 
-  public toInvalid(): Result<void> {
+  public toInvalid() {
     this.props.status = 'invalid'
-    return Result.ok<void>()
+    this.addDomainEvent(new FundInvalided(this))
   }
 
   public isFreeze(): boolean {
@@ -106,7 +109,7 @@ export class Fund extends AggregateRoot<IFundProps> {
       status: props.status ? props.status : 'valid',
       descrpiton: props.descrpiton ? props.descrpiton : "",
       incomeUserId: props.incomeUserId ? props.incomeUserId : "0",
-      paymentUserId:props.paymentUserId ? props.paymentUserId : "0",
+      paymentUserId: props.paymentUserId ? props.paymentUserId : "0",
     }
 
     const fund = new Fund(defaultValues, id)

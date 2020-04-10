@@ -13,7 +13,8 @@ export interface ICommodityProps {
   images: string[]
   fakePrice: string
   sales: number
-  restrictedPurchaseQuantity: number
+  restrictedPurchaseQuantity: number//每次限购
+  limitedPurchasePerPerson: number//每人限购
   tags: string[]
   imgesDescrptionList: string[]
 }
@@ -55,6 +56,10 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     return this.props.restrictedPurchaseQuantity
   }
 
+  get limitedPurchasePerPerson(): number {
+    return this.props.limitedPurchasePerPerson
+  }
+
   get imgesDescrptionList(): string[] {
     return this.props.imgesDescrptionList
   }
@@ -84,11 +89,15 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
   }
 
   public updateRestrictedPurchaseQuantity(restrictedPurchaseQuantity: number) {
-    return (this.props.restrictedPurchaseQuantity = restrictedPurchaseQuantity)
+    this.props.restrictedPurchaseQuantity = restrictedPurchaseQuantity
   }
 
   public updateImgesDescrptionList(imgesDescrptionList: string[]) {
-    return (this.props.imgesDescrptionList = imgesDescrptionList)
+    this.props.imgesDescrptionList = imgesDescrptionList
+  }
+
+  public updateLimitedPurchasePerPerson(limitedPurchasePerPerson: number) {
+    this.props.limitedPurchasePerPerson = limitedPurchasePerPerson
   }
 
   public sale(): void {
@@ -107,7 +116,9 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
       { argument: props.images, argumentName: '图片' },
       { argument: props.fakePrice, argumentName: '假价格' },
       { argument: props.sales, argumentName: '销量' },
-      { argument: props.restrictedPurchaseQuantity, argumentName: '限购' }
+      { argument: props.restrictedPurchaseQuantity, argumentName: '每次限购' },
+      { argument: props.limitedPurchasePerPerson, argumentName: '每人限购' },
+
     ]
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)
@@ -118,7 +129,8 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
 
     const defaultValues: ICommodityProps = {
       ...props,
-      tags: props.tags ? props.tags : []
+      tags: props.tags ? props.tags : [],
+      limitedPurchasePerPerson: props.limitedPurchasePerPerson ? props.limitedPurchasePerPerson : -1
     }
 
     const commodity = new Commodity(defaultValues, id)

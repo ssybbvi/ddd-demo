@@ -17,6 +17,7 @@ export class CommodityMap implements IMapper<Commodity> {
       fakePrice: commodity.fakePrice,
       sales: commodity.sales,
       restrictedPurchaseQuantity: commodity.restrictedPurchaseQuantity,
+      limitedPurchasePerPerson: commodity.limitedPurchasePerPerson,
       tags: commodity.tags,
       imgesDescrptionList: commodity.imgesDescrptionList
     }
@@ -39,6 +40,7 @@ export class CommodityMap implements IMapper<Commodity> {
         fakePrice: raw.fakePrice,
         sales: raw.sales,
         restrictedPurchaseQuantity: raw.restrictedPurchaseQuantity,
+        limitedPurchasePerPerson: raw.limitedPurchasePerPerson,
         tags: raw.tags,
         imgesDescrptionList: raw.imgesDescrptionList
       },
@@ -59,6 +61,7 @@ export class CommodityMap implements IMapper<Commodity> {
       fakePrice: commodity.fakePrice,
       sales: commodity.sales,
       restrictedPurchaseQuantity: commodity.restrictedPurchaseQuantity,
+      limitedPurchasePerPerson: commodity.limitedPurchasePerPerson,
       tags: commodity.tags,
       imgesDescrptionList: commodity.imgesDescrptionList
     }

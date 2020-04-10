@@ -1,22 +1,20 @@
 import { BaseController } from '../../../../shared/infra/http/models/BaseController'
 import * as express from 'express'
-import { DecodedExpressRequest } from '../../../users/infra/http/models/decodedRequest'
-import { CancelOrderUseCase } from './cancelOrderUseCase'
-import { CancelOrderDto } from './cancelOrderDto'
-import { CancelOrderErrors } from './CancelOrderErrors'
+import { CloseOrderUseCase } from './closeOrderUseCase'
+import { CloseOrderDto } from './closeOrderDto'
+import { CloseOrderErrors } from './closeOrderErrors'
 
 
+export class CloseOrderController extends BaseController {
+  private useCase: CloseOrderUseCase
 
-export class CancelOrderController extends BaseController {
-  private useCase: CancelOrderUseCase
-
-  constructor(useCase: CancelOrderUseCase) {
+  constructor(useCase: CloseOrderUseCase) {
     super()
     this.useCase = useCase
   }
 
   async executeImpl(req: any, res: express.Response): Promise<any> {
-    const dto: CancelOrderDto = { orderId: req.body.orderId }
+    const dto: CloseOrderDto = { orderId: req.body.orderId }
 
     try {
       const result = await this.useCase.execute(dto)
@@ -25,9 +23,9 @@ export class CancelOrderController extends BaseController {
         const error = useCaseValue
 
         switch (error.constructor) {
-          case CancelOrderErrors.OrderNotFound:
+          case CloseOrderErrors.OrderNotFound:
             return this.notFound(res, error.errorValue().message)
-          case CancelOrderErrors.StatusNotUnPaid:
+          case CloseOrderErrors.StatusError:
             return this.notFound(res, error.errorValue().message)
           default:
             return this.fail(res, error.errorValue() + '')

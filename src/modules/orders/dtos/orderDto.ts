@@ -1,33 +1,35 @@
 import { OrderItemDto } from "./orderItemDto";
 
-export interface OrderDto{
-    _id:string
-    userId:string
-    createAt:number
-    status:string
-    price:number
-    remark:string
-    code:string
+export interface OrderDto {
+    _id: string
+    userId: string
+    createAt: number
+    status: string
+    price: number
+    remark: string
+    code: string
 
-    userName:string,
-    provinceName : string,
-    cityName : string,
-    countyName : string,
-    detailAddressInfo : string,
-    nationalCode : string,
-    telNumber :string
+    userName: string,
+    provinceName: string,
+    cityName: string,
+    countyName: string,
+    detailAddressInfo: string,
+    nationalCode: string,
+    telNumber: string
 
-    paymentTime?:number
-    cancelTime?:number
+    paymentTime?: number
+    cancelTime?: number
 
-    customerServiceCancelTime?:number
-    customerServiceRemark?:string
+    customerServiceCancelTime?: number
+    customerServiceRemark?: string
 
-    shippingTime?:number
-    shippingNumber?:string
-    shippingType?:string
+    shippingTime?: number
+    shippingNumber?: string
+    shippingType?: string
 
-    finishTime?:number
+    finishTime?: number
 
-    items:OrderItemDto[]
+    closeTime?: number
+
+    items: OrderItemDto[]
 }

@@ -8,7 +8,7 @@ import { FundType } from '../../domain/fundType'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 
 export class MongoFundRepo implements IFundRepo {
-  constructor() {}
+  constructor() { }
 
   private createCollection(): Collection<IFundDbModel> {
     return Global.instance.mongoDb.collection<IFundDbModel>('funds')
@@ -16,9 +16,6 @@ export class MongoFundRepo implements IFundRepo {
 
   async getById(_id: string): Promise<Fund> {
     let Fund = await this.createCollection().findOne({ _id })
-    if (!!Fund === false) {
-      throw new Error('不存在')
-    }
     return FundMap.toDomain(Fund)
   }
 
@@ -107,5 +104,13 @@ export class MongoFundRepo implements IFundRepo {
       ])
       .toArray()
     return list
+  }
+
+  public async getByTypeWithRelationId(type: FundType, relationId: string): Promise<Fund> {
+    let Fund = await this.createCollection().findOne({
+      type: type as string,
+      relationId
+    })
+    return FundMap.toDomain(Fund)
   }
 }

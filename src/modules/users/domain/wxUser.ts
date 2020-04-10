@@ -3,6 +3,7 @@ import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { WxUserCreated } from './events/wxUserCreated'
 import { WxUserBindingPhoneNumber } from './events/wxUserBindingPhoneNumber'
+import { BindingWxUserInfoed } from './events/bindingWxUserInfoed'
 
 interface WxUserProps {
   openId: string
@@ -52,6 +53,7 @@ export class WxUser extends AggregateRoot<WxUserProps> {
     this.props.nickName = nickName
     this.props.avatarUrl = avatarUrl
     this.props.gender = gender
+    this.addDomainEvent(new BindingWxUserInfoed(this))
   }
 
   public refreshSessionKey(sessionKey: string) {

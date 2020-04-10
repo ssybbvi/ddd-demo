@@ -9,7 +9,7 @@ import { Order } from '../../domain/order'
 import { OrderStatus } from '../../domain/orderStatus'
 
 export class MongoOrderRepo implements IOrderRepo {
-  constructor() {}
+  constructor() { }
 
   private createCollection(): Collection<OrderDbModel> {
     return Global.instance.mongoDb.collection<OrderDbModel>('order')
@@ -52,6 +52,8 @@ export class MongoOrderRepo implements IOrderRepo {
           shippingType: raw.shippingType,
 
           finishTime: raw.finishTime,
+
+          closeTime: raw.closeTime,
 
           items: raw.items
         }

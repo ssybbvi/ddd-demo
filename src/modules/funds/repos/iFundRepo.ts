@@ -7,6 +7,7 @@ export interface IFundRepo {
   filter(): Promise<Fund[]>
   getListByRecommendedUserId(recommendedUserId: string): Promise<Fund[]>
   getDistributionList(recommendedUserId: string, type: FundType, createAt: number): Promise<TodayByRecommendedUserDto[]>
+  getByTypeWithRelationId(type: FundType, relationId: string): Promise<Fund>
 }
 
 export interface TodayByRecommendedUserDto {

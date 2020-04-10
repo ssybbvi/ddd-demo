@@ -4,24 +4,24 @@ import { UseCase } from '../../../../shared/core/UseCase'
 import { IOrderRepo } from '../../repos/orderRepo'
 
 import { CreateOrderErrors } from '../createOrder/createOrderErrors'
-import { CancelOrderDto } from './cancelOrderDto'
+import { CloseOrderDto } from './closeOrderDto'
 
 type Response = Either<CreateOrderErrors.OrderItemNotNull
 
   | AppError.UnexpectedError | Result<any>, Result<void>>
 
-export class CancelOrderUseCase implements UseCase<CancelOrderDto, Promise<Response>> {
+export class CloseOrderUseCase implements UseCase<CloseOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo
 
   constructor(orderRepo: IOrderRepo) {
     this.orderRepo = orderRepo
   }
 
-  public async execute(request: CancelOrderDto): Promise<Response> {
+  public async execute(request: CloseOrderDto): Promise<Response> {
     try {
       const { orderId } = request
       const order = await this.orderRepo.getById(orderId)
-      let result = order.cancel()
+      let result = order.close()
       if (result.isLeft()) {
         return left(result.value)
       }

@@ -19,6 +19,9 @@ export class FundMap implements IMapper<Fund> {
   }
 
   public static toDomain(raw: IFundDbModel): Fund {
+    if (raw === null) {
+      return null
+    }
     const fundAmountOrError = FundAmount.create({ fundAmount: raw.amount })
 
     const fundOrError = Fund.create(

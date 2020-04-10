@@ -4,28 +4,28 @@ import { UseCase } from '../../../../shared/core/UseCase'
 import { IOrderRepo } from '../../repos/orderRepo'
 
 import { CreateOrderErrors } from '../createOrder/createOrderErrors'
-import { CancelOrderDto } from './cancelOrderDto'
+import { AutoCancelOrderDto } from './autoCancelOrderDto'
 
 type Response = Either<CreateOrderErrors.OrderItemNotNull
 
   | AppError.UnexpectedError | Result<any>, Result<void>>
 
-export class CancelOrderUseCase implements UseCase<CancelOrderDto, Promise<Response>> {
+export class AutoCancelOrderUseCase implements UseCase<AutoCancelOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo
 
   constructor(orderRepo: IOrderRepo) {
     this.orderRepo = orderRepo
   }
 
-  public async execute(request: CancelOrderDto): Promise<Response> {
+  public async execute(request: AutoCancelOrderDto): Promise<Response> {
     try {
-      const { orderId } = request
-      const order = await this.orderRepo.getById(orderId)
-      let result = order.cancel()
-      if (result.isLeft()) {
-        return left(result.value)
+      const list = await this.orderRepo.filter('unpaid')
+      for (const item of list) {
+        let result = item.cancel()
+        if (result.isRight()) {
+          this.orderRepo.save(item)
+        }
       }
-      this.orderRepo.save(order)
       return right(Result.ok<void>())
     } catch (err) {
       return left(new AppError.UnexpectedError(err))

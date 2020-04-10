@@ -19,7 +19,9 @@ export class GetCommodityByIdUseCase implements UseCase<GetCommodityByIdDto, Pro
     try {
       const { commodityId } = request
 
+      console.log("this.commodityRepo.getById(commodityId)", commodityId)
       const commodity = await this.commodityRepo.getById(commodityId)
+      console.log("xxxxxx", commodity)
       if (commodity == null) {
         return left(new GetCommodityErrors.CommodityNotFound())
       }

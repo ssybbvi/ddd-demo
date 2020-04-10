@@ -14,11 +14,14 @@ import { CancelOrderErrors } from '../userCases/cancelOrder/CancelOrderErrors'
 import { ShippedOrderErrors } from '../userCases/shippedOrder/shippedOrderErrors'
 import { ReceivedOrderErrors } from '../userCases/receivedOrder/receivedErrors'
 import { PaymentOrderErrors } from '../userCases/paymentOrder/paymentOrderErrors'
+import { CloseOrderErrors } from '../userCases/closeOrder/closeOrderErrors'
+import { OrderClosed } from './events/orderClosed'
 
 export type PaymentOrderResult = Either<
   PaymentOrderErrors.OrderStatusNotPaid | PaymentOrderErrors.PaymentTimeExpired | Result<any>,
   Result<void>
 >
+export type CloselOrderResult = Either<CloseOrderErrors.StatusError | Result<any>, Result<void>>
 
 export type CancelOrderResult = Either<CancelOrderErrors.StatusNotUnPaid | Result<any>, Result<void>>
 
@@ -47,6 +50,8 @@ export interface OrderProps {
   shippingType?: string
 
   finishTime?: number
+
+  closeTime?: number
 
   items: OrderItem[]
 }
@@ -116,6 +121,10 @@ export class Order extends AggregateRoot<OrderProps> {
     return this.props.finishTime
   }
 
+  get closeTime(): number {
+    return this.props.closeTime
+  }
+
   get orderItems(): OrderItem[] {
     return this.props.items
   }
@@ -130,6 +139,17 @@ export class Order extends AggregateRoot<OrderProps> {
     this.props.cancelTime = Date.now()
     this.props.status = 'cancel'
     this.addDomainEvent(new OrderCanceled(this))
+
+    return right(Result.ok<void>())
+  }
+
+  public close(): CloselOrderResult {
+    if (!['shipping', 'shipped', 'received'].includes(this.props.status)) {
+      return left(new CloseOrderErrors.StatusError())
+    }
+    this.props.status = 'close'
+    this.props.closeTime = Date.now()
+    this.addDomainEvent(new OrderClosed(this))
 
     return right(Result.ok<void>())
   }

@@ -1,7 +1,7 @@
 import { IHandle } from '../../../shared/domain/events/IHandle'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
-import { FundCreated } from '../domain/events/fundCreated'
 import { RefreshFundAccountUseCase } from '../userCases/fundAccounts/refreshFundAccount/refreshFundAccountUseCase'
+import { FundCreated } from '../domain/events/fundCreated'
 
 export class AfterFundCreated implements IHandle<FundCreated> {
   private refreshFundAccountUseCase: RefreshFundAccountUseCase
@@ -28,9 +28,9 @@ export class AfterFundCreated implements IHandle<FundCreated> {
     try {
       await this.refreshFundAccount(fund.incomeUserId)
       await this.refreshFundAccount(fund.paymentUserId)
-      console.log(`[AfterFundCreated]: 资金变动 重新统计总金额`)
+      console.log(`[AfterFundCreated]: 创建资金记录 重新统计总金额`)
     } catch (err) {
-      console.log(`[AfterFundCreated]: 资金变动 重新统计总金额 ${err}`)
+      console.log(`[AfterFundCreated]: 创建资金记录 重新统计总金额 ${err}`)
     }
   }
 

@@ -7,6 +7,7 @@ export interface CommodityDto {
   fakePrice: string
   sales: number
   restrictedPurchaseQuantity: number
+  limitedPurchasePerPerson: number
   tags: string[]
   imgesDescrptionList: string[]
 }

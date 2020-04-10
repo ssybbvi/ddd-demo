@@ -15,7 +15,7 @@ export class RefreshFundAccountUseCase implements UseCase<UpdateFundAccountDto, 
 
 
 
-  constructor(fundAccountRepo: IFundAccountRepo,fundRepo: IFundRepo) {
+  constructor(fundAccountRepo: IFundAccountRepo, fundRepo: IFundRepo) {
     this.fundAccountRepo = fundAccountRepo
     this.fundRepo = fundRepo
   }
@@ -24,7 +24,7 @@ export class RefreshFundAccountUseCase implements UseCase<UpdateFundAccountDto, 
     try {
       const { recommendedUserId } = request
 
-      const totalAmount=await this.getRecommendedUserTotalAmount(recommendedUserId)
+      const totalAmount = await this.getRecommendedUserTotalAmount(recommendedUserId)
 
       const fundAccountOrErrors = FundAccount.create(
         {
@@ -45,10 +45,11 @@ export class RefreshFundAccountUseCase implements UseCase<UpdateFundAccountDto, 
     }
   }
 
-  private async getRecommendedUserTotalAmount(recommendedUserId:string){
+  private async getRecommendedUserTotalAmount(recommendedUserId: string) {
     let fundList = await this.fundRepo.getListByRecommendedUserId(recommendedUserId)
     let totalAmount = fundList.reduce((acc, item) => {
-      if (item.incomeUserId == recommendedUserId) {
+      if (item.incomeUserId == recommendedUserId &&
+        item.status === "valid") {
         return acc + item.amount.value
       }
 
@@ -62,6 +63,6 @@ export class RefreshFundAccountUseCase implements UseCase<UpdateFundAccountDto, 
       return acc
     }, 0)
 
-    return  totalAmount
+    return totalAmount
   }
 }
