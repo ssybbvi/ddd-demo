@@ -41,14 +41,10 @@ export class PurchaseHistory extends AggregateRoot<IPurchaseHistoryProps> {
     return this.props.gender
   }
 
-
   public static create(props: IPurchaseHistoryProps, id?: UniqueEntityID): Result<PurchaseHistory> {
     const guardArgs: IGuardArgument[] = [
       { argument: props.commodityId, argumentName: '商品编号' },
-      { argument: props.userId, argumentName: '用户编号' },
-      { argument: props.nickName, argumentName: '昵称' },
-      { argument: props.avatarUrl, argumentName: '头像' },
-      { argument: props.gender, argumentName: '性别' },
+      { argument: props.userId, argumentName: '用户编号' }
     ]
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)

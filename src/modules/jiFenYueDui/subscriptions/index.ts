@@ -8,9 +8,11 @@ import { getWxCurrentUserUseCase } from '../../users/useCases/wxUser/getWxCurren
 import { getDailySignInCountByUserIdUseCase } from '../../distribution/userCases/signIns/getDailySignInCountByUserId'
 import { AfterWxUserBindingPhoneNumber } from './afterWxUserBindingPhoneNumber'
 import { AfterUserUpdateInviteRecommendedUserIded } from './afterUserUpdateInviteRecommendedUserIded'
+import { AfterBindingWxUserInfoed } from './afterBindingWxUserInfoed'
 
 new AfterUserCreated(completeTaskUseCase)
 new AfterOrderPaymented(completeTaskUseCase)
 new AfterDayDayTaskCreated(createScheduledTaskUseCase, getWxCurrentUserUseCase, getDailySignInCountByUserIdUseCase)
 new AfterWxUserBindingPhoneNumber(completeTaskUseCase)
 new AfterUserUpdateInviteRecommendedUserIded(completeTaskUseCase, getUserByInviteRecommendedUserIdUseCase)
+new AfterBindingWxUserInfoed(completeTaskUseCase)
