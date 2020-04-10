@@ -1,3 +1,4 @@
 export interface WxAuthorizationDto {
-  code: string
+  code: string,
+  inviteToken?: string
 }

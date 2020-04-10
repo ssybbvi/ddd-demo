@@ -36,8 +36,6 @@ export class RecommendedByInviteTokenUseCase implements UseCase<RecommendedByInv
         return left(new RecommendedByInviteTokenErrors.DontRepeatRecommend())
       }
 
-
-
       user.setInviteRecommendedUserId(inviteRecommendedUser.id.toString())
       await this.userRepo.save(user)
 
