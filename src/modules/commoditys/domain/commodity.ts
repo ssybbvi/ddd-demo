@@ -5,6 +5,7 @@ import { IGuardArgument, Guard } from '../../../shared/core/Guard'
 import { CommodityCreated } from './events/CommodityCreated'
 import { CommodityPrice } from './commodityPrice'
 import { CommodityName } from './commodityName'
+import { CommodityType } from './commodityType'
 
 export interface ICommodityProps {
   name: CommodityName
@@ -16,7 +17,8 @@ export interface ICommodityProps {
   restrictedPurchaseQuantity: number//每次限购
   limitedPurchasePerPerson: number//每人限购
   tags: string[]
-  imgesDescrptionList: string[]
+  imgesDescrptionList: string[],
+  type: CommodityType
 }
 
 export class Commodity extends AggregateRoot<ICommodityProps> {
@@ -64,6 +66,10 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     return this.props.imgesDescrptionList
   }
 
+  get type(): CommodityType {
+    return this.props.type
+  }
+
   public updateName(name: CommodityName) {
     this.props.name = name
   }
@@ -100,6 +106,10 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     this.props.limitedPurchasePerPerson = limitedPurchasePerPerson
   }
 
+  public updateType(type: CommodityType) {
+    this.props.type = type
+  }
+
   public sale(): void {
     this.props.sales++
   }
@@ -117,8 +127,6 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
       { argument: props.fakePrice, argumentName: '假价格' },
       { argument: props.sales, argumentName: '销量' },
       { argument: props.restrictedPurchaseQuantity, argumentName: '每次限购' },
-      { argument: props.limitedPurchasePerPerson, argumentName: '每人限购' },
-
     ]
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)
@@ -130,7 +138,8 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     const defaultValues: ICommodityProps = {
       ...props,
       tags: props.tags ? props.tags : [],
-      limitedPurchasePerPerson: props.limitedPurchasePerPerson ? props.limitedPurchasePerPerson : -1
+      limitedPurchasePerPerson: props.limitedPurchasePerPerson ? props.limitedPurchasePerPerson : -1,
+      type: props.type ? props.type : 'ordinary'
     }
 
     const commodity = new Commodity(defaultValues, id)

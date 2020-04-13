@@ -7,5 +7,6 @@ export interface IEditCommodityDto {
     fakePrice: string
     restrictedPurchaseQuantity: number
     tags: string[]
-    imgesDescrptionList: string[]
+    imgesDescrptionList: string[],
+    type: string
 }

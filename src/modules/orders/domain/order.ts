@@ -10,11 +10,11 @@ import { OrderReceived } from './events/orderReceived'
 import { OrderPaymented } from './events/orderPaymented'
 import { OrderShipped } from './events/orderShipped'
 import { OrderCreated } from './events/orderCreated'
-import { CancelOrderErrors } from '../userCases/cancelOrder/CancelOrderErrors'
-import { ShippedOrderErrors } from '../userCases/shippedOrder/shippedOrderErrors'
-import { ReceivedOrderErrors } from '../userCases/receivedOrder/receivedErrors'
-import { PaymentOrderErrors } from '../userCases/paymentOrder/paymentOrderErrors'
-import { CloseOrderErrors } from '../userCases/closeOrder/closeOrderErrors'
+import { CancelOrderErrors } from '../userCases/order/cancelOrder/CancelOrderErrors'
+import { ShippedOrderErrors } from '../userCases/order/shippedOrder/shippedOrderErrors'
+import { ReceivedOrderErrors } from '../userCases/order/receivedOrder/receivedErrors'
+import { PaymentOrderErrors } from '../userCases/order/paymentOrder/paymentOrderErrors'
+import { CloseOrderErrors } from '../userCases/order/closeOrder/closeOrderErrors'
 import { OrderClosed } from './events/orderClosed'
 
 export type PaymentOrderResult = Either<
@@ -129,12 +129,23 @@ export class Order extends AggregateRoot<OrderProps> {
     return this.props.items
   }
 
-  public cancel(): CancelOrderResult {
+  public autoCancel() {
     if (!this.isUnPaid()) {
       return left(new CancelOrderErrors.StatusNotUnPaid())
     }
     if (this.isAtPaymentTime()) {
       return left(new PaymentOrderErrors.PaymentTimeExpired())
+    }
+    this.props.cancelTime = Date.now()
+    this.props.status = 'cancel'
+    this.addDomainEvent(new OrderCanceled(this))
+
+    return right(Result.ok<void>())
+  }
+
+  public cancel(): CancelOrderResult {
+    if (!this.isUnPaid()) {
+      return left(new CancelOrderErrors.StatusNotUnPaid())
     }
     this.props.cancelTime = Date.now()
     this.props.status = 'cancel'
@@ -212,6 +223,14 @@ export class Order extends AggregateRoot<OrderProps> {
     return this.props.status === 'shipped'
   }
 
+  public isReceived(): boolean {
+    return this.props.status === 'received'
+  }
+
+  public isValid(): boolean {
+    return this.isShipped() || this.isShipping() || this.isReceived()
+  }
+
   private calculationOrderItemPriceTotal(): void {
     this.props.price = this.orderItems.reduce((acc, item) => (acc += item.price), 0)
   }
@@ -234,6 +253,7 @@ export class Order extends AggregateRoot<OrderProps> {
   }
 
   public static create(props: OrderProps, id?: UniqueEntityID): Result<Order> {
+
     const isNew = !!id === false
     const order = new Order(
       {

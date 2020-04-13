@@ -5,6 +5,7 @@ import { Commodity } from '../domain/commodity'
 import { CommodityDto } from '../dtos/commodityDto'
 import { CommodityName } from '../domain/commodityName'
 import { CommodityPrice } from '../domain/commodityPrice'
+import { CommodityType } from '../domain/commodityType'
 
 export class CommodityMap implements IMapper<Commodity> {
   public static toDTO(commodity: Commodity): CommodityDto {
@@ -19,7 +20,8 @@ export class CommodityMap implements IMapper<Commodity> {
       restrictedPurchaseQuantity: commodity.restrictedPurchaseQuantity,
       limitedPurchasePerPerson: commodity.limitedPurchasePerPerson,
       tags: commodity.tags,
-      imgesDescrptionList: commodity.imgesDescrptionList
+      imgesDescrptionList: commodity.imgesDescrptionList,
+      type: commodity.type
     }
   }
 
@@ -42,7 +44,8 @@ export class CommodityMap implements IMapper<Commodity> {
         restrictedPurchaseQuantity: raw.restrictedPurchaseQuantity,
         limitedPurchasePerPerson: raw.limitedPurchasePerPerson,
         tags: raw.tags,
-        imgesDescrptionList: raw.imgesDescrptionList
+        imgesDescrptionList: raw.imgesDescrptionList,
+        type: raw.type as CommodityType
       },
       new UniqueEntityID(raw._id)
     )
@@ -63,7 +66,8 @@ export class CommodityMap implements IMapper<Commodity> {
       restrictedPurchaseQuantity: commodity.restrictedPurchaseQuantity,
       limitedPurchasePerPerson: commodity.limitedPurchasePerPerson,
       tags: commodity.tags,
-      imgesDescrptionList: commodity.imgesDescrptionList
+      imgesDescrptionList: commodity.imgesDescrptionList,
+      type: commodity.type
     }
   }
 }

@@ -7,6 +7,7 @@ import { OrderItemDto } from '../dtos/orderItemDto'
 import { OrderDbModel, OrderItemDbModel } from '../dbModels/orderDbModel'
 import { OrderStatus } from '../domain/orderStatus'
 import { OrderItem } from '../domain/orderItem'
+import { CommodityType } from '../../commoditys/domain/commodityType'
 
 
 export class OrderMap implements IMapper<Order> {
@@ -117,7 +118,8 @@ export class OrderMap implements IMapper<Order> {
       name: orderItemDbModel.name,
       price: orderItemDbModel.price,
       image: orderItemDbModel.image,
-      commodityId: orderItemDbModel.commodityId
+      commodityId: orderItemDbModel.commodityId,
+      commodityType: orderItemDbModel.commodityType as CommodityType
     }, new UniqueEntityID(orderItemDbModel._id))
 
     orderItemOrErrors.isSuccess ? "" : console.error(orderItemOrErrors.errorValue())
@@ -171,6 +173,7 @@ export class OrderMap implements IMapper<Order> {
       price: orderItem.price,
       image: orderItem.image,
       commodityId: orderItem.commodityId,
+      commodityType: orderItem.commodityType.toString(),
     }
   }
 }

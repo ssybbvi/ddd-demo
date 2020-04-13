@@ -34,7 +34,8 @@ export class MongoCommodityRepo implements ICommodityRepo {
           restrictedPurchaseQuantity: raw.restrictedPurchaseQuantity,
           limitedPurchasePerPerson: raw.limitedPurchasePerPerson,
           tags: raw.tags,
-          imgesDescrptionList: raw.imgesDescrptionList
+          imgesDescrptionList: raw.imgesDescrptionList,
+          type: raw.type,
         }
       },
       { upsert: true }

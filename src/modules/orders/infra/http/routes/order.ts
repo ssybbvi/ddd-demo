@@ -1,14 +1,14 @@
 import express from 'express'
 import { middleware } from '../../../../../shared/infra/http'
-import { createOrderController } from '../../../userCases/createOrder'
-import { getOrderListController } from '../../../userCases/getOrderList'
-import { cancelOrderController } from '../../../userCases/cancelOrder'
-import { paymentOrderController } from '../../../userCases/paymentOrder'
-import { getOrderByIdController } from '../../../userCases/getOrderById'
-import { shippedOrderController } from '../../../userCases/shippedOrder'
-import { receivedOrderController } from '../../../userCases/receivedOrder'
-import { autoCancelOrderController } from '../../../userCases/autoCancelOrder'
-import { closeOrderController } from '../../../userCases/closeOrder'
+import { createOrderController } from '../../../userCases/order/createOrder'
+import { getOrderListController } from '../../../userCases/order/getOrderList'
+import { cancelOrderController } from '../../../userCases/order/cancelOrder'
+import { paymentOrderController } from '../../../userCases/order/paymentOrder'
+import { getOrderByIdController } from '../../../userCases/order/getOrderById'
+import { shippedOrderController } from '../../../userCases/order/shippedOrder'
+import { receivedOrderController } from '../../../userCases/order/receivedOrder'
+import { autoCancelOrderController } from '../../../userCases/order/autoCancelOrder'
+import { closeOrderController } from '../../../userCases/order/closeOrder'
 
 const orderRouter = express.Router()
 

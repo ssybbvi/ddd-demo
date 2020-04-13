@@ -5,6 +5,7 @@ import { ICommodityRepo } from '../../../repos/iCommodityRepo'
 import { IEditCommodityDto } from './editCommodityDto'
 import { CommodityName } from '../../../domain/commodityName'
 import { CommodityPrice } from '../../../domain/commodityPrice'
+import { CommodityType } from '../../../domain/commodityType'
 
 type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 
@@ -17,7 +18,7 @@ export class EditCommodityUseCase implements UseCase<IEditCommodityDto, Promise<
 
   public async execute(request: IEditCommodityDto): Promise<Response> {
     try {
-      const { _id, name, price, descrption, images, fakePrice, restrictedPurchaseQuantity, tags, imgesDescrptionList } = request
+      const { _id, name, price, descrption, images, fakePrice, restrictedPurchaseQuantity, tags, imgesDescrptionList, type } = request
 
       const commodity = await this.commodityRepo.getById(_id)
 
@@ -39,6 +40,7 @@ export class EditCommodityUseCase implements UseCase<IEditCommodityDto, Promise<
       commodity.updateTags(tags)
       commodity.updateRestrictedPurchaseQuantity(restrictedPurchaseQuantity)
       commodity.updateImgesDescrptionList(imgesDescrptionList)
+      commodity.updateType(type as CommodityType)
 
       await this.commodityRepo.save(commodity)
       return right(Result.ok<void>())

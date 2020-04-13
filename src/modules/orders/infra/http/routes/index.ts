@@ -1,5 +1,6 @@
-import { orderRouter} from './order'
+import { orderRouter } from './order'
+import { orderUserRouter } from './orderUser'
 
 export {
-    orderRouter
+    orderRouter, orderUserRouter
 }

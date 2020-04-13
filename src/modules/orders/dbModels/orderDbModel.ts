@@ -37,5 +37,6 @@ export interface OrderItemDbModel {
     name: string
     price: number
     image: string
-    commodityId: string
+    commodityId: string,
+    commodityType: string
 }

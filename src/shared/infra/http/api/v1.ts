@@ -4,7 +4,7 @@ import { userRouter, wxUserRouter, upUserRouter } from '../../../../modules/user
 import { signInRouter, recommendedUserRouter } from '../../../../modules/distribution/infra/http/routes/index'
 import { fundRouter, fundAccountRouter } from '../../../../modules/funds/infra/http/routes'
 import { commodityRouter, purchaseHistoryRouter } from '../../../../modules/commoditys/infra/http/routes'
-import { orderRouter } from '../../../../modules/orders/infra/http/routes'
+import { orderRouter, orderUserRouter } from '../../../../modules/orders/infra/http/routes'
 import { authorityUserRouter } from '../../../../modules/authority/infra/http/routes'
 import { Middleware } from '../utils/Middleware'
 import { dayDayTaskRouter, scheduleTaskRouter } from '../../../../modules/jiFenYueDui/infra/http/routes'
@@ -24,6 +24,7 @@ v1Router.use('/fund', fundRouter)
 v1Router.use('/fundAccount', fundAccountRouter)
 v1Router.use('/commodity', commodityRouter)
 v1Router.use('/order', orderRouter)
+v1Router.use('/orderUser', orderUserRouter)
 v1Router.use('/authority', authorityUserRouter)
 v1Router.use('/purchase/history', purchaseHistoryRouter)
 v1Router.use('/upload', Middleware.upload())

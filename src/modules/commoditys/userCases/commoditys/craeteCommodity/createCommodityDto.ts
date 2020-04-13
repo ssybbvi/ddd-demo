@@ -8,5 +8,6 @@ export interface CreateCommodityDto {
   restrictedPurchaseQuantity: number
   limitedPurchasePerPerson: number
   tags: string[],
-  imgesDescrptionList: string[]
+  imgesDescrptionList: string[],
+  type: string
 }
