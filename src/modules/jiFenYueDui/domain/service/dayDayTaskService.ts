@@ -9,7 +9,7 @@ export class DayDayTaskService {
   public getRewardByTaskType(type: DayDayTaskType): number {
 
     if (type === "registered") {
-      return 200
+      return 100
     }
 
     if (type === "phoneAuthorization") {

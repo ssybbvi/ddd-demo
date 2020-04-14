@@ -9,6 +9,17 @@ import { authorityUserRouter } from '../../../../modules/authority/infra/http/ro
 import { Middleware } from '../utils/Middleware'
 import { dayDayTaskRouter, scheduleTaskRouter } from '../../../../modules/jiFenYueDui/infra/http/routes'
 
+import { sendMessage } from '../../ws'
+
+const wskRouter = express.Router()
+
+wskRouter.get('/', (req, res) => {
+  sendMessage({ test: "123" })
+  res.send("okxx")
+})
+
+
+
 const v1Router = express.Router()
 
 v1Router.get('/', (req, res) => {
@@ -30,4 +41,8 @@ v1Router.use('/purchase/history', purchaseHistoryRouter)
 v1Router.use('/upload', Middleware.upload())
 v1Router.use('/dayDayTask', dayDayTaskRouter)
 v1Router.use('/scheduleTask', scheduleTaskRouter)
+v1Router.use('/ws', wskRouter)
 export { v1Router }
+
+
+
