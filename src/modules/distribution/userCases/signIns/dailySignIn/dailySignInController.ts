@@ -23,18 +23,18 @@ export class DailySignInController extends BaseController {
 
     try {
       const result = await this.useCase.execute(dto)
-      let dailySignInUseCaseValue = result.value
+
       if (result.isLeft()) {
-        const error = dailySignInUseCaseValue
+        const error = result.value
 
         switch (error.constructor) {
           case DailySignInErrors.TodayAlreadySignInError:
-            return this.notFound(res, error.errorValue().message)
+            return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       } else {
-        const dailySignInDtoResult: DailySignInDtoResult = dailySignInUseCaseValue.getValue() as DailySignInDtoResult
+        const dailySignInDtoResult: DailySignInDtoResult = result.value.getValue() as DailySignInDtoResult
         return this.ok<DailySignInDtoResult>(res, dailySignInDtoResult)
       }
     } catch (err) {

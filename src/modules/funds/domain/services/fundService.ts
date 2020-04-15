@@ -6,9 +6,9 @@ import { GetRecommendedUserUseCase } from '../../../distribution/userCases/recom
 import { RecommendedUser } from '../../../distribution/domain/recommendedUser'
 import { CreateFundUseCase } from '../../userCases/funds/createFund/createFundUseCase'
 
-type RecommendedUserResponse = Either<AppError.UnexpectedError | Result<any>, Result<RecommendedUser>>
-type FundListResponse = Either<AppError.UnexpectedError | Result<any>, Result<Fund[]>>
-type DistributionResponse = Either<AppError.UnexpectedError | Result<any>, Result<void>>
+type RecommendedUserResponse = Either<AppError.UnexpectedError, Result<RecommendedUser>>
+type FundListResponse = Either<AppError.UnexpectedError, Result<Fund[]>>
+type DistributionResponse = Either<AppError.UnexpectedError, Result<void>>
 
 export class FundService {
   private getRecommendedUserUseCase: GetRecommendedUserUseCase

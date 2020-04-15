@@ -24,16 +24,16 @@ export class GetFundListController extends BaseController {
 
     try {
       const result = await this.useCase.execute(dto)
-      let useCaseValue = result.value
+
       if (result.isLeft()) {
-        const error = useCaseValue
+        const error = result.value
 
         switch (error.constructor) {
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       } else {
-        const fundList: Fund[] = useCaseValue.getValue() as Fund[]
+        const fundList: Fund[] = result.value.getValue() as Fund[]
         let fundDtoList = fundList.map(item => FundMap.toDTO(item))
         return this.ok<FundDto[]>(res, fundDtoList)
       }

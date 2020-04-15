@@ -25,13 +25,13 @@ export class CompleteTaskController extends BaseController {
         return this.fail(res, '错误的任务类型')
       }
       const result = await this.useCase.execute(dto)
-      let useCaseValue = result.value
+
       if (result.isLeft()) {
-        const error = useCaseValue
+        const error = result.value
 
         switch (error.constructor) {
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       } else {
         return this.ok<void>(res)

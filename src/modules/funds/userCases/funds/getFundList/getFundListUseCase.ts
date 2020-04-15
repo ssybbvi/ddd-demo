@@ -6,7 +6,7 @@ import e = require('express')
 import { GetFundListDto } from './getFundListDto'
 import { Fund } from '../../../domain/fund'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<Fund[]>>
+type Response = Either<AppError.UnexpectedError, Result<Fund[]>>
 
 export class GetFundListUseCase implements UseCase<GetFundListDto, Promise<Response>> {
   private fundRepo: IFundRepo

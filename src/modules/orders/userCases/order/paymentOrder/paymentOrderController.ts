@@ -22,23 +22,23 @@ export class PaymentOrderController extends BaseController {
 
     try {
       const result = await this.useCase.execute(dto)
-      let useCaseValue = result.value
+
       if (result.isLeft()) {
-        const error = useCaseValue
+        const error = result.value
 
         switch (error.constructor) {
           case PaymentOrderErrors.DoesNotBelongToYou:
-            return this.notFound(res, error.errorValue().message)
+            return this.fail(res, error.errorValue().message)
           case PaymentOrderErrors.OrderNotFound:
-            return this.notFound(res, error.errorValue().message)
+            return this.fail(res, error.errorValue().message)
           case PaymentOrderErrors.OrderStatusNotPaid:
-            return this.notFound(res, error.errorValue().message)
+            return this.fail(res, error.errorValue().message)
           case PaymentOrderErrors.UnableToPaid:
-            return this.notFound(res, error.errorValue().message)
+            return this.fail(res, error.errorValue().message)
           case PaymentOrderErrors.PaymentTimeExpired:
-            return this.notFound(res, error.errorValue().message)
+            return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       }
       return this.ok<void>(res)

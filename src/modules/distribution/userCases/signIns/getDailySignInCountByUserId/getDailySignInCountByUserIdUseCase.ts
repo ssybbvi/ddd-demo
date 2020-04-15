@@ -4,7 +4,7 @@ import { AppError } from '../../../../../shared/core/AppError'
 import { ISignInRepo } from '../../../repos/signInRepo'
 import { GetDailySignInCountByUserIdDto } from './getDailySignInCountByUserIdDto'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<number>>
+type Response = Either<AppError.UnexpectedError, Result<number>>
 
 export class GetDailySignInCountByUserIdUseCase implements UseCase<GetDailySignInCountByUserIdDto, Promise<Response>> {
   private signInRepo: ISignInRepo

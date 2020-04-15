@@ -23,16 +23,16 @@ export class GetPurchaseHistoryController extends BaseController {
 
     try {
       const result = await this.useCase.execute(dto)
-      let useCaseValue = result.value
+
       if (result.isLeft()) {
-        const error = useCaseValue
+        const error = result.value
 
         switch (error.constructor) {
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       } else {
-        const purchaseHistorys = useCaseValue.getValue() as PurchaseHistory[]
+        const purchaseHistorys = result.value.getValue() as PurchaseHistory[]
         const purchaseHistoryDtos = purchaseHistorys.map(item => PurchaseHistoryMap.toDTO(item))
         return this.ok<PurchaseHistoryDto[]>(res, purchaseHistoryDtos)
       }

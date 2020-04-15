@@ -10,7 +10,7 @@ type Response = Either<
   | AppError.UnexpectedError
   | ReceiveRewardErrors.DayDayTaskNotFound
   | ReceiveRewardErrors.RewardAlreadyReceive
-  | Result<any>,
+  ,
   Result<DayDayTask>
 >
 

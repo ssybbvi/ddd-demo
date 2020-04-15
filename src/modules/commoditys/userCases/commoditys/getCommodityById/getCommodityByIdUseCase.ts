@@ -6,7 +6,7 @@ import { ICommodityRepo } from '../../../repos/iCommodityRepo'
 import { GetCommodityByIdDto } from './getCommodityByIdDto'
 import { GetCommodityErrors } from './getCommodityErrors'
 
-type Response = Either<GetCommodityErrors.CommodityNotFound | AppError.UnexpectedError | Result<any>, Result<Commodity>>
+type Response = Either<GetCommodityErrors.CommodityNotFound | AppError.UnexpectedError, Result<Commodity>>
 
 export class GetCommodityByIdUseCase implements UseCase<GetCommodityByIdDto, Promise<Response>> {
   private commodityRepo: ICommodityRepo

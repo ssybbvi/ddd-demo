@@ -7,7 +7,7 @@ import { GetOrderListDto } from './getOrderListDto'
 import { OrderStatus } from '../../../domain/orderStatus'
 
 type Response = Either<
-  | AppError.UnexpectedError | Result<any>, Result<Order[]>>
+  | AppError.UnexpectedError, Result<Order[]>>
 
 export class GetOrderListUseCase implements UseCase<GetOrderListDto, Promise<Response>> {
   private orderRepo: IOrderRepo

@@ -28,7 +28,7 @@ export class GetRoleController extends BaseController {
 
         switch (error.constructor) {
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       } else {
         const roleDtoList = result.value.getValue()

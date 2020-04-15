@@ -8,7 +8,7 @@ import { CommodityName } from '../../../domain/commodityName'
 import { CommodityPrice } from '../../../domain/commodityPrice'
 import { CommodityType } from '../../../domain/commodityType'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
+type Response = Either<AppError.UnexpectedError, Result<void>>
 
 export class CreateCommodityUseCase implements UseCase<CreateCommodityDto, Promise<Response>> {
   private commodityRepo: ICommodityRepo

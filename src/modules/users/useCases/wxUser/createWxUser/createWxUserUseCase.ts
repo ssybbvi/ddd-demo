@@ -11,8 +11,7 @@ type Response = Either<
   | CreateWxUserErrors.WxJsCodeToSessionError
   | CreateWxUserErrors.OpenIdAlreadyExist
   | AppError.UnexpectedError
-  | Result<any>,
-  Result<void>
+  , Result<void>
 >
 
 export class CreateWxUserUseCase implements UseCase<CreateWxUserDto, Promise<Response>> {

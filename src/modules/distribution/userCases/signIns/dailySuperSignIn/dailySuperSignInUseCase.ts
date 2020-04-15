@@ -9,7 +9,7 @@ import { SignInService } from '../../../domain/services/signInService'
 import { RandomUtils } from '../../../../../shared/utils/RandomUtils'
 
 type Response = Either<
-  DailySuperSignInErrors.NonCompliantErrors | AppError.UnexpectedError | Result<any>,
+  DailySuperSignInErrors.NonCompliantErrors | AppError.UnexpectedError,
   Result<DailySuperSignInDtoResult>
 >
 
@@ -38,7 +38,7 @@ export class DailySuperSignInUseCase implements UseCase<DailySuperSignInDto, Pro
 
       let signIn = await this.signInRepo.getToday(userId)
 
-      let reward =RandomUtils.interval(4,10)*10
+      let reward = RandomUtils.interval(4, 10) * 10
       signIn.updateSuperReward(reward)
       await this.signInRepo.save(signIn)
 

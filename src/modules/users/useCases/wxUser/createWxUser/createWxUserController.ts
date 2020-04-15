@@ -17,17 +17,16 @@ export class CreateWxUserController extends BaseController {
 
     try {
       const result = await this.useCase.execute(dto)
-      let useCaseValue = result.value
       if (result.isLeft()) {
-        const error = useCaseValue
+        const error = result.value
 
         switch (error.constructor) {
           case CreateWxUserErrors.WxJsCodeToSessionError:
-            return this.notFound(res, error.errorValue().message)
+            return this.fail(res, error.errorValue().message)
           case CreateWxUserErrors.OpenIdAlreadyExist:
-            return this.notFound(res, error.errorValue().message)
+            return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       } else {
         return this.ok<void>(res)

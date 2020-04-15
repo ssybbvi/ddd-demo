@@ -7,7 +7,7 @@ import { UniqueEntityID } from '../../../../../shared/domain/UniqueEntityID'
 import { BuyOnceCommodityDto } from './buyOnceCommodityDto'
 
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
+type Response = Either<AppError.UnexpectedError, Result<void>>
 
 export class BuyOnceCommodityUseCase implements UseCase<BuyOnceCommodityDto, Promise<Response>> {
   private orderUserRepo: IOrderUserRepo

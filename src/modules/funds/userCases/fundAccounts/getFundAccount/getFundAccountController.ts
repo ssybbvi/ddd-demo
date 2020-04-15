@@ -24,16 +24,16 @@ export class GetFundAccountController extends BaseController {
 
     try {
       const result = await this.useCase.execute(dto)
-      let useCaseValue = result.value
+
       if (result.isLeft()) {
-        const error = useCaseValue
+        const error = result.value
 
         switch (error.constructor) {
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       } else {
-        const fundAccount: FundAccount = useCaseValue.getValue() as FundAccount
+        const fundAccount: FundAccount = result.value.getValue() as FundAccount
         let fundAccountDto = FundAccountMap.toDTO(fundAccount)
         return this.ok<FundAccountDto>(res, fundAccountDto)
       }

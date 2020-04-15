@@ -6,7 +6,7 @@ import { ReceivedOrderDto } from './receivedOrderDto'
 import { ReceivedOrderErrors } from './receivedErrors'
 
 type Response = Either<
-  | AppError.UnexpectedError | ReceivedOrderErrors.OrderNotShipping | Result<any>, Result<void>>
+  | AppError.UnexpectedError | ReceivedOrderErrors.OrderNotShipping, Result<void>>
 
 export class ReceivedOrderUseCase implements UseCase<ReceivedOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo
@@ -27,7 +27,7 @@ export class ReceivedOrderUseCase implements UseCase<ReceivedOrderDto, Promise<R
 
       const result = order.received()
       if (result.isLeft()) {
-        return result.value.getValue()
+        return left(result.value)
       }
 
       await this.orderRepo.save(order)

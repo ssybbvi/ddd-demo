@@ -6,7 +6,7 @@ import { GetRecentSignInDto } from './getRecentSignInDto'
 import { SignInService } from '../../../domain/services/signInService'
 import { GetRecentSignInDtoResult } from './getRecentSignInDtoResult'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<GetRecentSignInDtoResult>>
+type Response = Either<AppError.UnexpectedError, Result<GetRecentSignInDtoResult>>
 
 export class GetRecentSignInUseCase implements UseCase<GetRecentSignInDto, Promise<Response>> {
   private signInRepo: ISignInRepo

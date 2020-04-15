@@ -8,7 +8,7 @@ import { IUpUserRepo } from '../../../repos/upUserRepo'
 import { CreateUpUserUseDto } from './createUpUserDto'
 import { CreateUpUserErrors } from './createUpUserErrors'
 
-type Response = Either<CreateUpUserErrors.UserNameExistError | AppError.UnexpectedError | Result<any>, Result<void>>
+type Response = Either<CreateUpUserErrors.UserNameExistError | AppError.UnexpectedError, Result<void>>
 
 export class CreateUpUserUseCase implements UseCase<CreateUpUserUseDto, Promise<Response>> {
   private upUserRepo: IUpUserRepo

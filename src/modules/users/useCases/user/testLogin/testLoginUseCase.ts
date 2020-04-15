@@ -5,7 +5,7 @@ import { TestLoginDto } from './testLoginDto'
 import { LoginUserUseCase } from '../login/LoginUseCase'
 import { LoginDTOResponse } from '../login/LoginDTO'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<LoginDTOResponse>>
+type Response = Either<AppError.UnexpectedError, Result<LoginDTOResponse>>
 
 export class TestLoginUseCase implements UseCase<TestLoginDto, Promise<Response>> {
   private loginUserUseCase: LoginUserUseCase

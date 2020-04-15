@@ -4,7 +4,7 @@ import { UseCase } from '../../../../../shared/core/UseCase'
 import { IWxUserRepo } from '../../../repos/wxUserRepo'
 import { BindindUseInfoDto } from './bindindUseInfoDto'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
+type Response = Either<AppError.UnexpectedError, Result<void>>
 
 export class BindindUseInfoUseCase implements UseCase<BindindUseInfoDto, Promise<Response>> {
   private wxUserRepo: IWxUserRepo

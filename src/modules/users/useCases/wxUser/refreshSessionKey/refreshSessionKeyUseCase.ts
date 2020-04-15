@@ -4,7 +4,7 @@ import { UseCase } from '../../../../../shared/core/UseCase'
 import { IWxUserRepo } from '../../../repos/wxUserRepo'
 import { RefreshSessionKeyDto } from './refreshSessionKeyDto'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
+type Response = Either<AppError.UnexpectedError, Result<void>>
 
 export class RefreshSessionKeyUseCase implements UseCase<RefreshSessionKeyDto, Promise<Response>> {
   private wxUserRepo: IWxUserRepo

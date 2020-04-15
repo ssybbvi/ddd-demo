@@ -11,7 +11,7 @@ type Response = Either<
   PaymentOrderErrors.OrderStatusNotPaid |
   PaymentOrderErrors.UnableToPaid |
   PaymentOrderErrors.DoesNotBelongToYou
-  | AppError.UnexpectedError | Result<any>, Result<void>>
+  | AppError.UnexpectedError, Result<void>>
 
 export class PaymentOrderUseCase implements UseCase<PaymentOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo
@@ -26,7 +26,6 @@ export class PaymentOrderUseCase implements UseCase<PaymentOrderDto, Promise<Res
     try {
       const { userId, orderId } = request
       const order = await this.orderRepo.getById(orderId)
-
       if (!!order === false) {
         return left(new PaymentOrderErrors.OrderNotFound())
       }
@@ -37,7 +36,7 @@ export class PaymentOrderUseCase implements UseCase<PaymentOrderDto, Promise<Res
 
       const paymentResult = order.payment()
       if (paymentResult.isLeft()) {
-        return paymentResult.value.getValue()
+        return left(paymentResult.value)
       }
 
       const fundAccount = await this.fundAccountRepo.getById(userId)

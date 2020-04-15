@@ -25,7 +25,7 @@ export class DeleteRoleController extends BaseController {
           case DeleteRoleErrors.RoleIdIsNullError:
             return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       } else {
         return this.ok(res)

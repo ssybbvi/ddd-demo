@@ -5,7 +5,7 @@ import { ICommodityRepo } from '../../../repos/iCommodityRepo'
 import { WithdrawCommodityDto } from './withdrawCommodityDto'
 import { WithdrawCommodityErrors } from './withdrawCommodityErrors'
 
-type Response = Either<WithdrawCommodityErrors.CommodityNotFound | AppError.UnexpectedError | Result<any>, Result<void>>
+type Response = Either<WithdrawCommodityErrors.CommodityNotFound | AppError.UnexpectedError, Result<void>>
 
 export class WithdrawCommodityUseCase implements UseCase<WithdrawCommodityDto, Promise<Response>> {
   private commodityRepo: ICommodityRepo

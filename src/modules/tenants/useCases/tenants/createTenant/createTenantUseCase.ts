@@ -9,7 +9,7 @@ import { TenantName } from '../../../domain/tenantName'
 import { TenantConnectionString } from '../../../domain/tenantConnectionString'
 
 type Response = Either<
-  CreateTenantErrors.TenantExistSameNameError | AppError.UnexpectedError | Result<any>,
+  CreateTenantErrors.TenantExistSameNameError | AppError.UnexpectedError,
   Result<void>
 >
 

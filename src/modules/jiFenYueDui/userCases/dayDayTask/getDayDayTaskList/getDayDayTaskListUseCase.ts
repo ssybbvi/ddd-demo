@@ -5,7 +5,7 @@ import { UseCase } from '../../../../../shared/core/UseCase'
 import { GetDayDayTaskDto } from './getDayDayTaskListDto'
 import { DayDayTask } from '../../../domain/dayDayTask'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<DayDayTask[]>>
+type Response = Either<AppError.UnexpectedError, Result<DayDayTask[]>>
 
 export class GetDayDayTaskListUseCase implements UseCase<GetDayDayTaskDto, Promise<Response>> {
   private dayDayTaskRepo: IDayDayTaskRepo

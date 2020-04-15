@@ -7,7 +7,7 @@ import { GetCommodityDto } from './getCommodityDto'
 import { CommodityDto } from '../../../dtos/commodityDto'
 import { CommodityMap } from '../../../mappers/commodityMap'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<CommodityDto[]>>
+type Response = Either<AppError.UnexpectedError, Result<CommodityDto[]>>
 
 export class GetCommodityUseCase implements UseCase<GetCommodityDto, Promise<Response>> {
   private commodityRepo: ICommodityRepo

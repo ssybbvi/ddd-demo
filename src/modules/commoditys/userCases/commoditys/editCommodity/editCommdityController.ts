@@ -15,13 +15,13 @@ export class EditCommodityController extends BaseController {
     const dto: IEditCommodityDto = req.body as IEditCommodityDto
     try {
       const result = await this.useCase.execute(dto)
-      let useCaseValue = result.value
+
       if (result.isLeft()) {
-        const error = useCaseValue
+        const error = result.value
 
         switch (error.constructor) {
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       } else {
         return this.ok<void>(res)

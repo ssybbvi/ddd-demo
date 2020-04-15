@@ -5,7 +5,7 @@ import { GetPurchaseHistoryDto } from './getPurchaseHistoryDto'
 import { IPurchaseHistoryRepo } from '../../../repos/iPurchaseHistoryRepo'
 import { PurchaseHistory } from '../../../domain/purchaseHistory'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<PurchaseHistory[]>>
+type Response = Either<AppError.UnexpectedError, Result<PurchaseHistory[]>>
 
 export class GetPurchaseHistoryUseCase implements UseCase<GetPurchaseHistoryDto, Promise<Response>> {
   private purchaseHistoryRepo: IPurchaseHistoryRepo

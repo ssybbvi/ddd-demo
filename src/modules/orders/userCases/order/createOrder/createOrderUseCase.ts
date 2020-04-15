@@ -17,7 +17,7 @@ type Response = Either<
   CreateOrderErrors.CommodityNotFound
   | CreateOrderErrors.DotBuyRepeatOnceCommodity
   | CreateOrderErrors.OrderItemNotNull
-  | AppError.UnexpectedError | Result<any>, Result<Order>>
+  | AppError.UnexpectedError, Result<Order>>
 
 export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo
@@ -93,7 +93,7 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
       const isOrderItemHasBuyOnceeCommodity = orderItemList.some(item => item.commodityType == 'buyOnce')
 
 
-      const getOrderUserUseCaseResult = await this.getOrderUserUseCase.execute({ userId: userId })
+      const getOrderUserUseCaseResult = await this.getOrderUserUseCase.execute({ userId })
       const getOrderUserUseCaseResultValue = getOrderUserUseCaseResult.value
       if (getOrderUserUseCaseResult.isLeft()) {
         return left(getOrderUserUseCaseResultValue)

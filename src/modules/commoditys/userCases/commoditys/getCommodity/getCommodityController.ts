@@ -22,16 +22,16 @@ export class GetCommodityController extends BaseController {
 
     try {
       const result = await this.useCase.execute(dto)
-      let useCaseValue = result.value
+
       if (result.isLeft()) {
-        const error = useCaseValue
+        const error = result.value
 
         switch (error.constructor) {
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       } else {
-        const commodityDtoList = useCaseValue.getValue() as CommodityDto[]
+        const commodityDtoList = result.value.getValue() as CommodityDto[]
         return this.ok<GetCommodityDtoResult>(res, {
           commoditys: commodityDtoList
         })

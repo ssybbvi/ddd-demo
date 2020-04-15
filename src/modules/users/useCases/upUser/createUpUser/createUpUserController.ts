@@ -26,7 +26,7 @@ export class CreateUpUserController extends BaseController {
           case CreateUpUserErrors.UserNameExistError:
             return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       } else {
         return this.ok<void>(res)

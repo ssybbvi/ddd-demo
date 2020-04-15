@@ -8,7 +8,7 @@ import { SignIn } from '../../../domain/signIn'
 import { DailySignInDtoResult } from './dailySignInDtoResult'
 
 type Response = Either<
-  DailySignInErrors.TodayAlreadySignInError | AppError.UnexpectedError | Result<any>,
+  DailySignInErrors.TodayAlreadySignInError | AppError.UnexpectedError,
   Result<DailySignInDtoResult>
 >
 

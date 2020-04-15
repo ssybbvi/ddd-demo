@@ -5,7 +5,7 @@ import { GetFundAccountDto } from './getFundAccountDto'
 import { IFundAccountRepo } from '../../../repos/iFundAccountRepo'
 import { FundAccount } from '../../../domain/fundAccount'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<FundAccount>>
+type Response = Either<AppError.UnexpectedError, Result<FundAccount>>
 
 export class GetFundAccountUseCase implements UseCase<GetFundAccountDto, Promise<Response>> {
   private fundAccountRepo: IFundAccountRepo

@@ -9,9 +9,9 @@ import { FundType } from '../../../../funds/domain/fundType'
 import { RecommendedUserDistributionRelation } from '../../../domain/recommendedUserDistributionRelation'
 import { IUserRepo } from '../../../../users/repos/userRepo'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
+type Response = Either<AppError.UnexpectedError, Result<void>>
 type CreateRecommendedUserDistributionRelationResponse = Either<
-  AppError.UnexpectedError | Result<any>,
+  AppError.UnexpectedError,
   Result<RecommendedUserDistributionRelation[]>
 >
 
@@ -52,11 +52,10 @@ export class CreateRecommendedUser implements UseCase<CreateRecommendedUserDTO, 
         []
       )
 
-      let createRecommendedUserDistributionRelationResultValue = createRecommendedUserDistributionRelationResult.value
       if (createRecommendedUserDistributionRelationResult.isLeft()) {
-        return left(createRecommendedUserDistributionRelationResultValue)
+        return left(createRecommendedUserDistributionRelationResult.value)
       }
-      const distributionRelationList = createRecommendedUserDistributionRelationResultValue.getValue()
+      const distributionRelationList = createRecommendedUserDistributionRelationResult.value.getValue()
 
       const recommendedUserOrError: Result<RecommendedUser> = RecommendedUser.create(
         {

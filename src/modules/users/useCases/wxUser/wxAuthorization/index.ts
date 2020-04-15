@@ -1,4 +1,4 @@
-import { wxUserRepo } from '../../../repos'
+import { wxUserRepo, userRepo } from '../../../repos'
 import { WxAuthorizationUseCase } from './wxAuthorizationUseCase'
 import { WxAuthorizationController } from './wxAuthorizationController'
 import { createWxUserUseCase } from '../createWxUser'
@@ -7,6 +7,7 @@ import { refreshSessionKeyUseCase } from '../refreshSessionKey'
 import { recommendedByInviteTokenUseCase } from '../../user/recommendedByInviteToken'
 
 const wxAuthorizationUseCase = new WxAuthorizationUseCase(
+  userRepo,
   wxUserRepo,
   loginUserUseCase,
   createWxUserUseCase,

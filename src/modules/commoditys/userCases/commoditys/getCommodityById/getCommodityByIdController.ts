@@ -22,18 +22,18 @@ export class GetCommodityByIdController extends BaseController {
 
     try {
       const result = await this.useCase.execute(dto)
-      let useCaseValue = result.value
+
       if (result.isLeft()) {
-        const error = useCaseValue
+        const error = result.value
 
         switch (error.constructor) {
           case GetCommodityErrors.CommodityNotFound:
-            return this.notFound(res, error.errorValue().message)
+            return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       } else {
-        const commodity = useCaseValue.getValue() as Commodity
+        const commodity = result.value.getValue() as Commodity
         const commodityDto = CommodityMap.toDTO(commodity)
         return this.ok<CommodityDto>(res, commodityDto)
       }

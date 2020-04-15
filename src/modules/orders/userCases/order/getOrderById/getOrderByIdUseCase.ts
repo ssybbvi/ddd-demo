@@ -9,7 +9,7 @@ import { GetOrderByIdErrors } from './getOrderByIdErrors'
 type Response = Either<
   GetOrderByIdErrors.DoesNotBelongToYou |
   GetOrderByIdErrors.OrderNotFound |
-  AppError.UnexpectedError | Result<any>, Result<Order>>
+  AppError.UnexpectedError, Result<Order>>
 
 export class GetOrderByIdUseCase implements UseCase<GetOrderByIdDto, Promise<Response>> {
   private orderRepo: IOrderRepo

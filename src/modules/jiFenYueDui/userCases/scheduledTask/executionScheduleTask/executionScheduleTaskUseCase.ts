@@ -5,7 +5,7 @@ import { ExecutionScheduleTaskDto } from './executionScheduleTaskDto'
 import { IScheduledTaskRepo } from '../../../repos/scheduledTaskRepo'
 import { WechatUtil } from '../../../../../shared/infra/wx/wxCommon'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
+type Response = Either<AppError.UnexpectedError, Result<void>>
 
 export class ExecutionScheduleTaskUseCase implements UseCase<ExecutionScheduleTaskDto, Promise<Response>> {
   private scheduledTaskRepo: IScheduledTaskRepo
@@ -16,7 +16,7 @@ export class ExecutionScheduleTaskUseCase implements UseCase<ExecutionScheduleTa
 
   public async execute(request: ExecutionScheduleTaskDto): Promise<Response> {
     try {
-      const {} = request
+      const { } = request
 
       const scheduledTaskList = await this.scheduledTaskRepo.filterByExecutable()
 

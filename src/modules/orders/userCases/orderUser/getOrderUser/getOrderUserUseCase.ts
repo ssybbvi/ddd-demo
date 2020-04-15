@@ -6,7 +6,7 @@ import { OrderUser } from '../../../domain/orderUser'
 import { GetOrderUserDto } from './getOrderUserDto'
 
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<OrderUser>>
+type Response = Either<AppError.UnexpectedError, Result<OrderUser>>
 
 export class GetOrderUserUseCase implements UseCase<GetOrderUserDto, Promise<Response>> {
   private orderUserRepo: IOrderUserRepo
@@ -19,7 +19,6 @@ export class GetOrderUserUseCase implements UseCase<GetOrderUserDto, Promise<Res
     try {
       const { userId } = request
       const orderUser = await this.orderUserRepo.getById(userId)
-      console.log("zzzz", orderUser)
       return right(Result.ok<OrderUser>(orderUser))
     } catch (err) {
       return left(new AppError.UnexpectedError(err))

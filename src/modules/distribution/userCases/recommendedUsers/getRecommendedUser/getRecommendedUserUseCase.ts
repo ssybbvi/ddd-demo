@@ -5,7 +5,7 @@ import { AppError } from '../../../../../shared/core/AppError'
 import { GetRecommendedUserDto } from './getRecommendedUserDto'
 import { RecommendedUser } from '../../../domain/recommendedUser'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<RecommendedUser>>
+type Response = Either<AppError.UnexpectedError, Result<RecommendedUser>>
 
 export class GetRecommendedUserUseCase implements UseCase<GetRecommendedUserDto, Promise<Response>> {
   private recommendedUserRepo: IRecommendedUserRepo

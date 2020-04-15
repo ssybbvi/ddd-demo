@@ -28,7 +28,7 @@ export class GetPermissionController extends BaseController {
 
         switch (error.constructor) {
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       } else {
         const permissionDtoList = result.value.getValue()

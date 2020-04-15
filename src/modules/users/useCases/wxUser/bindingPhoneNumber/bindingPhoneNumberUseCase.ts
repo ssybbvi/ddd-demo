@@ -5,7 +5,7 @@ import { IWxUserRepo } from '../../../repos/wxUserRepo'
 import { BindingPhoneNumberDto } from './bindingPhoneNumberDto'
 import { WechatUtil } from '../../../../../shared/infra/wx/wxCommon'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
+type Response = Either<AppError.UnexpectedError, Result<void>>
 
 export class BindingPhoneNumberUseCase implements UseCase<BindingPhoneNumberDto, Promise<Response>> {
   private wxUserRepo: IWxUserRepo

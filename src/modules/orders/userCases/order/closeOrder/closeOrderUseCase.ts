@@ -8,7 +8,7 @@ import { CloseOrderDto } from './closeOrderDto'
 
 type Response = Either<CreateOrderErrors.OrderItemNotNull
 
-  | AppError.UnexpectedError | Result<any>, Result<void>>
+  | AppError.UnexpectedError, Result<void>>
 
 export class CloseOrderUseCase implements UseCase<CloseOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo

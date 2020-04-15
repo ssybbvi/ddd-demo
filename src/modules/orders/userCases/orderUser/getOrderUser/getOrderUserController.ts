@@ -25,16 +25,16 @@ export class GetOrderUserController extends BaseController {
 
     try {
       const result = await this.useCase.execute(dto)
-      let useCaseValue = result.value
+
       if (result.isLeft()) {
-        const error = useCaseValue
+        const error = result.value
 
         switch (error.constructor) {
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       }
-      const orderUser = useCaseValue.getValue() as OrderUser
+      const orderUser = result.value.getValue() as OrderUser
       const orderUserDto = OrderUserMap.toDTO(orderUser)
       return this.ok<IOrderUserDto>(res, orderUserDto)
     } catch (err) {

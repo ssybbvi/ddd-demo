@@ -7,7 +7,7 @@ import { CompleteTaskDto } from './completeTaskDto'
 import { DayDayTaskType } from '../../../domain/dayDayTaskType'
 import { DayDayTaskService } from '../../../domain/service/dayDayTaskService'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
+type Response = Either<AppError.UnexpectedError, Result<void>>
 
 export class CompleteTaskUseCase implements UseCase<CompleteTaskDto, Promise<Response>> {
   private dayDayTaskRepo: IDayDayTaskRepo

@@ -13,13 +13,13 @@ export class ExecutionScheduleTaskController extends BaseController {
   async executeImpl(req: any, res: express.Response): Promise<any> {
     try {
       const result = await this.useCase.execute({})
-      let useCaseValue = result.value
+
       if (result.isLeft()) {
-        const error = useCaseValue
+        const error = result.value
 
         switch (error.constructor) {
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       } else {
         return this.ok<void>(res)

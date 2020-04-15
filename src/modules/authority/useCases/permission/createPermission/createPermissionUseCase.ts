@@ -9,7 +9,7 @@ import { IPermissionRepo } from '../../../repos/permissionRepo'
 import { CreatePermissionErrors } from './createPermissionError'
 
 type Response = Either<
-  CreatePermissionErrors.PermissionExistSameNameError | AppError.UnexpectedError | Result<any>,
+  CreatePermissionErrors.PermissionExistSameNameError | AppError.UnexpectedError,
   Result<void>
 >
 

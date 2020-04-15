@@ -8,7 +8,7 @@ import { FundType } from '../../../domain/fundType'
 import { CreateFundDto } from './createFundDto'
 import { FundStatus } from '../../../domain/fundStatus'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
+type Response = Either<AppError.UnexpectedError, Result<void>>
 
 export class CreateFundUseCase implements UseCase<CreateFundDto, Promise<Response>> {
   private fundRepo: IFundRepo

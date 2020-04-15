@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rimraf ./dist && tsc",
-    "start:dev": "tsc && cross-env NODE_ENV=development nodemon",
+    "start:dev": "tsc && cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true nodemon",
     "docker:build": "docker build -t registry.cn-shenzhen.aliyuncs.com/jifenyuedui . ",
     "docker:push": "docker push registry.cn-shenzhen.aliyuncs.com/jifenyuedui"
   },

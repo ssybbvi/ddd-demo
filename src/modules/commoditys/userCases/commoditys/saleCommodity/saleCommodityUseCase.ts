@@ -5,7 +5,7 @@ import { ICommodityRepo } from '../../../repos/iCommodityRepo'
 import { SaleCommodityDto } from './saleCommodityDto'
 import { SaleCommodityErrors } from './saleCommodityErrors'
 
-type Response = Either<SaleCommodityErrors.CommodityNotFound | AppError.UnexpectedError | Result<any>, Result<void>>
+type Response = Either<SaleCommodityErrors.CommodityNotFound | AppError.UnexpectedError, Result<void>>
 
 export class SaleCommodityUseCase implements UseCase<SaleCommodityDto, Promise<Response>> {
   private commodityRepo: ICommodityRepo

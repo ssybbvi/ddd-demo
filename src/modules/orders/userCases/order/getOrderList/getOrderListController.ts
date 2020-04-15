@@ -24,16 +24,16 @@ export class GetOrderListController extends BaseController {
 
     try {
       const result = await this.useCase.execute(dto)
-      let useCaseValue = result.value
+
       if (result.isLeft()) {
-        const error = useCaseValue
+        const error = result.value
 
         switch (error.constructor) {
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       }
-      const orderList = useCaseValue.getValue() as Order[]
+      const orderList = result.value.getValue() as Order[]
       const orderDtoList = orderList.map(item => OrderMap.toDTO(item))
       return this.ok<OrderDto[]>(res, orderDtoList)
     } catch (err) {

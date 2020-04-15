@@ -18,16 +18,16 @@ import { CloseOrderErrors } from '../userCases/order/closeOrder/closeOrderErrors
 import { OrderClosed } from './events/orderClosed'
 
 export type PaymentOrderResult = Either<
-  PaymentOrderErrors.OrderStatusNotPaid | PaymentOrderErrors.PaymentTimeExpired | Result<any>,
+  PaymentOrderErrors.OrderStatusNotPaid | PaymentOrderErrors.PaymentTimeExpired,
   Result<void>
 >
-export type CloselOrderResult = Either<CloseOrderErrors.StatusError | Result<any>, Result<void>>
+export type CloselOrderResult = Either<CloseOrderErrors.StatusError, Result<void>>
 
-export type CancelOrderResult = Either<CancelOrderErrors.StatusNotUnPaid | Result<any>, Result<void>>
+export type CancelOrderResult = Either<CancelOrderErrors.StatusNotUnPaid, Result<void>>
 
-export type ShippedOrderResult = Either<ShippedOrderErrors.OrderNotPayment | Result<any>, Result<void>>
+export type ShippedOrderResult = Either<ShippedOrderErrors.OrderNotPayment, Result<void>>
 
-export type ReceivedOrderResult = Either<ReceivedOrderErrors.OrderNotShipping | Result<any>, Result<void>>
+export type ReceivedOrderResult = Either<ReceivedOrderErrors.OrderNotShipping, Result<void>>
 
 export interface OrderProps {
   userId: string

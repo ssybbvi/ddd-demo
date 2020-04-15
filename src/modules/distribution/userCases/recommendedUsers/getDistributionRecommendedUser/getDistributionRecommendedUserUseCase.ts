@@ -8,7 +8,7 @@ import { IFundRepo } from '../../../../funds/repos/iFundRepo'
 import { FundType } from '../../../../funds/domain/fundType'
 import { IWxUserRepo } from '../../../../users/repos/wxUserRepo'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<GetDistributionRecommendedUserDtoResult>>
+type Response = Either<AppError.UnexpectedError, Result<GetDistributionRecommendedUserDtoResult>>
 
 export class GetDistributionRecommendedUserUseCase
   implements UseCase<GetDistributionRecommendedUserDto, Promise<Response>> {

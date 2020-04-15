@@ -23,18 +23,18 @@ export class DailySuperSignInController extends BaseController {
 
     try {
       const result = await this.useCase.execute(dto)
-      let useCaseValue = result.value
+
       if (result.isLeft()) {
-        const error = useCaseValue
+        const error = result.value
 
         switch (error.constructor) {
           case DailySuperSignInErrors.NonCompliantErrors:
-            return this.notFound(res, error.errorValue().message)
+            return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       } else {
-        return this.ok<DailySuperSignInDtoResult>(res, useCaseValue.getValue())
+        return this.ok<DailySuperSignInDtoResult>(res, result.value.getValue())
       }
     } catch (err) {
       return this.fail(res, err)

@@ -5,7 +5,7 @@ import { IFundRepo } from '../../../repos/iFundRepo'
 import e = require('express')
 import { FundStatusChangeDto } from './fundStatusChangeDto'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
+type Response = Either<AppError.UnexpectedError, Result<void>>
 
 export class FundStatusChangeUseCase implements UseCase<FundStatusChangeDto, Promise<Response>> {
   private fundRepo: IFundRepo

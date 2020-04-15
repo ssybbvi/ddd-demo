@@ -5,7 +5,7 @@ import { GetUserByInviteRecommendedUserIdDto } from './getUserByInviteRecommende
 import { IUserRepo } from '../../../repos/userRepo'
 import { User } from '../../../domain/user'
 
-type Response = Either<AppError.UnexpectedError | Result<any>, Result<User[]>>
+type Response = Either<AppError.UnexpectedError, Result<User[]>>
 
 export class GetUserByInviteRecommendedUserIdUseCase
   implements UseCase<GetUserByInviteRecommendedUserIdDto, Promise<Response>> {

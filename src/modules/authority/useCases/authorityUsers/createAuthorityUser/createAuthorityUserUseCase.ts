@@ -10,7 +10,7 @@ type Response = Either<
   | CreateAuthorityUserErrors.AuthorityUserAlreadyExistsError
   | CreateAuthorityUserErrors.UserDoesntExistError
   | AppError.UnexpectedError
-  | Result<any>,
+  ,
   Result<void>
 >
 

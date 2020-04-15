@@ -8,7 +8,7 @@ import { AutoCancelOrderDto } from './autoCancelOrderDto'
 
 type Response = Either<CreateOrderErrors.OrderItemNotNull
 
-  | AppError.UnexpectedError | Result<any>, Result<void>>
+  | AppError.UnexpectedError, Result<void>>
 
 export class AutoCancelOrderUseCase implements UseCase<AutoCancelOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo

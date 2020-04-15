@@ -8,7 +8,7 @@ import { RecommendedByInviteTokenErrors } from './recommendedByInviteTokenErrors
 type Response = Either<
   AppError.UnexpectedError | RecommendedByInviteTokenErrors.InviteTokenInValidError
   | RecommendedByInviteTokenErrors.DontRecommendMyself
-  | Result<any>,
+  ,
   Result<void>
 >
 

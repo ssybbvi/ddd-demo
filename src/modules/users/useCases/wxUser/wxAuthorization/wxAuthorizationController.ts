@@ -18,22 +18,21 @@ export class WxAuthorizationController extends BaseController {
 
     try {
       const result = await this.useCase.execute(dto)
-      let wxAuthorizationUseCaseValue = result.value
       if (result.isLeft()) {
-        const error = wxAuthorizationUseCaseValue
+        const error = result.value
 
         switch (error.constructor) {
           case WxAuthorizationErrors.WxJsCodeToSessionError:
-            return this.notFound(res, error.errorValue().message)
+            return this.fail(res, error.errorValue().message)
           case WxAuthorizationErrors.InviteTokenInValidError:
-            return this.notFound(res, error.errorValue().message)
+            return this.fail(res, error.errorValue().message)
           case WxAuthorizationErrors.LoginForbidInviteTokenError:
-            return this.notFound(res, error.errorValue().message)
+            return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       } else {
-        const wxAuthorizationDtoResult: LoginDTOResponse = wxAuthorizationUseCaseValue.getValue() as LoginDTOResponse
+        const wxAuthorizationDtoResult: LoginDTOResponse = result.value.getValue() as LoginDTOResponse
         return this.ok<LoginDTOResponse>(res, wxAuthorizationDtoResult)
       }
     } catch (err) {

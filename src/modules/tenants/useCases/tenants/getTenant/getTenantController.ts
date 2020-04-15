@@ -22,7 +22,7 @@ export class GetTenantController extends BaseController {
 
         switch (error.constructor) {
           default:
-            return this.fail(res, error.errorValue() + '')
+            return this.fail(res, error.errorValue().message)
         }
       }
 

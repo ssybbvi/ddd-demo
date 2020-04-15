@@ -1,6 +1,5 @@
 import { ValueObject } from '../../../shared/domain/ValueObject'
 import { Result } from '../../../shared/core/Result'
-import { Guard } from '../../../shared/core/Guard'
 import { FundType } from '../../funds/domain/fundType'
 
 export interface IRecommendedUserDistributionRelationProps {
@@ -14,15 +13,15 @@ export class RecommendedUserDistributionRelation extends ValueObject<IRecommende
     super(prop)
   }
 
-  get recommendedUserId():string{
+  get recommendedUserId(): string {
     return this.props.recommendedUserId
   }
 
-  get fundType():FundType{
+  get fundType(): FundType {
     return this.props.fundType
   }
 
-  get distributionRate():number{
+  get distributionRate(): number {
     return this.props.distributionRate
   }
 

@@ -6,7 +6,7 @@ import { ShippedOrderDto } from './shippedOrderDto'
 import { ShippedOrderErrors } from './shippedOrderErrors'
 
 type Response = Either<
-  | AppError.UnexpectedError | ShippedOrderErrors.OrderNotPayment | Result<any>, Result<void>>
+  | AppError.UnexpectedError | ShippedOrderErrors.OrderNotPayment, Result<void>>
 
 export class ShippedOrderUseCase implements UseCase<ShippedOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo
@@ -27,7 +27,7 @@ export class ShippedOrderUseCase implements UseCase<ShippedOrderDto, Promise<Res
 
       const result = order.shipped(shippedNumber, shippedType)
       if (result.isLeft()) {
-        return result.value.getValue()
+        return left(result.value)
       }
 
       await this.orderRepo.save(order)
