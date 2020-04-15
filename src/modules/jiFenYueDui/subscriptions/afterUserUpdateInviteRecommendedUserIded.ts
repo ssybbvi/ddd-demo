@@ -58,12 +58,12 @@ export class AfterUserUpdateInviteRecommendedUserIded implements IHandle<UserUpd
           userId: user.inviteRecommendedUserId,
           type: 'inviteOneFriends'
         }
-      } else if (todayRecommendedUserTotal === 2) {
+      } else if (todayRecommendedUserTotal === 3) {
         completeTaskDto = {
           userId: user.inviteRecommendedUserId,
           type: 'inviteTwoFriends'
         }
-      } else if (todayRecommendedUserTotal === 3) {
+      } else if (todayRecommendedUserTotal === 6) {
         completeTaskDto = {
           userId: user.inviteRecommendedUserId,
           type: 'inviteThreeFriends'
