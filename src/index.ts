@@ -4,6 +4,7 @@ import './shared/core/ErrorToString'
 import './shared/infra/http/app'
 import { Global } from './shared/infra/database/mongodb/index'
   ; (async () => {
+
     await Global.instance.init()
   })()
 
