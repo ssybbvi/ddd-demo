@@ -1,4 +1,4 @@
 interface IGameRewardProps {
-
+  gameId: string
 }
 
