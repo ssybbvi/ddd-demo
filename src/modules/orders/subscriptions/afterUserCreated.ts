@@ -1,7 +1,7 @@
 import { UserCreated } from '../../users/domain/events/userCreated'
 import { IHandle } from '../../../shared/domain/events/IHandle'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
-import { CreateOrderUserUseCase } from '../userCases/orderUser/createOrderUser/createOrderUserUseCase'
+import { CreateOrderUserUseCase } from '../useCases/orderUser/createOrderUser/createOrderUserUseCase'
 
 export class AfterUserCreated implements IHandle<UserCreated> {
   private createOrderUserUseCase: CreateOrderUserUseCase

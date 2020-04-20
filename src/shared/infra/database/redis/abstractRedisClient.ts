@@ -1,7 +1,6 @@
 import { RedisClient } from 'redis'
 
 export abstract class AbstractRedisClient {
-  private tokenExpiryTime: number = 604800
   protected client: RedisClient
 
   constructor(client: RedisClient) {
@@ -67,13 +66,13 @@ export abstract class AbstractRedisClient {
     })
   }
 
-  public set(key: string, value: any): Promise<any> {
+  public set(key: string, value: any, tokenExpiryTime: number = 604800): Promise<any> {
     return new Promise((resolve, reject) => {
       this.client.set(key, value, (error, reply) => {
         if (error) {
           return reject(error)
         } else {
-          this.client.expire(key, this.tokenExpiryTime)
+          this.client.expire(key, tokenExpiryTime)
           return resolve(reply)
         }
       })

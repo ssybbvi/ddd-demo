@@ -1,8 +1,8 @@
 import { AfterOrderPaymented } from "./afterOrderPaymented";
 import { orderRepo } from "../repos";
-import { cancelOrderUseCase } from "../userCases/order/cancelOrder";
-import { buyOnceCommodityUseCase } from "../userCases/orderUser/buyOnceCommodity";
-import { createOrderUserUseCase } from "../userCases/orderUser/createOrderUser";
+import { cancelOrderUseCase } from "../useCases/order/cancelOrder";
+import { buyOnceCommodityUseCase } from "../useCases/orderUser/buyOnceCommodity";
+import { createOrderUserUseCase } from "../useCases/orderUser/createOrderUser";
 import { AfterUserCreated } from "./afterUserCreated";
 
 

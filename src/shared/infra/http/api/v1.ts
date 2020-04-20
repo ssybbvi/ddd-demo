@@ -10,6 +10,7 @@ import { Middleware } from '../utils/Middleware'
 import { dayDayTaskRouter, scheduleTaskRouter } from '../../../../modules/jiFenYueDui/infra/http/routes'
 
 import { sendMessage } from '../../ws'
+import { thirdPartyAppRouter, appUserRouter, authCodeRouter } from '../../../../modules/oauth2/infra/http/routes'
 
 const wskRouter = express.Router()
 
@@ -41,6 +42,11 @@ v1Router.use('/purchase/history', purchaseHistoryRouter)
 v1Router.use('/upload', Middleware.upload())
 v1Router.use('/dayDayTask', dayDayTaskRouter)
 v1Router.use('/scheduleTask', scheduleTaskRouter)
+v1Router.use('/thirdPartyApp', thirdPartyAppRouter)
+v1Router.use('/appUser', appUserRouter)
+v1Router.use('/authCode', authCodeRouter)
+
+
 v1Router.use('/ws', wskRouter)
 export { v1Router }
 

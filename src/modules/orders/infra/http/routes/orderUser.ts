@@ -1,7 +1,7 @@
 import express from 'express'
 import { middleware } from '../../../../../shared/infra/http'
 
-import { getOrderUserController } from '../../../userCases/orderUser/getOrderUser'
+import { getOrderUserController } from '../../../useCases/orderUser/getOrderUser'
 
 const orderUserRouter = express.Router()
 

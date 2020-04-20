@@ -1,11 +1,11 @@
 import { IHandle } from '../../../shared/domain/events/IHandle'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
 import { OrderPaymented } from '../../orders/domain/events/orderPaymented'
-import { CreateOrderUserUseCase } from '../userCases/orderUser/createOrderUser/createOrderUserUseCase'
-import { CreateOrderUserDto } from '../userCases/orderUser/createOrderUser/createOrderUserDto'
+import { CreateOrderUserUseCase } from '../useCases/orderUser/createOrderUser/createOrderUserUseCase'
+import { CreateOrderUserDto } from '../useCases/orderUser/createOrderUser/createOrderUserDto'
 import { IOrderRepo } from '../repos/orderRepo'
-import { CancelOrderUseCase } from '../userCases/order/cancelOrder/cancelOrderUseCase'
-import { BuyOnceCommodityUseCase } from '../userCases/orderUser/buyOnceCommodity/buyOnceCommodityUseCase'
+import { CancelOrderUseCase } from '../useCases/order/cancelOrder/cancelOrderUseCase'
+import { BuyOnceCommodityUseCase } from '../useCases/orderUser/buyOnceCommodity/buyOnceCommodityUseCase'
 
 export class AfterOrderPaymented implements IHandle<OrderPaymented> {
   private buyOnceCommodityUseCase: BuyOnceCommodityUseCase

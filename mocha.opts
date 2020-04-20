@@ -1,0 +1,4 @@
+--require ts-node/register
+--require ./test/Base.ts
+--exit
+--timeout 999999
