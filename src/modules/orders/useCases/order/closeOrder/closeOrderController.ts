@@ -28,7 +28,7 @@ export class CloseOrderController extends BaseController {
           case CloseOrderErrors.StatusError:
             return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       }
 

@@ -11,6 +11,7 @@ import { dayDayTaskRouter, scheduleTaskRouter } from '../../../../modules/jiFenY
 
 import { sendMessage } from '../../ws'
 import { thirdPartyAppRouter, appUserRouter, authCodeRouter } from '../../../../modules/oauth2/infra/http/routes'
+import { commodityTagRouter } from '../../../../modules/commoditys/infra/http/routes/commodityTag'
 
 const wskRouter = express.Router()
 
@@ -45,7 +46,7 @@ v1Router.use('/scheduleTask', scheduleTaskRouter)
 v1Router.use('/thirdPartyApp', thirdPartyAppRouter)
 v1Router.use('/appUser', appUserRouter)
 v1Router.use('/authCode', authCodeRouter)
-
+v1Router.use('/commodityTag', commodityTagRouter)
 
 v1Router.use('/ws', wskRouter)
 export { v1Router }

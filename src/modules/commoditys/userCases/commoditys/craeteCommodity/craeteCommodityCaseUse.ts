@@ -19,7 +19,7 @@ export class CreateCommodityUseCase implements UseCase<CreateCommodityDto, Promi
 
   public async execute(request: CreateCommodityDto): Promise<Response> {
     try {
-      const { name, price, descrption, images, fakePrice, sales, restrictedPurchaseQuantity, tags, imgesDescrptionList, limitedPurchasePerPerson, type } = request
+      const { name, price, description, images, fakePrice, sales, restrictedPurchaseQuantity, tags, imgesDescrptionList, limitedPurchasePerPerson, type } = request
 
       const commodityNameOrErrors = CommodityName.create({ name })
       if (commodityNameOrErrors.isFailure) {
@@ -34,7 +34,7 @@ export class CreateCommodityUseCase implements UseCase<CreateCommodityDto, Promi
       const commodityOrErrors = Commodity.create({
         name: commodityNameOrErrors.getValue(),
         price: commdityPriceOrErrors.getValue(),
-        descrption,
+        description,
         images,
         fakePrice,
         sales,

@@ -31,7 +31,7 @@ export class GetTokenController extends BaseController {
 
         switch (error.constructor) {
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       }
 

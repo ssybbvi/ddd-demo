@@ -26,7 +26,7 @@ export class DeleteUserController extends BaseController {
           case DeleteUserErrors.UserNotFoundError:
             return this.notFound(error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       } else {
         return this.ok(res)

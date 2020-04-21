@@ -10,7 +10,7 @@ import { CommodityType } from './commodityType'
 export interface ICommodityProps {
   name: CommodityName
   price: CommodityPrice
-  descrption: string
+  description: string
   images: string[]
   fakePrice: string
   sales: number
@@ -34,8 +34,8 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     return this.props.price
   }
 
-  get descrption(): string {
-    return this.props.descrption
+  get description(): string {
+    return this.props.description
   }
 
   get images(): string[] {
@@ -78,8 +78,8 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     this.props.price = price
   }
 
-  public updateDescrption(descrption: string) {
-    this.props.descrption = descrption
+  public updateDescrption(description: string) {
+    this.props.description = description
   }
 
   public updateImages(images: string[]) {
@@ -122,7 +122,7 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     const guardArgs: IGuardArgument[] = [
       { argument: props.name, argumentName: '商品名称' },
       { argument: props.price, argumentName: '金额' },
-      { argument: props.descrption, argumentName: '描述' },
+      { argument: props.description, argumentName: '描述' },
       { argument: props.images, argumentName: '图片' },
       { argument: props.fakePrice, argumentName: '假价格' },
       { argument: props.sales, argumentName: '销量' },

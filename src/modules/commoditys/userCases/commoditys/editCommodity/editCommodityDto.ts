@@ -2,7 +2,7 @@ export interface IEditCommodityDto {
     _id: string
     name: string
     price: number
-    descrption: string
+    description: string
     images: string[]
     fakePrice: string
     restrictedPurchaseQuantity: number

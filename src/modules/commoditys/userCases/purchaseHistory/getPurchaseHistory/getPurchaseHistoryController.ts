@@ -29,7 +29,7 @@ export class GetPurchaseHistoryController extends BaseController {
 
         switch (error.constructor) {
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       } else {
         const purchaseHistorys = result.value.getValue() as PurchaseHistory[]

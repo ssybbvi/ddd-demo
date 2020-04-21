@@ -31,7 +31,7 @@ export class DailySuperSignInController extends BaseController {
           case DailySuperSignInErrors.NonCompliantErrors:
             return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       } else {
         return this.ok<DailySuperSignInDtoResult>(res, result.value.getValue())

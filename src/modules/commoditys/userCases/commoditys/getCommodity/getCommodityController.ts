@@ -28,7 +28,7 @@ export class GetCommodityController extends BaseController {
 
         switch (error.constructor) {
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       } else {
         const commodityDtoList = result.value.getValue() as CommodityDto[]

@@ -38,7 +38,7 @@ export class PaymentOrderController extends BaseController {
           case PaymentOrderErrors.PaymentTimeExpired:
             return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       }
       return this.ok<void>(res)

@@ -27,7 +27,7 @@ export class MongoCommodityRepo implements ICommodityRepo {
         $set: {
           name: raw.name,
           price: raw.price,
-          descrption: raw.descrption,
+          description: raw.description,
           images: raw.images,
           fakePrice: raw.fakePrice,
           sales: raw.sales,

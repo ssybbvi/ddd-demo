@@ -26,7 +26,7 @@ export class Middleware {
         const signatureFailed = !!decoded === false
 
         if (signatureFailed) {
-          return this.endRequest(403, 'Token signature expired.', res)
+          return res.status(200).send({ message: 'Token过期啦' })
         }
 
         // See if the token was found
@@ -56,7 +56,7 @@ export class Middleware {
 
         if (signatureFailed) {
           //return this.endRequest(403, 'Token signature expired.', res)
-          return res.status(200).send({ message: 'Token signature expired' })
+          return res.status(200).send({ message: 'Token过期啦' })
         }
 
         // See if the token was found
@@ -92,7 +92,7 @@ export class Middleware {
       return next()
     }
 
-    const approvedDomainList = ['https://khalilstemmler.com']
+    const approvedDomainList = ['https://xxx.com']
 
     const domain = req.headers.origin
 

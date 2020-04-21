@@ -1,7 +1,7 @@
 export interface CreateCommodityDto {
   name: string
   price: number
-  descrption: string
+  description: string
   images: string[]
   fakePrice: string
   sales: number

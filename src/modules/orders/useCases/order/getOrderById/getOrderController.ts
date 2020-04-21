@@ -35,7 +35,7 @@ export class GetOrderByIdController extends BaseController {
           case GetOrderByIdErrors.OrderNotFound:
             return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       }
       const order = result.value.getValue() as Order

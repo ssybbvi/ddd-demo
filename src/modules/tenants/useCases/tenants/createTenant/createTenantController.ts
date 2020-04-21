@@ -25,7 +25,7 @@ export class CreateTenantController extends BaseController {
           case CreateTenantErrors.TenantExistSameNameError:
             return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       } else {
         return this.ok(res)

@@ -31,7 +31,7 @@ export class DailySignInController extends BaseController {
           case DailySignInErrors.TodayAlreadySignInError:
             return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       } else {
         const dailySignInDtoResult: DailySignInDtoResult = result.value.getValue() as DailySignInDtoResult

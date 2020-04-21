@@ -61,7 +61,7 @@ export class FundService {
         incomeUserId: item.incomeUserId,
         paymentUserId: item.paymentUserId,
         status: item.status,
-        descrption: item.descrption,
+        description: item.description,
         type: item.type,
         relationId: item.relationId
       })

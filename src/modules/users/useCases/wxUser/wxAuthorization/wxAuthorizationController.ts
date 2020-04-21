@@ -29,7 +29,7 @@ export class WxAuthorizationController extends BaseController {
           case WxAuthorizationErrors.LoginForbidInviteTokenError:
             return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       } else {
         const wxAuthorizationDtoResult: LoginDTOResponse = result.value.getValue() as LoginDTOResponse

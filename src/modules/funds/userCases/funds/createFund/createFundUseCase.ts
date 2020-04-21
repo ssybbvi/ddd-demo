@@ -23,7 +23,7 @@ export class CreateFundUseCase implements UseCase<CreateFundDto, Promise<Respons
         incomeUserId,
         paymentUserId,
         status,
-        descrption,
+        description,
         type,
         relationId, } = request
 
@@ -44,7 +44,7 @@ export class CreateFundUseCase implements UseCase<CreateFundDto, Promise<Respons
         status: status as FundStatus,
         incomeUserId: incomeUserId,
         paymentUserId: paymentUserId,
-        descrpiton: descrption,
+        descrpiton: description,
         type: type as FundType,
         relationId
       })

@@ -1,9 +1,9 @@
-export interface CreateFundDto{
+export interface CreateFundDto {
     amount: number
     incomeUserId?: string
     paymentUserId?: string
     status?: string
-    descrption?: string
+    description?: string
     type: string
     relationId: string
 }

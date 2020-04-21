@@ -26,7 +26,7 @@ export class CreateWxUserController extends BaseController {
           case CreateWxUserErrors.OpenIdAlreadyExist:
             return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       } else {
         return this.ok<void>(res)

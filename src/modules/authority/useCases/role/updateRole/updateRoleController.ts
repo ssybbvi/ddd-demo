@@ -25,7 +25,7 @@ export class UpdateRoleController extends BaseController {
           case UpdateRoleErrors.RoleExistSameNameError:
             return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       } else {
         return this.ok(res)

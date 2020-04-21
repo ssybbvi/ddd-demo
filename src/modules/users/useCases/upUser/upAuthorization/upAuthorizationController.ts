@@ -28,7 +28,7 @@ export class UpAuthorizationController extends BaseController {
           case UpAuthorizationErrors.UserNameDoesntExistError:
             return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       } else {
         const wxAuthorizationDtoResult: LoginDTOResponse = result.value.getValue() as LoginDTOResponse

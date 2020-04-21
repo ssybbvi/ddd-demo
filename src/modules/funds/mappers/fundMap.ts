@@ -13,7 +13,7 @@ export class FundMap implements IMapper<Fund> {
       _id: fund.fundId.id.toString(),
       amount: fund.amount.value,
       createAt: fund.createAt,
-      descrpiton: fund.descrption,
+      descrpiton: fund.description,
       type: fund.type
     }
   }
@@ -50,7 +50,7 @@ export class FundMap implements IMapper<Fund> {
       paymentUserId: fund.paymentUserId,
       status: fund.status,
       createAt: fund.createAt,
-      descrpiton: fund.descrption,
+      descrpiton: fund.description,
       type: fund.type,
       relationId: fund.relationId
     }

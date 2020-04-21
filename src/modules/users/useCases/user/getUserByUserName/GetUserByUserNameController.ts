@@ -26,7 +26,7 @@ export class GetUserByUserNameController extends BaseController {
           case GetUserByUserNameErrors.UserNotFoundError:
             return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       } else {
         return this.ok(res)

@@ -2,7 +2,7 @@ export interface ICommodityDbModel {
   _id: string
   name: string
   price: number
-  descrption: string
+  description: string
   images: string[]
   fakePrice: string
   sales: number

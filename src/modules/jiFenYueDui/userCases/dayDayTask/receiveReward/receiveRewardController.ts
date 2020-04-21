@@ -33,7 +33,7 @@ export class ReceiveRewardController extends BaseController {
           case ReceiveRewardErrors.RewardAlreadyReceive:
             return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       } else {
         const dayDayTask = result.value.getValue() as DayDayTask

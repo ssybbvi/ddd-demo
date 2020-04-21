@@ -51,7 +51,7 @@ export class Fund extends AggregateRoot<IFundProps> {
     return this.props.createAt
   }
 
-  get descrption(): string {
+  get description(): string {
     return this.props.descrpiton
   }
 

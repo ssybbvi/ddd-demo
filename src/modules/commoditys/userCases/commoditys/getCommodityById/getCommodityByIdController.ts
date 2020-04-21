@@ -30,7 +30,7 @@ export class GetCommodityByIdController extends BaseController {
           case GetCommodityErrors.CommodityNotFound:
             return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue().message)
+            return this.fail(res, error.errorValue())
         }
       } else {
         const commodity = result.value.getValue() as Commodity
