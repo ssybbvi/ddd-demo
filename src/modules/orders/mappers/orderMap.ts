@@ -24,23 +24,12 @@ export class OrderMap implements IMapper<Order> {
       remark: order.remark,
       code: order.code,
 
-      userName: order.address.userName,
-      provinceName: order.address.provinceName,
-      cityName: order.address.cityName,
-      countyName: order.address.countyName,
-      detailAddressInfo: order.address.detailAddressInfo,
-      nationalCode: order.address.nationalCode,
-      telNumber: order.address.telNumber,
-
       paymentTime: order.paymentTime,
       cancelTime: order.cancelTime,
 
       customerServiceCancelTime: order.customerServiceCancelTime,
       customerServiceRemark: order.customerServiceRemark,
 
-      shippingTime: order.shippingTime,
-      shippingNumber: order.shippingNumber,
-      shippingType: order.shippingType,
 
       finishTime: order.finishTime,
 
@@ -65,19 +54,6 @@ export class OrderMap implements IMapper<Order> {
       return null
     }
 
-    const orderAddressOrErrors = OrderAddress.create({
-      userName: raw.userName,
-      provinceName: raw.provinceName,
-      cityName: raw.cityName,
-      countyName: raw.countyName,
-      detailAddressInfo: raw.detailAddressInfo,
-      nationalCode: raw.nationalCode,
-      telNumber: raw.telNumber,
-    })
-
-    orderAddressOrErrors.isFailure ? console.error(orderAddressOrErrors.error) : '';
-
-
     const orderItemList = raw.items.map(item => this.orderItemDbModelToDomain(item))
 
     const orderOrError = Order.create(
@@ -89,7 +65,6 @@ export class OrderMap implements IMapper<Order> {
         remark: raw.remark,
         code: raw.code,
 
-        orderAddress: orderAddressOrErrors.getValue(),
 
         paymentTime: raw.paymentTime,
         cancelTime: raw.cancelTime,
@@ -97,9 +72,6 @@ export class OrderMap implements IMapper<Order> {
         customerServiceCancelTime: raw.customerServiceCancelTime,
         customerServiceRemark: raw.customerServiceRemark,
 
-        shippingTime: raw.shippingTime,
-        shippingNumber: raw.shippingNumber,
-        shippingType: raw.shippingType,
 
         finishTime: raw.finishTime,
 
@@ -140,23 +112,11 @@ export class OrderMap implements IMapper<Order> {
       remark: order.remark,
       code: order.code,
 
-      userName: order.address.userName,
-      provinceName: order.address.provinceName,
-      cityName: order.address.cityName,
-      countyName: order.address.countyName,
-      detailAddressInfo: order.address.detailAddressInfo,
-      nationalCode: order.address.nationalCode,
-      telNumber: order.address.telNumber,
-
       paymentTime: order.paymentTime,
       cancelTime: order.cancelTime,
 
       customerServiceCancelTime: order.customerServiceCancelTime,
       customerServiceRemark: order.customerServiceRemark,
-
-      shippingTime: order.shippingTime,
-      shippingNumber: order.shippingNumber,
-      shippingType: order.shippingType,
 
       finishTime: order.finishTime,
 

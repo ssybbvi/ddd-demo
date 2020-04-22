@@ -1,1 +1,1 @@
-export type CommodityType = 'ordinary' | 'buyOnce'
+export type CommodityType = 'ordinary' | 'buyOnce' | 'bargain'

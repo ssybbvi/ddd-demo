@@ -1,0 +1,1 @@
+export type OrderType = 'payment-delivery' | 'bargain-delivery' 

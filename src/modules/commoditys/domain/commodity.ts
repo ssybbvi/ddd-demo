@@ -118,6 +118,10 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     this.props.sales--
   }
 
+  public isBargain(): boolean {
+    return this.props.type === 'bargain'
+  }
+
   public static create(props: ICommodityProps, id?: UniqueEntityID): Result<Commodity> {
     const guardArgs: IGuardArgument[] = [
       { argument: props.name, argumentName: '商品名称' },

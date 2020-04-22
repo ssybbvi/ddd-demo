@@ -33,23 +33,11 @@ export class MongoOrderRepo implements IOrderRepo {
           remark: raw.remark,
           code: raw.code,
 
-          userName: raw.userName,
-          provinceName: raw.provinceName,
-          cityName: raw.cityName,
-          countyName: raw.countyName,
-          detailAddressInfo: raw.detailAddressInfo,
-          nationalCode: raw.nationalCode,
-          telNumber: raw.telNumber,
-
           paymentTime: raw.paymentTime,
           cancelTime: raw.cancelTime,
 
           customerServiceCancelTime: raw.customerServiceCancelTime,
           customerServiceRemark: raw.customerServiceRemark,
-
-          shippingTime: raw.shippingTime,
-          shippingNumber: raw.shippingNumber,
-          shippingType: raw.shippingType,
 
           finishTime: raw.finishTime,
 

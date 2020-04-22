@@ -4,7 +4,7 @@ import { userRouter, wxUserRouter, upUserRouter } from '../../../../modules/user
 import { signInRouter, recommendedUserRouter } from '../../../../modules/distribution/infra/http/routes/index'
 import { fundRouter, fundAccountRouter } from '../../../../modules/funds/infra/http/routes'
 import { commodityRouter, purchaseHistoryRouter } from '../../../../modules/commoditys/infra/http/routes'
-import { orderRouter, orderUserRouter } from '../../../../modules/orders/infra/http/routes'
+import { orderRouter, orderUserRouter, bargainOrderRouter } from '../../../../modules/orders/infra/http/routes'
 import { authorityUserRouter } from '../../../../modules/authority/infra/http/routes'
 import { Middleware } from '../utils/Middleware'
 import { dayDayTaskRouter, scheduleTaskRouter } from '../../../../modules/jiFenYueDui/infra/http/routes'
@@ -47,6 +47,8 @@ v1Router.use('/thirdPartyApp', thirdPartyAppRouter)
 v1Router.use('/appUser', appUserRouter)
 v1Router.use('/authCode', authCodeRouter)
 v1Router.use('/commodityTag', commodityTagRouter)
+v1Router.use('/bargainOrder', bargainOrderRouter)
+
 
 v1Router.use('/ws', wskRouter)
 export { v1Router }

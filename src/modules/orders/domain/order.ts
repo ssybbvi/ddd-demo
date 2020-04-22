@@ -3,7 +3,6 @@ import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { Result, Either, left, right } from '../../../shared/core/Result'
 
-import { OrderAddress } from './orderAddress'
 import { OrderItem } from './orderItem'
 import { OrderCanceled } from './events/orderCanceled'
 import { OrderReceived } from './events/orderReceived'
@@ -36,8 +35,6 @@ export interface OrderProps {
   price?: number
   remark?: string
   code?: string
-
-  orderAddress: OrderAddress
 
   paymentTime?: number
   cancelTime?: number
@@ -83,10 +80,6 @@ export class Order extends AggregateRoot<OrderProps> {
 
   get code(): string {
     return this.props.code
-  }
-
-  get address(): OrderAddress {
-    return this.props.orderAddress
   }
 
   get paymentTime(): number {

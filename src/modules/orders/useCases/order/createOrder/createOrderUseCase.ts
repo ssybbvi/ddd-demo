@@ -19,6 +19,10 @@ type Response = Either<
   | CreateOrderErrors.OrderItemNotNull
   | AppError.UnexpectedError, Result<Order>>
 
+type BindOrderItemResponse = Either<
+  CreateOrderErrors.CommodityNotFound |
+  AppError.UnexpectedError, Result<OrderItem>>
+
 export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo
   private commodityRepo: ICommodityRepo
@@ -31,6 +35,28 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
     this.orderRepo = orderRepo
     this.commodityRepo = commodityRepo
     this.getOrderUserUseCase = getOrderUserUseCase
+  }
+
+
+
+  private async bindOrderItem(commodityId: string): Promise<BindOrderItemResponse> {
+    let commodity = await this.commodityRepo.getById(commodityId)
+    if (!!commodity === false) {
+      return left(new CreateOrderErrors.CommodityNotFound(commodityId))
+    }
+
+    let orderItemOrErrors = OrderItem.create({
+      name: commodity.name.value,
+      price: commodity.price.value,
+      image: commodity.images && commodity.images.length ? commodity.images[0] : "",
+      commodityId: commodityId,
+      commodityType: commodity.type
+    })
+
+    if (orderItemOrErrors.isFailure) {
+      return left(orderItemOrErrors)
+    }
+    return right(Result.ok<OrderItem>(orderItemOrErrors.getValue()))
   }
 
   public async execute(request: CreateOrderDto): Promise<Response> {
@@ -109,7 +135,6 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
         userId: userId,
         status: 'unpaid',
         remark: remark,
-        orderAddress: orderAddressOrErrors.getValue(),
         items: orderItemList,
       })
 
