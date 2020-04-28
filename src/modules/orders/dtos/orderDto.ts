@@ -1,23 +1,27 @@
-import { OrderItemDto } from "./orderItemDto";
+import { ICancelInfoDto } from "./cancelInfoDto";
+import { IPaymentInfoDto } from "./paymentInfoDto";
+import { IDeliveryInfoDto } from "./deliveryInfoDto";
 
 export interface OrderDto {
     _id: string
     userId: string
     createAt: number
-    status: string
-    price: number
+    totalAmount: number
     remark: string
     code: string
 
-    paymentTime?: number
-    cancelTime?: number
+    cancelInfo?: ICancelInfoDto
+    paymentInfo?: IPaymentInfoDto
+    deliveryInfo?: IDeliveryInfoDto
 
-    customerServiceCancelTime?: number
-    customerServiceRemark?: string
-
-    finishTime?: number
-
-    closeTime?: number
-
-    items: OrderItemDto[]
+    commodityItems: CommodityItemDto[]
 }
+
+export interface CommodityItemDto {
+    _id: string
+    name: string
+    price: number
+    image: string
+    commodityId: string
+}
+

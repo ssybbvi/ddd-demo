@@ -6,7 +6,7 @@ import { IOrderRepo } from '../../../repos/orderRepo'
 import { CreateOrderErrors } from '../createOrder/createOrderErrors'
 import { AutoCancelOrderDto } from './autoCancelOrderDto'
 
-type Response = Either<CreateOrderErrors.OrderItemNotNull
+type Response = Either<CreateOrderErrors.CommodityItemNotNull
 
   | AppError.UnexpectedError, Result<void>>
 

@@ -30,18 +30,10 @@ export class PaymentOrderUseCase implements UseCase<PaymentOrderDto, Promise<Res
         return left(new PaymentOrderErrors.OrderNotFound())
       }
 
-      if (order.userId !== userId) {
-        return left(new PaymentOrderErrors.DoesNotBelongToYou())
-      }
-
-      const paymentResult = order.payment()
+      const fundAccount = await this.fundAccountRepo.getById(userId)
+      const paymentResult = order.payment(userId, fundAccount.totalAmounnt)
       if (paymentResult.isLeft()) {
         return left(paymentResult.value)
-      }
-
-      const fundAccount = await this.fundAccountRepo.getById(userId)
-      if (fundAccount.totalAmounnt < order.price) {
-        return left(new PaymentOrderErrors.UnableToPaid())
       }
 
       await this.orderRepo.save(order)

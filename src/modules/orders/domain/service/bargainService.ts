@@ -1,12 +1,11 @@
-import { BargainOrder } from "../bargainOrder";
+import { Bargain } from "../bargain";
 import { RandomUtils } from "../../../../shared/utils/RandomUtils";
 
 export class BargainService {
 
-  public bargain(bargainOrder: BargainOrder): number {
-    const remainingPrice = bargainOrder.price - bargainOrder.currentPrice
-    const bargainPrice = RandomUtils.interval(bargainOrder.price / 5, bargainOrder.price / 3)
-    return Math.min(bargainPrice, remainingPrice);
+  public bargain(bargain: Bargain): number {
+    const bargainPrice = RandomUtils.interval(bargain.price / 5, bargain.price / 3)
+    return Math.min(bargainPrice, bargain.currentPrice);
   }
 
 }

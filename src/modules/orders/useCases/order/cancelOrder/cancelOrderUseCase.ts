@@ -3,12 +3,13 @@ import { AppError } from '../../../../../shared/core/AppError'
 import { UseCase } from '../../../../../shared/core/UseCase'
 import { IOrderRepo } from '../../../repos/orderRepo'
 
-import { CreateOrderErrors } from '../createOrder/createOrderErrors'
 import { CancelOrderDto } from './cancelOrderDto'
+import { AlreadyCanceledError } from '../../../domain/order'
 
-type Response = Either<CreateOrderErrors.OrderItemNotNull
-
-  | AppError.UnexpectedError, Result<void>>
+type Response = Either<
+  AlreadyCanceledError |
+  Result<any> |
+  AppError.UnexpectedError, Result<void>>
 
 export class CancelOrderUseCase implements UseCase<CancelOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo

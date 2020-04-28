@@ -1,7 +1,7 @@
 import { orderRouter } from './order'
 import { orderUserRouter } from './orderUser'
-import { bargainOrderRouter } from './bargainOrder'
+import { bargainRouter } from './bargain'
 
 export {
-    orderRouter, orderUserRouter, bargainOrderRouter
+    orderRouter, orderUserRouter, bargainRouter
 }

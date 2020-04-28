@@ -1,6 +1,7 @@
+
 export interface CreateOrderDto {
     userId: string
-    remark: string
+    remark?: string
 
     userName: string
     provinceName: string,
@@ -10,9 +11,9 @@ export interface CreateOrderDto {
     nationalCode: string,
     telNumber: string
 
-    items: CreateOrderItemDto[]
+    commodityItems: CreateCommodityItemDto[]
 }
 
-export interface CreateOrderItemDto {
+export interface CreateCommodityItemDto {
     commodityId: string
 }

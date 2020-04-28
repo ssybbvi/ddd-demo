@@ -8,3 +8,6 @@ export abstract class UseCaseError implements IUseCaseError {
     this.message = message
   }
 }
+
+
+

@@ -12,7 +12,7 @@ import { createFundAccountUseCase } from '../userCases/fundAccounts/createFundAc
 import { AfterDayDayTaskReceiveReward } from './afterDayDayTaskReceiveReward'
 import { AfterFundInvalided } from './afterFundInvalided'
 import { fundStatusChangeUseCase } from '../userCases/funds/fundStatusChange'
-import { AfterOrderClosed } from './afterOrderClosed'
+import { AfterOrderCanceled } from './afterOrderCanceled'
 
 // Subscriptions
 new AfterUserCreated(createFundAccountUseCase)
@@ -23,4 +23,4 @@ new AfterOrderPaymented(createFundUseCase)
 new AfterFundAccountCreated(createFundUseCase)
 new AfterDayDayTaskReceiveReward(fundService)
 new AfterFundInvalided(refreshFundAccountUseCase)
-new AfterOrderClosed(fundStatusChangeUseCase)
+new AfterOrderCanceled(fundStatusChangeUseCase)

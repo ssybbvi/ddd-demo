@@ -1,32 +1,26 @@
-export interface OrderDbModel {
+import { IBaseIdDbModels } from "../../../shared/infra/database/baseIdDbModels";
+import { ICancelInfoDbModel } from "./cancelInfoDbModel";
+import { IPaymentInfoDbModel } from "./paymentInfoDbModel";
+import { IDeliveryInfoDbModel } from "./deliveryInfoDbModel";
+import { ICommodityItemDbModel } from "./commodityItemDbModel";
+
+export interface OrderDbModel extends IBaseIdDbModels {
     _id: string
     userId: string
     createAt: number
-    status: string
-    price: number
+    totalAmount: number
     remark: string
     code: string
 
+    cancelInfo?: ICancelInfoDbModel
+    paymentInfo?: IPaymentInfoDbModel
+    deliveryInfo?: IDeliveryInfoDbModel
 
-    paymentTime?: number
-    cancelTime?: number
-
-    customerServiceCancelTime?: number
-    customerServiceRemark?: string
-
-
-    finishTime?: number
-
-    closeTime?: number
-
-    items: OrderItemDbModel[]
+    commodityItems: ICommodityItemDbModel[]
 }
 
-export interface OrderItemDbModel {
-    _id: string
-    name: string
-    price: number
-    image: string
-    commodityId: string,
-    commodityType: string
-}
+
+
+
+
+

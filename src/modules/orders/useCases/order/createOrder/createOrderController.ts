@@ -30,7 +30,7 @@ export class CreateOrderController extends BaseController {
         switch (error.constructor) {
           case CreateOrderErrors.CommodityNotFound:
             return this.fail(res, error.errorValue().message)
-          case CreateOrderErrors.OrderItemNotNull:
+          case CreateOrderErrors.CommodityItemNotNull:
             return this.fail(res, error.errorValue().message)
           case CreateOrderErrors.DotBuyRepeatOnceCommodity:
             return this.fail(res, error.errorValue().message)

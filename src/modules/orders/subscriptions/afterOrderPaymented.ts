@@ -1,8 +1,6 @@
 import { IHandle } from '../../../shared/domain/events/IHandle'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
 import { OrderPaymented } from '../../orders/domain/events/orderPaymented'
-import { CreateOrderUserUseCase } from '../useCases/orderUser/createOrderUser/createOrderUserUseCase'
-import { CreateOrderUserDto } from '../useCases/orderUser/createOrderUser/createOrderUserDto'
 import { IOrderRepo } from '../repos/orderRepo'
 import { CancelOrderUseCase } from '../useCases/order/cancelOrder/cancelOrderUseCase'
 import { BuyOnceCommodityUseCase } from '../useCases/orderUser/buyOnceCommodity/buyOnceCommodityUseCase'
@@ -36,16 +34,16 @@ export class AfterOrderPaymented implements IHandle<OrderPaymented> {
   private async onAfterOrderPaymented(event: OrderPaymented): Promise<void> {
     const { order } = event
 
-    try {
-      const isOrderItemHasBuyOnceeCommodity = order.orderItems.some(item => item.commodityType == 'buyOnce')
-      if (isOrderItemHasBuyOnceeCommodity) {
-        this.buyOnceCommodity(order.userId)
-        this.cancelOrderByBuyOnceCommotidy(order.userId)
-      }
-      console.log(`[OrderPaymented]: 记录用户支付订单中商品的类型`)
-    } catch (err) {
-      console.log(`[OrderPaymented]: 记录用户支付订单中商品的类型 ${err}`)
-    }
+    // try {
+    //   const isCommodityItemHasBuyOnceeCommodity = order.commodityItems.some(item => item.commodityType == 'buyOnce')
+    //   if (isCommodityItemHasBuyOnceeCommodity) {
+    //     this.buyOnceCommodity(order.userId)
+    //     this.cancelOrderByBuyOnceCommotidy(order.userId)
+    //   }
+    //   console.log(`[OrderPaymented]: 记录用户支付订单中商品的类型`)
+    // } catch (err) {
+    //   console.log(`[OrderPaymented]: 记录用户支付订单中商品的类型 ${err}`)
+    // }
   }
 
   private async buyOnceCommodity(userId: string) {
@@ -59,16 +57,16 @@ export class AfterOrderPaymented implements IHandle<OrderPaymented> {
   }
 
   private async cancelOrderByBuyOnceCommotidy(userId: string) {
-    const orderList = await this.orderRepo.filter('unpaid', userId)
+    // const orderList = await this.orderRepo.filter('unpaid', userId)
 
-    for (let item of orderList) {
-      const isHasBuyOnceCommodity = item.orderItems.some(item => item.commodityType == 'buyOnce')
-      console.log("isHasBuyOnceCommodity:", isHasBuyOnceCommodity)
-      if (isHasBuyOnceCommodity) {
-        console.log("cancelOrder.orderId", item.id.toString())
-        this.cancelOrderUseCase.execute({ orderId: item.id.toString() })
-      }
-    }
+    // for (let item of orderList) {
+    //   const isHasBuyOnceCommodity = item.commodityItems.some(item => item.commodityType == 'buyOnce')
+    //   console.log("isHasBuyOnceCommodity:", isHasBuyOnceCommodity)
+    //   if (isHasBuyOnceCommodity) {
+    //     console.log("cancelOrder.orderId", item.id.toString())
+    //     this.cancelOrderUseCase.execute({ orderId: item.id.toString() })
+    //   }
+    // }
     console.log(`[OrderPaymented]: 如果支付的订单中含有新手特享商品，其他未支付的订单中也含有新手特享的商品就要取消`)
   }
 

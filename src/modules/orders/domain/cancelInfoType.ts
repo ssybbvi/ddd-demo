@@ -1,0 +1,1 @@
+export type CancelInfoType = 'user' | 'auto' | 'admin'

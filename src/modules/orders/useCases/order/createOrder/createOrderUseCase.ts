@@ -3,25 +3,31 @@ import { AppError } from '../../../../../shared/core/AppError'
 import { UseCase } from '../../../../../shared/core/UseCase'
 import { Order } from '../../../domain/order'
 import { CreateOrderDto } from './createOrderDto'
-import { OrderAddress } from '../../../domain/orderAddress'
 import { IOrderRepo } from '../../../repos/orderRepo'
 import { ICommodityRepo } from '../../../../commoditys/repos/iCommodityRepo'
 
-import { OrderItem } from '../../../domain/orderItem'
+import { CommodityItem } from '../../../domain/commodityItem'
 import { CreateOrderErrors } from './createOrderErrors'
 import { GetOrderUserUseCase } from '../../orderUser/getOrderUser/getOrderUserUseCase'
 import { OrderUser } from '../../../domain/orderUser'
+import { CommodityItems } from '../../../domain/commodityItems'
+import { DeliveryInfo } from '../../../domain/deliveryInfo'
+import { OrderAddress } from '../../../domain/orderAddress'
+import { NotFoundError } from '../../../../../shared/core/NotFoundError'
 
 
 type Response = Either<
-  CreateOrderErrors.CommodityNotFound
+  NotFoundError
   | CreateOrderErrors.DotBuyRepeatOnceCommodity
-  | CreateOrderErrors.OrderItemNotNull
+  | CreateOrderErrors.CommodityItemNotNull
   | AppError.UnexpectedError, Result<Order>>
 
-type BindOrderItemResponse = Either<
-  CreateOrderErrors.CommodityNotFound |
-  AppError.UnexpectedError, Result<OrderItem>>
+type BuyOneceAssertionResponse = Either<
+  CreateOrderErrors.DotBuyRepeatOnceCommodity
+  | CreateOrderErrors.CommodityItemNotNull
+  | AppError.UnexpectedError, Result<void>>
+
+type AddressResponse = Either<AppError.UnexpectedError, Result<OrderAddress>>
 
 export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo
@@ -37,27 +43,48 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
     this.getOrderUserUseCase = getOrderUserUseCase
   }
 
+  private async buyOneceAssertio(userId: string, commodityItemList: CommodityItem[]): Promise<BuyOneceAssertionResponse> {
+    const isCommodityItemHasBuyOnceeCommodity = commodityItemList.some(item => item.commodityType == 'buyOnce')
 
-
-  private async bindOrderItem(commodityId: string): Promise<BindOrderItemResponse> {
-    let commodity = await this.commodityRepo.getById(commodityId)
-    if (!!commodity === false) {
-      return left(new CreateOrderErrors.CommodityNotFound(commodityId))
+    const getOrderUserUseCaseResult = await this.getOrderUserUseCase.execute({ userId })
+    const getOrderUserUseCaseResultValue = getOrderUserUseCaseResult.value
+    if (getOrderUserUseCaseResult.isLeft()) {
+      return left(getOrderUserUseCaseResultValue)
     }
+    const orderUser = getOrderUserUseCaseResultValue.getValue() as OrderUser
+    const isAllowBuyOnceCommodity = orderUser.isAllowBuyOnceCommodity
 
-    let orderItemOrErrors = OrderItem.create({
-      name: commodity.name.value,
-      price: commodity.price.value,
-      image: commodity.images && commodity.images.length ? commodity.images[0] : "",
-      commodityId: commodityId,
-      commodityType: commodity.type
+    if (!isAllowBuyOnceCommodity && isCommodityItemHasBuyOnceeCommodity) {
+      return left(new CreateOrderErrors.DotBuyRepeatOnceCommodity())
+    }
+    return right(Result.ok<void>())
+  }
+
+  private async assertionAddress({ userName,
+    provinceName,
+    cityName,
+    countyName,
+    detailAddressInfo,
+    nationalCode,
+    telNumber }): Promise<AddressResponse> {
+
+    const orderAddressOrErrors = OrderAddress.create({
+      userName: userName,
+      provinceName: provinceName,
+      cityName: cityName,
+      countyName: countyName,
+      detailAddressInfo: detailAddressInfo,
+      nationalCode: nationalCode,
+      telNumber: telNumber,
     })
 
-    if (orderItemOrErrors.isFailure) {
-      return left(orderItemOrErrors)
+    if (orderAddressOrErrors.isFailure) {
+      return left(orderAddressOrErrors)
     }
-    return right(Result.ok<OrderItem>(orderItemOrErrors.getValue()))
+
+    return right(Result.ok<OrderAddress>(orderAddressOrErrors.getValue()))
   }
+
 
   public async execute(request: CreateOrderDto): Promise<Response> {
     try {
@@ -65,45 +92,27 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
         userId,
         remark,
 
-        userName,
-        provinceName,
-        cityName,
-        countyName,
-        detailAddressInfo,
-        nationalCode,
-        telNumber,
-
-        items
+        commodityItems
       } = request
 
-      const orderAddressOrErrors = OrderAddress.create({
-        userName: userName,
-        provinceName: provinceName,
-        cityName: cityName,
-        countyName: countyName,
-        detailAddressInfo: detailAddressInfo,
-        nationalCode: nationalCode,
-        telNumber: telNumber,
-      })
-
-      if (orderAddressOrErrors.isFailure) {
-        return left(orderAddressOrErrors)
+      const addressResult = await this.assertionAddress(request)
+      if (addressResult.isLeft()) {
+        return left(addressResult)
       }
 
-      if (!!items === false || items.length === 0) {
-        return left(new CreateOrderErrors.OrderItemNotNull())
+      if (!!commodityItems === false || commodityItems.length === 0) {
+        return left(new CreateOrderErrors.CommodityItemNotNull())
       }
 
-
-      let orderItemList: OrderItem[] = []
-      for (let item of items) {
+      let commodityItemList: CommodityItem[] = []
+      for (let item of commodityItems) {
 
         let commodity = await this.commodityRepo.getById(item.commodityId)
         if (!!commodity === false) {
           return left(new CreateOrderErrors.CommodityNotFound(item.commodityId))
         }
 
-        let orderItemOrErrors = OrderItem.create({
+        let commodityItemOrErrors = CommodityItem.create({
           name: commodity.name.value,
           price: commodity.price.value,
           image: commodity.images && commodity.images.length ? commodity.images[0] : "",
@@ -111,31 +120,31 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
           commodityType: commodity.type
         })
 
-        if (orderItemOrErrors.isFailure) {
-          return left(orderItemOrErrors)
+        if (commodityItemOrErrors.isFailure) {
+          return left(commodityItemOrErrors)
         }
-        orderItemList.push(orderItemOrErrors.getValue())
+        commodityItemList.push(commodityItemOrErrors.getValue())
       }
-      const isOrderItemHasBuyOnceeCommodity = orderItemList.some(item => item.commodityType == 'buyOnce')
 
 
-      const getOrderUserUseCaseResult = await this.getOrderUserUseCase.execute({ userId })
-      const getOrderUserUseCaseResultValue = getOrderUserUseCaseResult.value
-      if (getOrderUserUseCaseResult.isLeft()) {
-        return left(getOrderUserUseCaseResultValue)
+      const buyOneceAssertioResult = await this.buyOneceAssertio(userId, commodityItemList)
+      if (buyOneceAssertioResult.isLeft()) {
+        return left(buyOneceAssertioResult.value)
       }
-      const orderUser = getOrderUserUseCaseResultValue.getValue() as OrderUser
-      const isAllowBuyOnceCommodity = orderUser.isAllowBuyOnceCommodity
 
-      if (!isAllowBuyOnceCommodity && isOrderItemHasBuyOnceeCommodity) {
-        return left(new CreateOrderErrors.DotBuyRepeatOnceCommodity())
+      const deliveryInfoResult = DeliveryInfo.create({
+        address: addressResult.value.getValue()
+      })
+
+      if (deliveryInfoResult.isFailure) {
+        return left(deliveryInfoResult)
       }
 
       const orderOrErrors = Order.create({
         userId: userId,
-        status: 'unpaid',
         remark: remark,
-        items: orderItemList,
+        deliveryInfo: deliveryInfoResult.getValue(),
+        commodityItems: CommodityItems.create(commodityItemList),
       })
 
       if (orderOrErrors.isFailure) {
@@ -149,7 +158,4 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
       return left(new AppError.UnexpectedError(err))
     }
   }
-
-
-
 }

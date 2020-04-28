@@ -4,7 +4,6 @@ import { Result } from "../../../shared/core/Result";
 import { Guard } from "../../../shared/core/Guard";
 
 export interface IParticipantProps {
-  bargainOrderId: string
   userId: string
   name: string
   price: number
@@ -13,13 +12,8 @@ export interface IParticipantProps {
 
 
 export class Participant extends Entity<IParticipantProps> {
-
-  get participantId(): string {
+  get id(): string {
     return this._id.toString()
-  }
-
-  get bargainOrderId(): string {
-    return this.props.bargainOrderId
   }
 
   get userId(): string {
@@ -41,7 +35,6 @@ export class Participant extends Entity<IParticipantProps> {
 
   public static create(props: IParticipantProps, id?: UniqueEntityID): Result<Participant> {
     const nullGuard = Guard.againstNullOrUndefinedBulk([
-      { argument: props.bargainOrderId, argumentName: 'bargainOrderId' },
       { argument: props.userId, argumentName: 'userId' },
       { argument: props.name, argumentName: 'name' },
       { argument: props.price, argumentName: 'price' },

@@ -27,12 +27,11 @@ export class ShippedOrderController extends BaseController {
 
       if (result.isLeft()) {
         const error = result.value
-
         switch (error.constructor) {
           case ShippedOrderErrors.OrderNotPayment:
             return this.fail(res, error.errorValue().message)
           default:
-            return this.fail(res, error.errorValue())
+            return this.fail(res, error)
         }
       }
       return this.ok<void>(res)

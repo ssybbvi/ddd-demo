@@ -1,56 +1,92 @@
-import { OrderStatus } from './orderStatus'
 import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { Result, Either, left, right } from '../../../shared/core/Result'
 
-import { OrderItem } from './orderItem'
 import { OrderCanceled } from './events/orderCanceled'
 import { OrderReceived } from './events/orderReceived'
 import { OrderPaymented } from './events/orderPaymented'
 import { OrderShipped } from './events/orderShipped'
 import { OrderCreated } from './events/orderCreated'
-import { CancelOrderErrors } from '../useCases/order/cancelOrder/CancelOrderErrors'
-import { ShippedOrderErrors } from '../useCases/order/shippedOrder/shippedOrderErrors'
-import { ReceivedOrderErrors } from '../useCases/order/receivedOrder/receivedErrors'
-import { PaymentOrderErrors } from '../useCases/order/paymentOrder/paymentOrderErrors'
-import { CloseOrderErrors } from '../useCases/order/closeOrder/closeOrderErrors'
-import { OrderClosed } from './events/orderClosed'
+import { DeliveryInfo } from './deliveryInfo'
+import { CancelInfo } from './cancelInfo'
+import { PaymentInfo } from './paymentInfo'
+import { UseCaseError } from '../../../shared/core/UseCaseError'
+import { OrderCode } from './orderCode'
+import { CommodityItems } from './commodityItems'
+import { AppError } from '../../../shared/core/AppError'
 
-export type PaymentOrderResult = Either<
-  PaymentOrderErrors.OrderStatusNotPaid | PaymentOrderErrors.PaymentTimeExpired,
-  Result<void>
->
-export type CloselOrderResult = Either<CloseOrderErrors.StatusError, Result<void>>
 
-export type CancelOrderResult = Either<CancelOrderErrors.StatusNotUnPaid, Result<void>>
 
-export type ShippedOrderResult = Either<ShippedOrderErrors.OrderNotPayment, Result<void>>
 
-export type ReceivedOrderResult = Either<ReceivedOrderErrors.OrderNotShipping, Result<void>>
+export class ExpectPaidError extends Result<UseCaseError> {
+  constructor() {
+    super(false, {
+      message: `订单未支付`
+    } as UseCaseError)
+  }
+}
+
+export class ExpectNotPaidError extends Result<UseCaseError> {
+  constructor() {
+    super(false, {
+      message: `订单已支付`
+    } as UseCaseError)
+  }
+}
+
+export class UnableToPaidError extends Result<UseCaseError> {
+  constructor() {
+    super(false, {
+      message: `积分不足无法支付`
+    } as UseCaseError)
+  }
+}
+
+export class ExpectPaymentTimeExpiredError extends Result<UseCaseError> {
+  constructor() {
+    super(false, {
+      message: `支付时间未过期`
+    } as UseCaseError)
+  }
+}
+
+export class ExpectPaymentTimeNotExpiredError extends Result<UseCaseError> {
+  constructor() {
+    super(false, {
+      message: `支付时间已过期`
+    } as UseCaseError)
+  }
+}
+
+
+export class DoesNotBelongToYouError extends Result<UseCaseError> {
+  constructor() {
+    super(false, {
+      message: `该订单不属于你`
+    } as UseCaseError)
+  }
+}
+
+export class AlreadyCanceledError extends Result<UseCaseError> {
+  constructor() {
+    super(false, {
+      message: `订单已经取消`
+    } as UseCaseError)
+  }
+}
+
 
 export interface OrderProps {
   userId: string
   createAt?: number
-  status: OrderStatus
-  price?: number
+  totalAmount?: number
   remark?: string
-  code?: string
+  code?: OrderCode
 
-  paymentTime?: number
-  cancelTime?: number
-
-  customerServiceCancelTime?: number
-  customerServiceRemark?: string
-
-  shippingTime?: number
-  shippingNumber?: string
-  shippingType?: string
-
-  finishTime?: number
-
-  closeTime?: number
-
-  items: OrderItem[]
+  cancelInfo?: CancelInfo
+  paymentInfo?: PaymentInfo
+  deliveryInfo: DeliveryInfo
+  commodityItems: CommodityItems
 }
 
 export class Order extends AggregateRoot<OrderProps> {
@@ -66,132 +102,124 @@ export class Order extends AggregateRoot<OrderProps> {
     return this.props.createAt
   }
 
-  get status(): OrderStatus {
-    return this.props.status
-  }
-
-  get price(): number {
-    return this.props.price
+  get totalAmount(): number {
+    return this.props.totalAmount
   }
 
   get remark(): string {
     return this.props.remark
   }
 
-  get code(): string {
+  get code(): OrderCode {
     return this.props.code
   }
 
-  get paymentTime(): number {
-    return this.props.paymentTime
+  get cancelInfo(): CancelInfo {
+    return this.props.cancelInfo
   }
 
-  get cancelTime(): number {
-    return this.props.cancelTime
+  get paymentInfo(): PaymentInfo {
+    return this.props.paymentInfo
   }
 
-  get customerServiceCancelTime(): number {
-    return this.props.customerServiceCancelTime
+  get deliveryInfo(): DeliveryInfo {
+    return this.props.deliveryInfo
   }
 
-  get customerServiceRemark(): string {
-    return this.props.customerServiceRemark
-  }
-
-  get shippingTime(): number {
-    return this.props.shippingTime
-  }
-
-  get shippingNumber(): string {
-    return this.props.shippingNumber
-  }
-
-  get shippingType(): string {
-    return this.props.shippingType
-  }
-
-  get finishTime(): number {
-    return this.props.finishTime
-  }
-
-  get closeTime(): number {
-    return this.props.closeTime
-  }
-
-  get orderItems(): OrderItem[] {
-    return this.props.items
+  get commodityItems(): CommodityItems {
+    return this.props.commodityItems
   }
 
   public autoCancel() {
-    if (!this.isUnPaid()) {
-      return left(new CancelOrderErrors.StatusNotUnPaid())
+    if (this.paymentInfo) {
+      return left(new ExpectNotPaidError())
     }
     if (this.isAtPaymentTime()) {
-      return left(new PaymentOrderErrors.PaymentTimeExpired())
+      return left(new ExpectPaymentTimeExpiredError())
     }
-    this.props.cancelTime = Date.now()
-    this.props.status = 'cancel'
+
+    const cancelInfoResult = CancelInfo.createByAutoCancel()
+    if (cancelInfoResult.isFailure) {
+      return left(cancelInfoResult)
+    }
+    this.props.cancelInfo = cancelInfoResult.getValue()
+    this.addDomainEvent(new OrderCanceled(this))
+    return right(Result.ok<void>())
+  }
+
+  public cancel(): Either<AlreadyCanceledError | Result<any>, Result<void>> {
+    if (this.cancelInfo) {
+      return left(new AlreadyCanceledError())
+    }
+
+    const cancelInfoResult = CancelInfo.createByAutoUser()
+    if (cancelInfoResult.isFailure) {
+      return left(cancelInfoResult)
+    }
+    this.props.cancelInfo = cancelInfoResult.getValue()
     this.addDomainEvent(new OrderCanceled(this))
 
     return right(Result.ok<void>())
   }
 
-  public cancel(): CancelOrderResult {
-    if (!this.isUnPaid()) {
-      return left(new CancelOrderErrors.StatusNotUnPaid())
+  public close() {
+    if (this.cancelInfo) {
+      return left(new AlreadyCanceledError())
     }
-    this.props.cancelTime = Date.now()
-    this.props.status = 'cancel'
+
+    const cancelInfoResult = CancelInfo.createByAutoAdmin()
+    if (cancelInfoResult.isFailure) {
+      return left(cancelInfoResult)
+    }
+    this.props.cancelInfo = cancelInfoResult.getValue()
     this.addDomainEvent(new OrderCanceled(this))
-
     return right(Result.ok<void>())
   }
 
-  public close(): CloselOrderResult {
-    if (!['shipping', 'shipped', 'received'].includes(this.props.status)) {
-      return left(new CloseOrderErrors.StatusError())
-    }
-    this.props.status = 'close'
-    this.props.closeTime = Date.now()
-    this.addDomainEvent(new OrderClosed(this))
-
-    return right(Result.ok<void>())
-  }
-
-  public payment(): PaymentOrderResult {
-    if (!this.isUnPaid()) {
-      return left(new PaymentOrderErrors.OrderStatusNotPaid())
+  public payment(userId: string, accountAmount: number) {
+    if (this.paymentInfo) {
+      return left(new ExpectNotPaidError())
     }
 
     if (!this.isAtPaymentTime()) {
-      return left(new PaymentOrderErrors.PaymentTimeExpired())
+      return left(new ExpectPaymentTimeNotExpiredError())
     }
 
-    this.props.paymentTime = Date.now()
-    this.props.status = 'shipping'
+    if (this.props.userId !== userId) {
+      return left(new DoesNotBelongToYouError())
+    }
+
+    if (accountAmount < this.props.totalAmount) {
+      return left(new UnableToPaidError())
+    }
+
+    const paymentInfoResult = PaymentInfo.create({ amount: this.props.totalAmount })
+    if (paymentInfoResult.isFailure) {
+      return left(paymentInfoResult)
+    }
+    this.props.paymentInfo = paymentInfoResult.getValue()
     this.addDomainEvent(new OrderPaymented(this))
     return right(Result.ok<void>())
   }
 
-  public shipped(shippingNumber: string, shippingType: string): ShippedOrderResult {
-    if (!this.isShipping()) {
-      return left(new ShippedOrderErrors.OrderNotPayment())
+  public shipped(shippingNumber: string, shippingType: string) {
+    if (!this.paymentInfo) {
+      return left(new ExpectPaidError())
     }
 
-    this.props.shippingTime = Date.now()
-    this.props.status = 'shipped'
-    this.props.shippingNumber = shippingNumber
-    this.props.shippingType = shippingType
+    const shippedResult = this.deliveryInfo.shipped(shippingNumber, shippingType)
+    if (shippedResult.isLeft()) {
+      return left(shippedResult)
+    }
     this.addDomainEvent(new OrderShipped(this))
     return right(Result.ok<void>())
   }
 
-  public received(): ReceivedOrderResult {
-    if (!this.isShipped()) {
-      return left(new ReceivedOrderErrors.OrderNotShipping())
+  public received() {
+    const shippedResult = this.deliveryInfo.received()
+    if (shippedResult.isLeft()) {
+      return left(shippedResult)
     }
-    this.props.finishTime = Date.now()
-    this.props.status = 'received'
     this.addDomainEvent(new OrderReceived(this))
     return right(Result.ok<void>())
   }
@@ -200,49 +228,9 @@ export class Order extends AggregateRoot<OrderProps> {
     return this.props.createAt + 1000 * 60 * 15 > Date.now()
   }
 
-  public isAllowCancel(): boolean {
-    return !this.isAtPaymentTime() && this.isUnPaid()
-  }
 
-  public isShipping(): boolean {
-    return this.props.status === 'shipping'
-  }
-
-  public isUnPaid(): boolean {
-    return this.props.status === 'unpaid'
-  }
-
-  public isShipped(): boolean {
-    return this.props.status === 'shipped'
-  }
-
-  public isReceived(): boolean {
-    return this.props.status === 'received'
-  }
-
-  public isValid(): boolean {
-    return this.isShipped() || this.isShipping() || this.isReceived()
-  }
-
-  private calculationOrderItemPriceTotal(): void {
-    this.props.price = this.orderItems.reduce((acc, item) => (acc += item.price), 0)
-  }
-
-  private createOrderCode(): void {
-    const padZero = num => (num < 10 ? '0' + num : '' + num)
-
-    const now = new Date()
-    let code: string = now.getFullYear() + ''
-    code += padZero(now.getMonth() + 1)
-    code += padZero(now.getDate())
-    code += padZero(now.getHours())
-    code += padZero(now.getMinutes())
-    code += padZero(now.getSeconds())
-
-    let randomLength = 6
-    let random = Math.floor(Math.random() * Math.pow(10, randomLength)) + ''
-    random.padStart(randomLength, '0')
-    this.props.code = code + random
+  private calculationCommodityItemPriceTotal(): void {
+    this.props.totalAmount = this.commodityItems.getItems().reduce((acc, item) => (acc += item.price), 0)
   }
 
   public static create(props: OrderProps, id?: UniqueEntityID): Result<Order> {
@@ -252,13 +240,12 @@ export class Order extends AggregateRoot<OrderProps> {
       {
         ...props,
         createAt: props.createAt ? props.createAt : Date.now(),
-        code: props.code ? props.code : ''
+        code: props.code ? props.code : OrderCode.create({}).getValue()
       },
       id
     )
 
-    order.calculationOrderItemPriceTotal()
-    order.createOrderCode()
+    order.calculationCommodityItemPriceTotal()
 
     if (isNew) {
       order.addDomainEvent(new OrderCreated(order))

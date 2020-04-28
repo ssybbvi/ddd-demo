@@ -1,1 +1,0 @@
-export type OrderStatus = 'unpaid' | 'cancel' | 'shipping' | 'shipped' | 'received' | 'close'

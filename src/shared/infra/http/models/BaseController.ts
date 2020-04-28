@@ -63,8 +63,6 @@ export abstract class BaseController {
   }
 
   public fail(res: express.Response, error: Error | string | any) {
-    return res.status(200).json({
-      message: error
-    })
+    return res.status(200).json(error)
   }
 }

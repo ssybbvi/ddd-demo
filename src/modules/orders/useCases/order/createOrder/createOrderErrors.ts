@@ -18,7 +18,7 @@ export namespace CreateOrderErrors {
     }
   }
 
-  export class OrderItemNotNull extends Result<UseCaseError> {
+  export class CommodityItemNotNull extends Result<UseCaseError> {
     constructor() {
       super(false, {
         message: `商品不能为空`

@@ -1,9 +1,9 @@
 import { BaseController } from '../../../../../shared/infra/http/models/BaseController'
 import * as express from 'express'
-import { DecodedExpressRequest } from '../../../../users/infra/http/models/decodedRequest'
 import { CancelOrderUseCase } from './cancelOrderUseCase'
 import { CancelOrderDto } from './cancelOrderDto'
-import { CancelOrderErrors } from './CancelOrderErrors'
+import { NotFoundError } from '../../../../../shared/core/NotFoundError'
+import { AlreadyCanceledError } from '../../../domain/order'
 
 
 
@@ -25,9 +25,9 @@ export class CancelOrderController extends BaseController {
         const error = result.value
 
         switch (error.constructor) {
-          case CancelOrderErrors.OrderNotFound:
+          case NotFoundError:
             return this.fail(res, error.errorValue().message)
-          case CancelOrderErrors.StatusNotUnPaid:
+          case AlreadyCanceledError:
             return this.fail(res, error.errorValue().message)
           default:
             return this.fail(res, error.errorValue())

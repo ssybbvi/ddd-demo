@@ -28,7 +28,7 @@ export class AfterOrderPaymented implements IHandle<OrderPaymented> {
 
     try {
       const dto: CreateFundDto = {
-        amount: order.price,
+        amount: order.totalAmount,
         paymentUserId: order.userId,
         type: 'paymentOrder',
         relationId: order.id.toString()

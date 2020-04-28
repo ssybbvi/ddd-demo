@@ -6,7 +6,6 @@ import { OrderDbModel } from '../../dbModels/orderDbModel'
 import { IOrderRepo } from '../orderRepo'
 import { OrderMap } from '../../mappers/orderMap'
 import { Order } from '../../domain/order'
-import { OrderStatus } from '../../domain/orderStatus'
 
 export class MongoOrderRepo implements IOrderRepo {
   constructor() { }
@@ -28,22 +27,15 @@ export class MongoOrderRepo implements IOrderRepo {
         $set: {
           userId: raw.userId,
           createAt: raw.createAt,
-          status: raw.status,
-          price: raw.price,
+          totalAmount: raw.totalAmount,
           remark: raw.remark,
           code: raw.code,
 
-          paymentTime: raw.paymentTime,
-          cancelTime: raw.cancelTime,
+          cancelInfo: raw.cancelInfo,
+          paymentInfo: raw.paymentInfo,
+          deliveryInfo: raw.deliveryInfo,
 
-          customerServiceCancelTime: raw.customerServiceCancelTime,
-          customerServiceRemark: raw.customerServiceRemark,
-
-          finishTime: raw.finishTime,
-
-          closeTime: raw.closeTime,
-
-          items: raw.items
+          commodityItems: raw.commodityItems
         }
       },
       { upsert: true }
@@ -57,11 +49,8 @@ export class MongoOrderRepo implements IOrderRepo {
     return !!order === true
   }
 
-  public async filter(orderStatus: OrderStatus | '', userId?: string): Promise<Order[]> {
+  public async filter(userId?: string): Promise<Order[]> {
     let query: any = {}
-    if (!!orderStatus === true) {
-      query.status = orderStatus
-    }
 
     if (!!userId === true) {
       query.userId = userId

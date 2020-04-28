@@ -18,7 +18,6 @@ export class GetOrderListController extends BaseController {
   async executeImpl(req: DecodedExpressRequest, res: express.Response): Promise<any> {
     const decoded = req.decoded;
     const dto: GetOrderListDto = {
-      orderStatus: req.query.orderStatus,
       userId: decoded ? decoded.userId : null
     }
 

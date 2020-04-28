@@ -5,10 +5,10 @@ import { getOrderListController } from '../../../useCases/order/getOrderList'
 import { cancelOrderController } from '../../../useCases/order/cancelOrder'
 import { paymentOrderController } from '../../../useCases/order/paymentOrder'
 import { getOrderByIdController } from '../../../useCases/order/getOrderById'
-import { shippedOrderController } from '../../../useCases/order/shippedOrder'
-import { receivedOrderController } from '../../../useCases/order/receivedOrder'
 import { autoCancelOrderController } from '../../../useCases/order/autoCancelOrder'
 import { closeOrderController } from '../../../useCases/order/closeOrder'
+import { shippedOrderController } from '../../../useCases/order/shippedOrder'
+import { receivedOrderController } from '../../../useCases/order/receivedOrder'
 
 const orderRouter = express.Router()
 

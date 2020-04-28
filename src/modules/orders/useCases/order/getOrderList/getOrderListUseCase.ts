@@ -4,7 +4,6 @@ import { UseCase } from '../../../../../shared/core/UseCase'
 import { Order } from '../../../domain/order'
 import { IOrderRepo } from '../../../repos/orderRepo'
 import { GetOrderListDto } from './getOrderListDto'
-import { OrderStatus } from '../../../domain/orderStatus'
 
 type Response = Either<
   | AppError.UnexpectedError, Result<Order[]>>
@@ -19,12 +18,11 @@ export class GetOrderListUseCase implements UseCase<GetOrderListDto, Promise<Res
   public async execute(request: GetOrderListDto): Promise<Response> {
     try {
       const {
-        userId, orderStatus
+        userId
       } = request
 
-      const orderList = await this.orderRepo.filter(orderStatus as (OrderStatus | ''), userId)
-
-      return right(Result.ok<Order[]>(orderList))
+      const list = await this.orderRepo.filter(userId)
+      return right(Result.ok<Order[]>(list))
     } catch (err) {
       return left(new AppError.UnexpectedError(err))
     }
