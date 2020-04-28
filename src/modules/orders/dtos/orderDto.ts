@@ -15,6 +15,8 @@ export interface OrderDto {
     deliveryInfo?: IDeliveryInfoDto
 
     commodityItems: CommodityItemDto[]
+
+    status: OrderStatus
 }
 
 export interface CommodityItemDto {
@@ -25,3 +27,4 @@ export interface CommodityItemDto {
     commodityId: string
 }
 
+export type OrderStatus = 'unpaid' | 'cancel' | 'shipping' | 'shipped' | 'received'  

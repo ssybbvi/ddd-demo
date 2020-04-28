@@ -72,6 +72,12 @@ export class OrderMap implements IMapper<Order> {
     if (!order) {
       return null
     }
+
+    const orderStatus = order.cancelInfo ? 'cancel' :
+      order.deliveryInfo.finishAt ? 'received' :
+        order.deliveryInfo.beginAt ? 'shipped' :
+          order.paymentInfo ? 'shipping' : 'unpaid'
+
     const commodityItems = order.commodityItems.getItems().map(item => CommodityItemMap.toDTO(item))
     return {
       _id: order.id.toString(),
@@ -85,7 +91,8 @@ export class OrderMap implements IMapper<Order> {
       paymentInfo: PaymentInfoMap.toDTO(order.paymentInfo),
       deliveryInfo: DeliveryInfoMap.toDTO(order.deliveryInfo),
 
-      commodityItems: commodityItems
+      commodityItems: commodityItems,
+      status: orderStatus
     }
   }
 
