@@ -27,9 +27,9 @@ export class ReceivedUseCase implements UseCase<ReceivedDto, Promise<Response>> 
         return left(new ReceivedErrors.NotFoundErrors())
       }
 
-      const barginResult = bargain.received()
-      if (barginResult.isLeft()) {
-        return left(barginResult.value)
+      const bargainResult = bargain.received()
+      if (bargainResult.isLeft()) {
+        return left(bargainResult.value)
       }
 
       await this.bargainRepo.save(bargain)

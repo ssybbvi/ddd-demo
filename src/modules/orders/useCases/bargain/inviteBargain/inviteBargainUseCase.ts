@@ -31,9 +31,12 @@ export class InviteBargainUseCase implements UseCase<InviteBargainDto, Promise<R
       //   return left(new InviteBargainErrors.HasParticipantError())
       // }
 
-      const barginResult = bargain.bargain(userId)
-      if (barginResult.isLeft()) {
-        return left(barginResult.value)
+      const particpantsCountByUserId = await this.bargainRepo.getParticpantsCountByUserId(userId)
+      const weights = Math.pow(0.9, particpantsCountByUserId)
+
+      const bargainResult = bargain.bargain(userId, weights)
+      if (bargainResult.isLeft()) {
+        return left(bargainResult.value)
       }
 
       await this.bargainRepo.save(bargain)

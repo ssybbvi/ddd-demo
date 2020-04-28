@@ -18,6 +18,7 @@ export class BargainMap implements IMapper<Bargain> {
         userId: item.userId,
         name: item.name,
         price: item.price,
+        weights: item.weights,
         createAt: item.createAt
       }, new UniqueEntityID(item._id))
 
@@ -55,6 +56,7 @@ export class BargainMap implements IMapper<Bargain> {
         userId: item.userId,
         name: item.name,
         price: item.price,
+        weights: item.weights,
         createAt: item.createAt
       }
     })

@@ -108,7 +108,7 @@ export class Bargain extends AggregateRoot<IBargainProps> {
     return this.props.deliveryInfo;
   }
 
-  public bargain(userId: string): BargainResponse {
+  public bargain(userId: string, weights: number): BargainResponse {
     if (this.isExpired()) {
       return left(new ExpiredError())
     }
@@ -116,13 +116,15 @@ export class Bargain extends AggregateRoot<IBargainProps> {
     if (this.isSuccess) {
       return left(new IsFinishError())
     }
-
-    const bargainPrice = bargainService.bargain(this)
+    const newWeights = this.participants.getItems().reduce((acc, item) => acc += item.weights, 0) + weights //目前权重
+    const totalWeights = this.price / 100
+    const bargainPrice = bargainService.bargain(this.price, this.currentPrice, totalWeights, newWeights)
 
     const participantOrError = Participant.create({
       userId: userId,
-      name: "",
+      name: "xx",
       price: bargainPrice,
+      weights: weights
     })
 
     if (participantOrError.isFailure) {

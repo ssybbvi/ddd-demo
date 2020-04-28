@@ -4,5 +4,6 @@ export interface IParticipantDbModel extends IBaseIdDbModels {
   userId: string
   name: string
   price: number
+  weights: number
   createAt: number
 }

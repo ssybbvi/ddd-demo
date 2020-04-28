@@ -6,6 +6,7 @@ import { BargainMap } from '../../mappers/bargainMap'
 import { Bargain } from '../../domain/bargain'
 import { IBargainDbModel } from '../../dbModels/bargainDbModel'
 import { IBargainRepo } from '../bargainRepo'
+import { RandomUtils } from '../../../../shared/utils/RandomUtils'
 
 export class MongoBargainRepo implements IBargainRepo {
   constructor() { }
@@ -53,4 +54,7 @@ export class MongoBargainRepo implements IBargainRepo {
     return list.map(item => BargainMap.toDomain(item))
   }
 
+  public async getParticpantsCountByUserId(userId: string, recentTime: number = 1000 * 60 * 60 * 24 * 30) {
+    return RandomUtils.interval(1, 10)
+  }
 }

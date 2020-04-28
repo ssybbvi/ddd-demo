@@ -102,8 +102,11 @@ export class CreateBargainUseCase implements UseCase<CreateBargainDto, Promise<R
         return left(bargainOrErrors)
       }
 
+      const particpantsCountByUserId = await this.bargainRepo.getParticpantsCountByUserId(userId)
+      const weights = Math.pow(0.9, particpantsCountByUserId)
+
       const bargain = bargainOrErrors.getValue()
-      bargain.bargain(userId)
+      bargain.bargain(userId, weights)
       await this.bargainRepo.save(bargain)
 
 

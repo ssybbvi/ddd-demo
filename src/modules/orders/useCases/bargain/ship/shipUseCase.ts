@@ -26,9 +26,9 @@ export class ShipUseCase implements UseCase<ShipDto, Promise<Response>> {
         return left(new ShipErrors.NotFoundErrors())
       }
 
-      const barginResult = bargain.shipped(code, type)
-      if (barginResult.isLeft()) {
-        return left(barginResult.value)
+      const bargainResult = bargain.shipped(code, type)
+      if (bargainResult.isLeft()) {
+        return left(bargainResult.value)
       }
       await this.bargainRepo.save(bargain)
 

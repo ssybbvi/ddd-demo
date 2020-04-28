@@ -7,6 +7,7 @@ export interface IParticipantProps {
   userId: string
   name: string
   price: number
+  weights: number
   createAt?: number
 }
 
@@ -28,6 +29,10 @@ export class Participant extends Entity<IParticipantProps> {
     return this.props.price
   }
 
+  get weights(): number {
+    return this.props.weights
+  }
+
   get createAt(): number {
     return this.props.createAt
   }
@@ -35,9 +40,10 @@ export class Participant extends Entity<IParticipantProps> {
 
   public static create(props: IParticipantProps, id?: UniqueEntityID): Result<Participant> {
     const nullGuard = Guard.againstNullOrUndefinedBulk([
-      { argument: props.userId, argumentName: 'userId' },
-      { argument: props.name, argumentName: 'name' },
-      { argument: props.price, argumentName: 'price' },
+      { argument: props.userId, argumentName: '用户编号' },
+      { argument: props.name, argumentName: '姓名' },
+      { argument: props.price, argumentName: '砍价' },
+      { argument: props.weights, argumentName: '权重' },
     ]);
 
     if (!nullGuard.succeeded) {
