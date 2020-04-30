@@ -10,13 +10,6 @@ export namespace CreateOrderErrors {
     }
   }
 
-  export class DotBuyRepeatOnceCommodity extends Result<UseCaseError> {
-    constructor() {
-      super(false, {
-        message: `不允许再次购买新手专享商品`
-      } as UseCaseError)
-    }
-  }
 
   export class CommodityItemNotNull extends Result<UseCaseError> {
     constructor() {

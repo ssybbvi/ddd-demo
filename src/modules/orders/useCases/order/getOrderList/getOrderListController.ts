@@ -33,7 +33,7 @@ export class GetOrderListController extends BaseController {
         }
       }
       const orderList = result.value.getValue() as Order[]
-      const orderDtoList = orderList.map(item => OrderMap.toDTO(item))
+      const orderDtoList = await OrderMap.toListDto(orderList)
       return this.ok<OrderDto[]>(res, orderDtoList)
     } catch (err) {
       return this.fail(res, err)

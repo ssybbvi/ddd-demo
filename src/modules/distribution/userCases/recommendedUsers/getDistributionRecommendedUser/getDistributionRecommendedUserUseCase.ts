@@ -2,50 +2,47 @@ import { Either, Result, left, right } from '../../../../../shared/core/Result'
 import { AppError } from '../../../../../shared/core/AppError'
 import { UseCase } from '../../../../../shared/core/UseCase'
 import { GetDistributionRecommendedUserDto } from './getDistributionRecommendedUserDto'
-import { GetDistributionRecommendedUserDtoResult } from './getDistributionRecommendedUserDtoResult'
-import { TermDTO } from '../../../dtos/termDTO'
+import { GetDistributionRecommendedUserResult } from './getDistributionRecommendedUserDtoResult'
 import { IFundRepo } from '../../../../funds/repos/iFundRepo'
 import { FundType } from '../../../../funds/domain/fundType'
-import { IWxUserRepo } from '../../../../users/repos/wxUserRepo'
+import { Team } from '../../../domain/team'
 
-type Response = Either<AppError.UnexpectedError, Result<GetDistributionRecommendedUserDtoResult>>
+type Response = Either<AppError.UnexpectedError, Result<GetDistributionRecommendedUserResult>>
 
 export class GetDistributionRecommendedUserUseCase
   implements UseCase<GetDistributionRecommendedUserDto, Promise<Response>> {
   private fundRepo: IFundRepo
-  private wxUserRepo: IWxUserRepo
 
-  constructor(fundRepo: IFundRepo, wxUserRepo: IWxUserRepo) {
+  constructor(fundRepo: IFundRepo) {
     this.fundRepo = fundRepo
-    this.wxUserRepo = wxUserRepo
   }
 
   public async execute(request: GetDistributionRecommendedUserDto): Promise<Response> {
     try {
       const { recommendedUserId } = request
 
-      let primaryDistributionTerms = await this.getTermDto(recommendedUserId, 'primaryDistribution', 0)
+      let primaryDistributionTeams = await this.getTeamDto(recommendedUserId, 'primaryDistribution', 0)
 
-      let primaryDistributionByTodayTerms = await this.getTermDto(
+      let primaryDistributionByTodayTeams = await this.getTeamDto(
         recommendedUserId,
         'primaryDistribution',
         new Date().setHours(0, 0, 0, 0)
       )
 
-      let secondaryDistributionTerms = await this.getTermDto(recommendedUserId, 'secondaryDistribution', 0)
+      let secondaryDistributionTeams = await this.getTeamDto(recommendedUserId, 'secondaryDistribution', 0)
 
-      let secondaryDistributionByTodayTerms = await this.getTermDto(
+      let secondaryDistributionByTodayTeams = await this.getTeamDto(
         recommendedUserId,
         'secondaryDistribution',
         new Date().setHours(0, 0, 0, 0)
       )
 
       return right(
-        Result.ok<GetDistributionRecommendedUserDtoResult>({
-          primaryDistributionTerms,
-          primaryDistributionByTodayTerms,
-          secondaryDistributionTerms,
-          secondaryDistributionByTodayTerms
+        Result.ok<GetDistributionRecommendedUserResult>({
+          primaryDistributionTeams,
+          primaryDistributionByTodayTeams,
+          secondaryDistributionTeams,
+          secondaryDistributionByTodayTeams
         })
       )
     } catch (err) {
@@ -53,34 +50,32 @@ export class GetDistributionRecommendedUserUseCase
     }
   }
 
-  private async getTermDto(recommendedUserId: string, type: FundType, createAt: number): Promise<TermDTO[]> {
+  private async getTeamDto(recommendedUserId: string, type: FundType, createAt: number): Promise<Team[]> {
     let distributionList = await this.fundRepo.getDistributionList(recommendedUserId, type, createAt)
 
-    let termDtoList: TermDTO[] = []
+    let teamDtoList: Team[] = []
     for (let item of distributionList) {
       if (item.paymentUserId == '0') {
-        termDtoList.push({
-          recommendedUserId: item.paymentUserId,
-          nickName: type === 'primaryDistribution' ? '赚赚' : '乐乐',
-          avatarUrl:
-            type === 'primaryDistribution'
-              ? 'https://pic2.zhimg.com/v2-8b0006ebf42e8ee2df8ef1d538e74d64_xl.jpg'
-              : 'https://profile.csdnimg.cn/2/6/3/3_woshidamimi0',
-          gender: 1,
+        const teamOrError = Team.create({
+          userId: item.paymentUserId,
+          // nickName: type === 'primaryDistribution' ? '赚赚' : '乐乐',
+          // avatarUrl:
+          //   type === 'primaryDistribution'
+          //     ? 'https://pic2.zhimg.com/v2-8b0006ebf42e8ee2df8ef1d538e74d64_xl.jpg'
+          //     : 'https://profile.csdnimg.cn/2/6/3/3_woshidamimi0',
+          // gender: 1,
           integral: item.totalAmount
         })
+        teamDtoList.push(teamOrError.getValue())
       } else {
-        let wxUser = await this.wxUserRepo.getById(item.paymentUserId)
-        termDtoList.push({
-          recommendedUserId: item.paymentUserId,
-          nickName: wxUser.nickName,
-          avatarUrl: wxUser.avatarUrl,
-          gender: wxUser.gender,
+        const teamOrError = Team.create({
+          userId: item.paymentUserId,
           integral: item.totalAmount
         })
+        teamDtoList.push(teamOrError.getValue())
       }
     }
 
-    return termDtoList
+    return teamDtoList
   }
 }

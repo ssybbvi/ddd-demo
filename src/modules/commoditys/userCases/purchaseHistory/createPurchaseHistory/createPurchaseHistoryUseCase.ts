@@ -11,25 +11,19 @@ type Response = Either<AppError.UnexpectedError, Result<void>>
 
 export class CreatePurchaseHistoryUseCase implements UseCase<CreatePurchaseHistoryDto, Promise<Response>> {
   private purchaseHistoryRepo: IPurchaseHistoryRepo
-  private wxUserRepo: IWxUserRepo
 
-  constructor(purchaseHistoryRepo: IPurchaseHistoryRepo, wxUserRepo: IWxUserRepo) {
+  constructor(purchaseHistoryRepo: IPurchaseHistoryRepo) {
     this.purchaseHistoryRepo = purchaseHistoryRepo
-    this.wxUserRepo = wxUserRepo
   }
 
   public async execute(request: CreatePurchaseHistoryDto): Promise<Response> {
     try {
       const { userId, commodityId } = request
 
-      const wxUser = await this.wxUserRepo.getById(userId)
 
       const purchaseHistoryOrEerros = PurchaseHistory.create({
         userId: userId,
         commodityId: commodityId,
-        nickName: wxUser.nickName,
-        avatarUrl: wxUser.avatarUrl,
-        gender: wxUser.gender
       })
 
       if (purchaseHistoryOrEerros.isFailure) {

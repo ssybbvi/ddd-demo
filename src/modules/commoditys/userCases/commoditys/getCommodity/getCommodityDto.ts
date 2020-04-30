@@ -1,4 +1,4 @@
 export interface GetCommodityDto {
-  name: string
-  tag: string
+  name?: string
+  tag?: string
 }

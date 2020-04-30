@@ -26,10 +26,10 @@ export class MongoCommodityRepo implements ICommodityRepo {
       {
         $set: {
           name: raw.name,
-          price: raw.price,
+          amount: raw.amount,
           description: raw.description,
           images: raw.images,
-          fakePrice: raw.fakePrice,
+          fakeAmount: raw.fakeAmount,
           sales: raw.sales,
           restrictedPurchaseQuantity: raw.restrictedPurchaseQuantity,
           limitedPurchasePerPerson: raw.limitedPurchasePerPerson,
@@ -50,14 +50,18 @@ export class MongoCommodityRepo implements ICommodityRepo {
   }
 
   public async filter(name: string, tag: string): Promise<Commodity[]> {
-    let query: any = {
-      $and: [
-        {
-          name: {
-            $regex: name
-          }
+    let query: any = {}
+
+    if (name || tag) {
+      query.$and = []
+    }
+
+    if (name) {
+      query.$and.push({
+        name: {
+          $regex: name
         }
-      ]
+      })
     }
     if (tag) {
       query.$and.push({

@@ -33,7 +33,7 @@ export class GetPurchaseHistoryController extends BaseController {
         }
       } else {
         const purchaseHistorys = result.value.getValue() as PurchaseHistory[]
-        const purchaseHistoryDtos = purchaseHistorys.map(item => PurchaseHistoryMap.toDTO(item))
+        const purchaseHistoryDtos = await PurchaseHistoryMap.toDtoList(purchaseHistorys)
         return this.ok<PurchaseHistoryDto[]>(res, purchaseHistoryDtos)
       }
     } catch (err) {

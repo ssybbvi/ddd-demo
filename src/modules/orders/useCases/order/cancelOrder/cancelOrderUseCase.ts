@@ -5,6 +5,7 @@ import { IOrderRepo } from '../../../repos/orderRepo'
 
 import { CancelOrderDto } from './cancelOrderDto'
 import { AlreadyCanceledError } from '../../../domain/order'
+import { NotFoundError } from '../../../../../shared/core/NotFoundError'
 
 type Response = Either<
   AlreadyCanceledError |
@@ -22,6 +23,9 @@ export class CancelOrderUseCase implements UseCase<CancelOrderDto, Promise<Respo
     try {
       const { orderId } = request
       const order = await this.orderRepo.getById(orderId)
+      if (!order) {
+        return left(new NotFoundError())
+      }
       let result = order.cancel()
       if (result.isLeft()) {
         return left(result.value)

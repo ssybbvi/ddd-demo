@@ -10,6 +10,7 @@ import { bargainService } from "./service";
 import { BargainSeccessed } from "./events/bargainSeccessed";
 import { DeliveryInfo, RepeatShipmentError, NotShippingError } from "./deliveryInfo";
 import { UseCaseError } from "../../../shared/core/UseCaseError";
+import { CommodityItems } from "./commodityItems";
 
 type BargainResponse = Either<
   ExpiredError | IsFinishError |
@@ -43,14 +44,13 @@ export class NotSeccessError extends Result<UseCaseError> {
 
 interface IBargainProps {
   userId: string
-  commodityId: string
-  name: string,
-  price: number
-  currentPrice?: number
+  amount?: number
+  currentAmount?: number
   isSuccess?: boolean
   createAt?: number
   finishAt?: number
   expiredAt?: number
+  commodityItems: CommodityItems
   participants?: Participants
   deliveryInfo: DeliveryInfo
 }
@@ -68,20 +68,13 @@ export class Bargain extends AggregateRoot<IBargainProps> {
     return this.props.userId
   }
 
-  get commodityId(): string {
-    return this.props.commodityId
+
+  get currentAmount(): number {
+    return this.props.currentAmount
   }
 
-  get name(): string {
-    return this.props.name
-  }
-
-  get currentPrice(): number {
-    return this.props.currentPrice
-  }
-
-  get price(): number {
-    return this.props.price
+  get amount(): number {
+    return this.props.amount
   }
 
   get isSuccess(): boolean {
@@ -98,6 +91,10 @@ export class Bargain extends AggregateRoot<IBargainProps> {
 
   get expiredAt(): number {
     return this.props.expiredAt
+  }
+
+  get commodityItems(): CommodityItems {
+    return this.props.commodityItems
   }
 
   get participants(): Participants {
@@ -117,13 +114,12 @@ export class Bargain extends AggregateRoot<IBargainProps> {
       return left(new IsFinishError())
     }
     const newWeights = this.participants.getItems().reduce((acc, item) => acc += item.weights, 0) + weights //目前权重
-    const totalWeights = this.price / 100
-    const bargainPrice = bargainService.bargain(this.price, this.currentPrice, totalWeights, newWeights)
+    const totalWeights = this.amount / 100
+    const bargainAmount = bargainService.bargain(this.amount, this.currentAmount, totalWeights, newWeights)
 
     const participantOrError = Participant.create({
       userId: userId,
-      name: "xx",
-      price: bargainPrice,
+      amount: bargainAmount,
       weights: weights
     })
 
@@ -134,8 +130,8 @@ export class Bargain extends AggregateRoot<IBargainProps> {
     const participant = participantOrError.getValue()
 
     this.props.participants.add(participant);
-    this.props.currentPrice -= bargainPrice
-    if (this.props.currentPrice === 0) {
+    this.props.currentAmount -= bargainAmount
+    if (this.props.currentAmount === 0) {
       this.props.isSuccess = true
       this.props.finishAt = Date.now()
       this.addDomainEvent(new BargainSeccessed(this))
@@ -170,11 +166,15 @@ export class Bargain extends AggregateRoot<IBargainProps> {
     return this.props.participants.getItems().some(item => item.userId === userId)
   }
 
+  private calculationCommodityItemAmountTotal(): void {
+    this.props.amount = this.commodityItems.getItems().reduce((acc, item) => (acc += item.amount), 0)
+    this.props.currentAmount = this.props.amount
+  }
+
+
   public static create(props: IBargainProps, id?: UniqueEntityID): Result<Bargain> {
     const nullGuard = Guard.againstNullOrUndefinedBulk([
-      { argument: props.name, argumentName: 'name' },
-      { argument: props.commodityId, argumentName: 'commodityId' },
-      { argument: props.price, argumentName: 'price' },
+      { argument: props.commodityItems, argumentName: 'commodityItems' },
     ]);
 
     if (!nullGuard.succeeded) {
@@ -185,12 +185,12 @@ export class Bargain extends AggregateRoot<IBargainProps> {
       {
         ...props,
         createAt: props.createAt ? props.createAt : Date.now(),
-        currentPrice: props.currentPrice || props.currentPrice === 0 ? props.currentPrice : props.price,
         expiredAt: props.expiredAt ? props.expiredAt : Date.now() + 1000 * 60 * 60 * 24 * 2,
         participants: props.participants ? props.participants : Participants.create([])
       },
       id
     )
+    domainModel.calculationCommodityItemAmountTotal()
 
     const isNew = !!id === false
     if (isNew) {

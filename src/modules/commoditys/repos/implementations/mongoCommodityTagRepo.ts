@@ -16,7 +16,6 @@ export class MongoCommodityTagRepo implements ICommodityTagRepo {
 
   public async getById(_id: string): Promise<CommodityTag> {
     let commodityTag = await this.createCollection().findOne({ _id })
-    console.log("zzzzz", commodityTag)
     return CommodityTagMap.toDomain(commodityTag)
   }
 

@@ -2,18 +2,21 @@ import { Either, Result, right, left } from '../../../../../shared/core/Result'
 import { AppError } from '../../../../../shared/core/AppError'
 import { UseCase } from '../../../../../shared/core/UseCase'
 import { OrderAddress } from '../../../domain/orderAddress'
-import { ICommodityRepo } from '../../../../commoditys/repos/iCommodityRepo'
 
 import { CreateBargainDto } from './createBargainDto'
 import { CreateBargainErrors } from './createBargainErrors'
 import { Bargain } from '../../../domain/bargain'
 import { IBargainRepo } from '../../../repos/bargainRepo'
 import { DeliveryInfo } from '../../../domain/deliveryInfo'
+import { DotBuyRepeatOnceCommodityError } from '../../../domain/orderUser'
+import { CommodityItem } from '../../../domain/commodityItem'
+import { OrderAssertionService } from '../../../domain/service/assertionService'
+import { CommodityItems } from '../../../domain/commodityItems'
 
 
 type Response = Either<
   CreateBargainErrors.CommodityNotFoundError |
-  CreateBargainErrors.DotBuyRepeatOnceCommodityError |
+  DotBuyRepeatOnceCommodityError |
   CreateBargainErrors.CommodityItemNotNullError |
   AppError.UnexpectedError, Result<Bargain>>
 
@@ -21,13 +24,13 @@ type AddressResponse = Either<AppError.UnexpectedError, Result<OrderAddress>>
 
 
 export class CreateBargainUseCase implements UseCase<CreateBargainDto, Promise<Response>> {
-  private commodityRepo: ICommodityRepo
+  private orderAssertionService: OrderAssertionService
   private bargainRepo: IBargainRepo
 
   constructor(
-    commodityRepo: ICommodityRepo,
+    orderAssertionService: OrderAssertionService,
     bargainRepo: IBargainRepo) {
-    this.commodityRepo = commodityRepo
+    this.orderAssertionService = orderAssertionService
     this.bargainRepo = bargainRepo
   }
 
@@ -60,7 +63,7 @@ export class CreateBargainUseCase implements UseCase<CreateBargainDto, Promise<R
     try {
       const {
         userId,
-        commodityId,
+        commodityItems
       } = request
 
 
@@ -69,11 +72,15 @@ export class CreateBargainUseCase implements UseCase<CreateBargainDto, Promise<R
         return left(addressResult)
       }
 
-      const commodity = await this.commodityRepo.getById(commodityId)
-      if (!commodity) {
-        return left(new CreateBargainErrors.CommodityNotFoundError(commodityId))
+      const assertionCommodityItemsResult = await this.orderAssertionService.assertionCommodityItems(commodityItems)
+      const assertionCommodityItemsResultValue = assertionCommodityItemsResult.value
+      if (assertionCommodityItemsResult.isLeft()) {
+        return left(assertionCommodityItemsResultValue)
       }
-      if (!commodity.isBargain()) {
+      const commodityItemList = assertionCommodityItemsResultValue.getValue() as CommodityItem[]
+
+
+      if (!commodityItemList.every(item => item.isBargain())) {
         return left(new CreateBargainErrors.NotBargainCommodityError())
       }
 
@@ -91,11 +98,10 @@ export class CreateBargainUseCase implements UseCase<CreateBargainDto, Promise<R
         return left(deliveryInfoOrErrors)
       }
 
+      const commodityItems1 = CommodityItems.create(commodityItemList)
       const bargainOrErrors = Bargain.create({
         userId,
-        commodityId,
-        name: commodity.name.value,
-        price: commodity.price.value,
+        commodityItems: commodityItems1,
         deliveryInfo: deliveryInfoOrErrors.getValue()
       })
       if (bargainOrErrors.isFailure) {
@@ -115,7 +121,4 @@ export class CreateBargainUseCase implements UseCase<CreateBargainDto, Promise<R
       return left(new AppError.UnexpectedError(err))
     }
   }
-
-
-
 }

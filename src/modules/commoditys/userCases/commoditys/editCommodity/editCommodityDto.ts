@@ -1,10 +1,10 @@
 export interface IEditCommodityDto {
     _id: string
     name: string
-    price: number
+    amount: number
     description: string
     images: string[]
-    fakePrice: string
+    fakeAmount: string
     restrictedPurchaseQuantity: number
     tags: string[]
     imgesDescrptionList: string[],

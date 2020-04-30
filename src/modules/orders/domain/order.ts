@@ -229,8 +229,8 @@ export class Order extends AggregateRoot<OrderProps> {
   }
 
 
-  private calculationCommodityItemPriceTotal(): void {
-    this.props.totalAmount = this.commodityItems.getItems().reduce((acc, item) => (acc += item.price), 0)
+  private calculationCommodityItemAmountTotal(): void {
+    this.props.totalAmount = this.commodityItems.getItems().reduce((acc, item) => (acc += item.amount), 0)
   }
 
   public static create(props: OrderProps, id?: UniqueEntityID): Result<Order> {
@@ -245,7 +245,7 @@ export class Order extends AggregateRoot<OrderProps> {
       id
     )
 
-    order.calculationCommodityItemPriceTotal()
+    order.calculationCommodityItemAmountTotal()
 
     if (isNew) {
       order.addDomainEvent(new OrderCreated(order))

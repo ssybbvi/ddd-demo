@@ -29,21 +29,21 @@ export class AfterOrderPaymented implements IHandle<OrderPaymented> {
     const { order } = event
 
     try {
-      const commodityItemList = order.commodityItems
-      // for (const item of commodityItemList) {
-      //   const commodityUseCaseResult = await this.saleCommodityUseCase.execute({ commodityId: item.commodityId })
-      //   if (commodityUseCaseResult.isLeft()) {
-      //     console.error(commodityUseCaseResult.value.error)
-      //   }
+      const commodityItemList = order.commodityItems.getItems()
+      for (const item of commodityItemList) {
+        const commodityUseCaseResult = await this.saleCommodityUseCase.execute({ commodityId: item.commodityId })
+        if (commodityUseCaseResult.isLeft()) {
+          console.error(commodityUseCaseResult.value.error)
+        }
 
-      //   const createPurchaseHistoryUseCaseeResult = await this.createPurchaseHistoryUseCase.execute({
-      //     commodityId: item.commodityId,
-      //     userId: order.userId
-      //   })
-      //   if (createPurchaseHistoryUseCaseeResult.isLeft()) {
-      //     console.error(createPurchaseHistoryUseCaseeResult.value)
-      //   }
-      // }
+        const createPurchaseHistoryUseCaseeResult = await this.createPurchaseHistoryUseCase.execute({
+          commodityId: item.commodityId,
+          userId: order.userId
+        })
+        if (createPurchaseHistoryUseCaseeResult.isLeft()) {
+          console.error(createPurchaseHistoryUseCaseeResult.value)
+        }
+      }
       console.log(`[OrderPaymented]: 支付订单，增加商品销量`)
     } catch (err) {
       console.log(`[OrderPaymented]: 支付订单，增加商品销量. ${err}`)

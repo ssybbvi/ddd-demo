@@ -1,11 +1,13 @@
 import { IMapper } from '../../../shared/infra/Mapper'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { Bargain } from '../domain/bargain'
-import { IBargainDto, IParticipantsDto } from '../dtos/bargainDto'
+import { IBargainDto } from '../dtos/bargainDto'
 import { IBargainDbModel } from '../dbModels/bargainDbModel'
 import { Participants } from '../domain/participants'
-import { Participant } from '../domain/participant'
 import { DeliveryInfoMap } from './deliveryInfoMap'
+import { ParticipantMap } from './participantMap'
+import { CommodityItemMap } from './commodityItemMap'
+import { CommodityItems } from '../domain/commodityItems'
 
 export class BargainMap implements IMapper<Bargain> {
   public static toDomain(raw: IBargainDbModel): Bargain {
@@ -13,30 +15,18 @@ export class BargainMap implements IMapper<Bargain> {
       return null
     }
 
-    const participantList = raw.participants.map(item => {
-      const participantOrErrors = Participant.create({
-        userId: item.userId,
-        name: item.name,
-        price: item.price,
-        weights: item.weights,
-        createAt: item.createAt
-      }, new UniqueEntityID(item._id))
-
-      participantOrErrors.isFailure ? console.log(participantOrErrors.error) : '';
-      return participantOrErrors.getValue()
-    })
-
+    const participantList = raw.participants.map(item => ParticipantMap.toDomain(item))
+    const commodityItems = raw.commodityItems.map(item => CommodityItemMap.toDomain(item))
     const bargainOrError = Bargain.create(
       {
         userId: raw.userId,
-        commodityId: raw.commodityId,
-        name: raw.name,
-        price: raw.price,
-        currentPrice: raw.currentPrice,
+        amount: raw.amount,
+        currentAmount: raw.currentAmount,
         isSuccess: raw.isSuccess,
         createAt: raw.createAt,
         finishAt: raw.finishAt,
         expiredAt: raw.expiredAt,
+        commodityItems: CommodityItems.create(commodityItems),
         participants: Participants.create(participantList),
         deliveryInfo: DeliveryInfoMap.toDomain(raw.deliveryInfo)
       },
@@ -50,62 +40,53 @@ export class BargainMap implements IMapper<Bargain> {
     if (!bargain) {
       return null
     }
-    const participants = bargain.participants.getItems().map(item => {
-      return {
-        _id: item.id,
-        userId: item.userId,
-        name: item.name,
-        price: item.price,
-        weights: item.weights,
-        createAt: item.createAt
-      }
-    })
 
+    const commodityItems = bargain.commodityItems.getItems().map(item => CommodityItemMap.toPersistence(item))
+    const participants = bargain.participants.getItems().map(item => ParticipantMap.toPersistence(item))
     const deliveryInfoDbModel = DeliveryInfoMap.toPersistence(bargain.deliveryInfo)
 
     return {
       _id: bargain.bargainId.toString(),
       userId: bargain.userId,
-      commodityId: bargain.commodityId,
-      name: bargain.name,
-      currentPrice: bargain.currentPrice,
-      price: bargain.price,
+      currentAmount: bargain.currentAmount,
+      amount: bargain.amount,
       isSuccess: bargain.isSuccess,
       createAt: bargain.createAt,
       finishAt: bargain.finishAt,
       expiredAt: bargain.expiredAt,
+      commodityItems: commodityItems,
       participants: participants,
       deliveryInfo: deliveryInfoDbModel
     }
   }
 
-  public static toDTO(bargain: Bargain): IBargainDto {
+  public static async toDtoList(bargainList: Bargain[]) {
+    const list = []
+    for (let item of bargainList) {
+      list.push(await this.toDTO(item))
+    }
+    return list
+  }
+
+  public static async toDTO(bargain: Bargain): Promise<IBargainDto> {
     if (!bargain) {
       return null
     }
-    const participantList = bargain.participants.getItems().map<IParticipantsDto>(item => {
-      return {
-        _id: item.id,
-        userId: item.userId,
-        name: item.name,
-        price: item.price,
-        createAt: item.createAt
-      }
-    })
 
+    const commodityItems = await CommodityItemMap.toListDto(bargain.commodityItems.getItems())
+    const participantList = await ParticipantMap.toDtoList(bargain.participants.getItems())
     const deliveryInfoDto = DeliveryInfoMap.toDTO(bargain.deliveryInfo)
 
     return {
       _id: bargain.bargainId,
       userId: bargain.userId,
-      commodityId: bargain.commodityId,
-      name: bargain.name,
-      currentPrice: bargain.currentPrice,
-      price: bargain.price,
+      currentAmount: bargain.currentAmount,
+      amount: bargain.amount,
       isSuccess: bargain.isSuccess,
       createAt: bargain.createAt,
       finishAt: bargain.finishAt,
       expiredAt: bargain.expiredAt,
+      commodityItems: commodityItems,
       participants: participantList,
       deliveryInfo: deliveryInfoDto
     }

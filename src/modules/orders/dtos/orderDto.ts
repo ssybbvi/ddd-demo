@@ -19,10 +19,11 @@ export interface OrderDto {
     status: OrderStatus
 }
 
+
 export interface CommodityItemDto {
     _id: string
     name: string
-    price: number
+    amount: number
     image: string
     commodityId: string
 }

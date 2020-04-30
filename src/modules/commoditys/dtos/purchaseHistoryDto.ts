@@ -1,7 +1,4 @@
 export interface PurchaseHistoryDto {
-
-  nickName: string
+  userId: string
   craeteAt: number
-  avatarUrl: string
-  gender: number
 }

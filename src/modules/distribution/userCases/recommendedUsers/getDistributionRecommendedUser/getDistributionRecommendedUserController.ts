@@ -3,7 +3,8 @@ import * as express from 'express'
 import { DecodedExpressRequest } from '../../../../users/infra/http/models/decodedRequest'
 import { GetDistributionRecommendedUserUseCase } from './getDistributionRecommendedUserUseCase'
 import { GetDistributionRecommendedUserDto } from './getDistributionRecommendedUserDto'
-import { GetDistributionRecommendedUserDtoResult } from './getDistributionRecommendedUserDtoResult'
+import { GetDistributionRecommendedUserDtoResult, GetDistributionRecommendedUserResult } from './getDistributionRecommendedUserDtoResult'
+import { TeamMap } from '../../../mappers/teamMap'
 
 export class GetDistributionRecommendedUserController extends BaseController {
   private useCase: GetDistributionRecommendedUserUseCase
@@ -31,8 +32,18 @@ export class GetDistributionRecommendedUserController extends BaseController {
             return this.fail(res, error.errorValue())
         }
       } else {
-        const getDistributionRecommendedUserDtoResult: GetDistributionRecommendedUserDtoResult = result.value.getValue() as GetDistributionRecommendedUserDtoResult
-        return this.ok<GetDistributionRecommendedUserDtoResult>(res, getDistributionRecommendedUserDtoResult)
+        const { primaryDistributionTeams,
+          secondaryDistributionTeams,
+          primaryDistributionByTodayTeams,
+          secondaryDistributionByTodayTeams }: GetDistributionRecommendedUserResult = result.value.getValue() as GetDistributionRecommendedUserResult
+
+
+        return this.ok<GetDistributionRecommendedUserDtoResult>(res, {
+          primaryDistributionTeams: await TeamMap.toDtoList(primaryDistributionTeams),
+          secondaryDistributionTeams: await TeamMap.toDtoList(secondaryDistributionTeams),
+          primaryDistributionByTodayTeams: await TeamMap.toDtoList(primaryDistributionByTodayTeams),
+          secondaryDistributionByTodayTeams: await TeamMap.toDtoList(secondaryDistributionByTodayTeams),
+        })
       }
     } catch (err) {
       return this.fail(res, err)

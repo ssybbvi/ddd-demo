@@ -3,16 +3,16 @@ import { Result } from '../../../shared/core/Result'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { IGuardArgument, Guard } from '../../../shared/core/Guard'
 import { CommodityCreated } from './events/CommodityCreated'
-import { CommodityPrice } from './commodityPrice'
+import { CommodityAmount } from './commodityAmount'
 import { CommodityName } from './commodityName'
 import { CommodityType } from './commodityType'
 
 export interface ICommodityProps {
   name: CommodityName
-  price: CommodityPrice
+  amount: CommodityAmount
   description: string
   images: string[]
-  fakePrice: string
+  fakeAmount: string
   sales: number
   restrictedPurchaseQuantity: number//每次限购
   limitedPurchasePerPerson: number//每人限购
@@ -30,8 +30,8 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     return this.props.name
   }
 
-  get price(): CommodityPrice {
-    return this.props.price
+  get amount(): CommodityAmount {
+    return this.props.amount
   }
 
   get description(): string {
@@ -42,8 +42,8 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     return this.props.images
   }
 
-  get fakePrice(): string {
-    return this.props.fakePrice
+  get fakeAmount(): string {
+    return this.props.fakeAmount
   }
 
   get sales(): number {
@@ -74,8 +74,8 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     this.props.name = name
   }
 
-  public updatePrice(price: CommodityPrice) {
-    this.props.price = price
+  public updateAmount(amount: CommodityAmount) {
+    this.props.amount = amount
   }
 
   public updateDescrption(description: string) {
@@ -86,8 +86,8 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     this.props.images = images
   }
 
-  public updateFakePrice(fakePrice: string) {
-    this.props.fakePrice = fakePrice
+  public updateFakeAmount(fakeAmount: string) {
+    this.props.fakeAmount = fakeAmount
   }
 
   public updateTags(tags: string[]) {
@@ -125,10 +125,10 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
   public static create(props: ICommodityProps, id?: UniqueEntityID): Result<Commodity> {
     const guardArgs: IGuardArgument[] = [
       { argument: props.name, argumentName: '商品名称' },
-      { argument: props.price, argumentName: '金额' },
+      { argument: props.amount, argumentName: '金额' },
       { argument: props.description, argumentName: '描述' },
       { argument: props.images, argumentName: '图片' },
-      { argument: props.fakePrice, argumentName: '假价格' },
+      { argument: props.fakeAmount, argumentName: '假价格' },
       { argument: props.sales, argumentName: '销量' },
       { argument: props.restrictedPurchaseQuantity, argumentName: '每次限购' },
     ]

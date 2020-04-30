@@ -4,7 +4,7 @@ import { UseCase } from '../../../../../shared/core/UseCase'
 import { ICommodityRepo } from '../../../repos/iCommodityRepo'
 import { IEditCommodityDto } from './editCommodityDto'
 import { CommodityName } from '../../../domain/commodityName'
-import { CommodityPrice } from '../../../domain/commodityPrice'
+import { CommodityAmount } from '../../../domain/commodityAmount'
 import { CommodityType } from '../../../domain/commodityType'
 
 type Response = Either<AppError.UnexpectedError, Result<void>>
@@ -18,7 +18,7 @@ export class EditCommodityUseCase implements UseCase<IEditCommodityDto, Promise<
 
   public async execute(request: IEditCommodityDto): Promise<Response> {
     try {
-      const { _id, name, price, description, images, fakePrice, restrictedPurchaseQuantity, tags, imgesDescrptionList, type } = request
+      const { _id, name, amount, description, images, fakeAmount, restrictedPurchaseQuantity, tags, imgesDescrptionList, type } = request
 
       const commodity = await this.commodityRepo.getById(_id)
 
@@ -27,15 +27,15 @@ export class EditCommodityUseCase implements UseCase<IEditCommodityDto, Promise<
         return left(commodityNameOrErrors)
       }
 
-      const commdityPriceOrErrors = CommodityPrice.create({ price })
-      if (commdityPriceOrErrors.isFailure) {
-        return left(commdityPriceOrErrors)
+      const commdityAmountOrErrors = CommodityAmount.create({ amount })
+      if (commdityAmountOrErrors.isFailure) {
+        return left(commdityAmountOrErrors)
       }
 
       commodity.updateName(commodityNameOrErrors.getValue())
-      commodity.updatePrice(commdityPriceOrErrors.getValue())
+      commodity.updateAmount(commdityAmountOrErrors.getValue())
       commodity.updateDescrption(description)
-      commodity.updateFakePrice(fakePrice)
+      commodity.updateFakeAmount(fakeAmount)
       commodity.updateImages(images)
       commodity.updateTags(tags)
       commodity.updateRestrictedPurchaseQuantity(restrictedPurchaseQuantity)

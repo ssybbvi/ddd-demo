@@ -31,7 +31,7 @@ export class GetBargainListController extends BaseController {
       }
 
       const bargainList = result.value.getValue() as Bargain[]
-      const bargainListDto = bargainList.map(item => BargainMap.toDTO(item))
+      const bargainListDto = await BargainMap.toDtoList(bargainList)
       return this.ok<IBargainDto[]>(res, bargainListDto)
     } catch (err) {
       return this.fail(res, err)

@@ -2,7 +2,6 @@
 export class BargainService {
 
   public bargain(totalAmount: number, currentAmount: number, totalWeights: number, newWeights: number): number {
-    console.log("totalAmount: number, currentAmount: number, totalWeights: number, newWeights: number", totalAmount, currentAmount, totalWeights, newWeights)
     newWeights = Math.min(newWeights, totalWeights)
     let bargainRate = this.bargainScheduleFunction(newWeights / totalWeights)//砍价进度
     const newCurrentAmount = Math.ceil(totalAmount - bargainRate * totalAmount)

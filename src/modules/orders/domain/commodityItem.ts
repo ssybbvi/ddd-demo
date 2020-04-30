@@ -6,8 +6,7 @@ import { CommodityType } from "../../commoditys/domain/commodityType";
 
 export interface CommodityItemProps {
     name: string
-    price: number
-    image: string
+    amount: number
     commodityId: string
     commodityType: CommodityType
 }
@@ -23,12 +22,8 @@ export class CommodityItem extends Entity<CommodityItemProps> {
         return this.props.name
     }
 
-    get price(): number {
-        return this.props.price
-    }
-
-    get image(): string {
-        return this.props.image
+    get amount(): number {
+        return this.props.amount
     }
 
     get commodityId(): string {
@@ -39,6 +34,10 @@ export class CommodityItem extends Entity<CommodityItemProps> {
         return this.props.commodityType
     }
 
+    public isBargain(): boolean {
+        return this.props.commodityType === 'bargain'
+    }
+
     private constructor(props: CommodityItemProps, id?: UniqueEntityID) {
         super(props, id);
     }
@@ -47,7 +46,7 @@ export class CommodityItem extends Entity<CommodityItemProps> {
     public static create(props: CommodityItemProps, id?: UniqueEntityID): Result<CommodityItem> {
         const nullGuard = Guard.againstNullOrUndefinedBulk([
             { argument: props.name, argumentName: '商品名称' },
-            { argument: props.price, argumentName: '商品价格' },
+            { argument: props.amount, argumentName: '商品价格' },
             { argument: props.commodityId, argumentName: '商品编号' },
             { argument: props.commodityType, argumentName: '商品类型' }
         ]);

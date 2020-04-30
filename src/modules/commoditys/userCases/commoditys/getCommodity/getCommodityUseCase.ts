@@ -7,7 +7,7 @@ import { GetCommodityDto } from './getCommodityDto'
 import { CommodityDto } from '../../../dtos/commodityDto'
 import { CommodityMap } from '../../../mappers/commodityMap'
 
-type Response = Either<AppError.UnexpectedError, Result<CommodityDto[]>>
+type Response = Either<AppError.UnexpectedError, Result<Commodity[]>>
 
 export class GetCommodityUseCase implements UseCase<GetCommodityDto, Promise<Response>> {
   private commodityRepo: ICommodityRepo
@@ -21,9 +21,7 @@ export class GetCommodityUseCase implements UseCase<GetCommodityDto, Promise<Res
       const { name, tag } = request
       console.log(name, tag)
       const list = await this.commodityRepo.filter(name, tag)
-      const dtoList = list.map(item => CommodityMap.toDTO(item))
-
-      return right(Result.ok<CommodityDto[]>(dtoList))
+      return right(Result.ok<Commodity[]>(list))
     } catch (err) {
       return left(new AppError.UnexpectedError(err))
     }

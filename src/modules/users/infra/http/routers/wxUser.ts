@@ -4,9 +4,11 @@ import { wxAuthorizationController } from '../../../useCases/wxUser/wxAuthorizat
 import { getWxCurrentUserController } from '../../../useCases/wxUser/getWxCurrentUser'
 import { bindingPhoneNumberController } from '../../../useCases/wxUser/bindingPhoneNumber'
 import { bindindUseInfoController } from '../../../useCases/wxUser/bindindUseInfo'
+import { getListController } from '../../../useCases/wxUser/getList'
 
 const wxUserRouter = express.Router()
 
+wxUserRouter.get('/', middleware.ensureAuthenticated(), (req, res) => getListController.execute(req, res))
 
 wxUserRouter.post('/authorization', (req, res) => wxAuthorizationController.execute(req, res))
 

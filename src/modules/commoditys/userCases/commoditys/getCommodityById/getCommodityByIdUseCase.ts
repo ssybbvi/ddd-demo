@@ -4,9 +4,9 @@ import { UseCase } from '../../../../../shared/core/UseCase'
 import { Commodity } from '../../../domain/commodity'
 import { ICommodityRepo } from '../../../repos/iCommodityRepo'
 import { GetCommodityByIdDto } from './getCommodityByIdDto'
-import { GetCommodityErrors } from './getCommodityErrors'
+import { NotFoundError } from '../../../../../shared/core/NotFoundError'
 
-type Response = Either<GetCommodityErrors.CommodityNotFound | AppError.UnexpectedError, Result<Commodity>>
+type Response = Either<NotFoundError, Result<Commodity>>
 
 export class GetCommodityByIdUseCase implements UseCase<GetCommodityByIdDto, Promise<Response>> {
   private commodityRepo: ICommodityRepo
@@ -19,11 +19,9 @@ export class GetCommodityByIdUseCase implements UseCase<GetCommodityByIdDto, Pro
     try {
       const { commodityId } = request
 
-      console.log("this.commodityRepo.getById(commodityId)", commodityId)
       const commodity = await this.commodityRepo.getById(commodityId)
-      console.log("xxxxxx", commodity)
       if (commodity == null) {
-        return left(new GetCommodityErrors.CommodityNotFound())
+        return left(new NotFoundError())
       }
 
       return right(Result.ok<Commodity>(commodity))

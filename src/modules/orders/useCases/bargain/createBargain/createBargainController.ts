@@ -7,6 +7,8 @@ import { CreateBargainErrors } from './createBargainErrors'
 import { Bargain } from '../../../domain/bargain'
 import { BargainMap } from '../../../mappers/bargainMap'
 import { IBargainDto } from '../../../dtos/bargainDto'
+import { DotBuyRepeatOnceCommodityError } from '../../../domain/orderUser'
+import { NotFoundError } from '../../../../../shared/core/NotFoundError'
 
 export class CreateBargainController extends BaseController {
   private useCase: CreateBargainUseCase
@@ -28,9 +30,9 @@ export class CreateBargainController extends BaseController {
         const error = result.value
 
         switch (error.constructor) {
-          case CreateBargainErrors.CommodityNotFoundError:
+          case NotFoundError:
             return this.fail(res, error.errorValue().message)
-          case CreateBargainErrors.DotBuyRepeatOnceCommodityError:
+          case DotBuyRepeatOnceCommodityError:
             return this.fail(res, error.errorValue().message)
           case CreateBargainErrors.CommodityItemNotNullError:
             return this.fail(res, error.errorValue().message)
@@ -44,7 +46,7 @@ export class CreateBargainController extends BaseController {
       }
 
       const bargain = result.value.getValue() as Bargain
-      const bargainDto = BargainMap.toDTO(bargain)
+      const bargainDto = await BargainMap.toDTO(bargain)
       return this.ok<IBargainDto>(res, bargainDto)
     } catch (err) {
       return this.fail(res, err)

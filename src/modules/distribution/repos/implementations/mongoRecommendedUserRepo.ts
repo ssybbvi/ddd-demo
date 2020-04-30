@@ -8,7 +8,7 @@ import { Collection } from 'mongodb'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 
 export class RecommendedUserRepo implements IRecommendedUserRepo {
-  constructor() {}
+  constructor() { }
 
   private createCollection(): Collection<IRecommendedUserDbModel> {
     return Global.instance.mongoDb.collection<IRecommendedUserDbModel>('recommendedUser')
@@ -52,7 +52,7 @@ export class RecommendedUserRepo implements IRecommendedUserRepo {
     return RecommendedUserMap.toDomain(recommendedUser)
   }
 
-  public async getTermRecommendedUserList(recommendedUserIdList: RecommendedUserId[]): Promise<RecommendedUser[]> {
+  public async getTeamRecommendedUserList(recommendedUserIdList: RecommendedUserId[]): Promise<RecommendedUser[]> {
     let recommendedUserIds = recommendedUserIdList.map(item => item.id.toString())
 
     let recommendedUserList = await this.createCollection()

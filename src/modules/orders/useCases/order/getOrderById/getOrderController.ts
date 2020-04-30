@@ -39,7 +39,7 @@ export class GetOrderByIdController extends BaseController {
         }
       }
       const order = result.value.getValue() as Order
-      const orderDto = OrderMap.toDTO(order)
+      const orderDto = await OrderMap.toDTO(order)
       return this.ok<OrderDto>(res, orderDto)
     } catch (err) {
       return this.fail(res, err)

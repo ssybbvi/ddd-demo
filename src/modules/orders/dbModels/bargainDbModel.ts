@@ -1,17 +1,17 @@
 import { IBaseIdDbModels } from "../../../shared/infra/database/baseIdDbModels";
 import { IParticipantDbModel } from "./participantDbModel";
 import { IDeliveryInfoDbModel } from "./deliveryInfoDbModel";
+import { ICommodityItemDbModel } from "./commodityItemDbModel";
 
 export interface IBargainDbModel extends IBaseIdDbModels {
   userId: string
-  commodityId: string
-  name: string,
-  currentPrice: number
-  price: number
+  currentAmount: number
+  amount: number
   isSuccess: boolean
   createAt: number
   finishAt: number
   expiredAt: number
+  commodityItems: ICommodityItemDbModel[]
   participants: IParticipantDbModel[]
   deliveryInfo: IDeliveryInfoDbModel
 }

@@ -1,8 +1,7 @@
 export interface ICommodityItemDto {
   _id: string
   name: string
-  price: number
-  image: string
+  amount: number
   commodityId: string,
   commodityType: string
 }

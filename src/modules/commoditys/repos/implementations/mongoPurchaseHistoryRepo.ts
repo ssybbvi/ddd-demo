@@ -8,7 +8,7 @@ import { PurchaseHistory } from '../../domain/purchaseHistory'
 import { PurchaseHistoryMap } from '../../mappers/purchaseHistoryMap'
 
 export class MongoPurchaseHistoryRepo implements IPurchaseHistoryRepo {
-  constructor() {}
+  constructor() { }
 
   private createCollection(): Collection<IPurchaseHistoryDbModel> {
     return Global.instance.mongoDb.collection<IPurchaseHistoryDbModel>('purchaseHistory')
@@ -27,10 +27,7 @@ export class MongoPurchaseHistoryRepo implements IPurchaseHistoryRepo {
         $set: {
           commodityId: raw.commodityId,
           userId: raw.userId,
-          nickName: raw.nickName,
           craeteAt: raw.craeteAt,
-          avatarUrl: raw.avatarUrl,
-          gender: raw.gender
         }
       },
       { upsert: true }

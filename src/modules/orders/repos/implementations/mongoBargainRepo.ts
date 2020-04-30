@@ -26,14 +26,13 @@ export class MongoBargainRepo implements IBargainRepo {
       { _id: raw._id },
       {
         $set: {
-          commodityId: raw.commodityId,
-          name: raw.name,
-          currentPrice: raw.currentPrice,
-          price: raw.price,
+          currentAmount: raw.currentAmount,
+          amount: raw.amount,
           isSuccess: raw.isSuccess,
           createAt: raw.createAt,
           finishAt: raw.finishAt,
           expiredAt: raw.expiredAt,
+          commodityItems: raw.commodityItems,
           participants: raw.participants,
           deliveryInfo: raw.deliveryInfo,
         }

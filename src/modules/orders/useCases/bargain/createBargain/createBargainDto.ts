@@ -1,6 +1,6 @@
 export interface CreateBargainDto {
   userId: string
-  commodityId: string
+  commodityItems: CreateBargainCommodityDto[]
 
   userName: string
   provinceName: string,
@@ -11,3 +11,6 @@ export interface CreateBargainDto {
   telNumber: string
 }
 
+export interface CreateBargainCommodityDto {
+  commodityId: string
+}

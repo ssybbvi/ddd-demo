@@ -7,6 +7,8 @@ import { DecodedExpressRequest } from '../../../../users/infra/http/models/decod
 import { Order } from '../../../domain/order'
 import { OrderMap } from '../../../mappers/orderMap'
 import { OrderDto } from '../../../dtos/orderDto'
+import { DotBuyRepeatOnceCommodityError } from '../../../domain/orderUser'
+import { NotFoundError } from '../../../../../shared/core/NotFoundError'
 
 export class CreateOrderController extends BaseController {
   private useCase: CreateOrderUseCase
@@ -23,24 +25,24 @@ export class CreateOrderController extends BaseController {
 
     try {
       const result = await this.useCase.execute(dto)
-
+      const value = result.value
       if (result.isLeft()) {
-        const error = result.value
+        const error = value
 
         switch (error.constructor) {
-          case CreateOrderErrors.CommodityNotFound:
+          case NotFoundError:
             return this.fail(res, error.errorValue().message)
           case CreateOrderErrors.CommodityItemNotNull:
             return this.fail(res, error.errorValue().message)
-          case CreateOrderErrors.DotBuyRepeatOnceCommodity:
+          case DotBuyRepeatOnceCommodityError:
             return this.fail(res, error.errorValue().message)
           default:
             return this.fail(res, error.errorValue())
         }
       }
 
-      const order = result.value.getValue() as Order
-      const orderDto = OrderMap.toDTO(order)
+      const order = value.getValue() as Order
+      const orderDto = await OrderMap.toDTO(order)
       return this.ok<OrderDto>(res, orderDto)
     } catch (err) {
       return this.fail(res, err)

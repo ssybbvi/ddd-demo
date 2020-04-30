@@ -7,5 +7,4 @@ export interface IRecommendedUserRepo {
   existsByInviteToken(inviteToken: string): Promise<boolean>
   getByInviteToken(inviteToken: string): Promise<RecommendedUser>
   save(recommendedUser: RecommendedUser): Promise<void>
-  getTermRecommendedUserList(recommendedUserIdList: RecommendedUserId[]): Promise<RecommendedUser[]>
 }

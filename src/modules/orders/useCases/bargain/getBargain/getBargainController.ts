@@ -32,7 +32,7 @@ export class GetBargainController extends BaseController {
       }
 
       const bargain = result.value.getValue() as Bargain
-      const bargainDto = BargainMap.toDTO(bargain)
+      const bargainDto = await BargainMap.toDTO(bargain)
       return this.ok<IBargainDto>(res, bargainDto)
     } catch (err) {
       return this.fail(res, err)

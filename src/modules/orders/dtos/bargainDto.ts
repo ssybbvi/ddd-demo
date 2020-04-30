@@ -1,25 +1,18 @@
 import { IDeliveryInfoDto } from "./deliveryInfoDto";
+import { IParticipantDto } from "./participantDto";
+import { ICommodityItemDto } from "./commodityItemDto";
 
 export interface IBargainDto {
   _id: string
   userId: string
-  commodityId: string
-  name: string,
-  currentPrice: number
-  price: number
+  currentAmount: number
+  amount: number
   isSuccess: boolean
   createAt: number
   finishAt: number
   expiredAt: number
-  participants: IParticipantsDto[]
-
+  participants: IParticipantDto[]
+  commodityItems: ICommodityItemDto[]
   deliveryInfo: IDeliveryInfoDto
 }
 
-export interface IParticipantsDto {
-  _id: string
-  userId: string
-  name: string
-  price: number
-  createAt: number
-}

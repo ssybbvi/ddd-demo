@@ -4,18 +4,26 @@ import { ICommodityDbModel } from '../dbModels/commodityDbModel'
 import { Commodity } from '../domain/commodity'
 import { CommodityDto } from '../dtos/commodityDto'
 import { CommodityName } from '../domain/commodityName'
-import { CommodityPrice } from '../domain/commodityPrice'
+import { CommodityAmount } from '../domain/commodityAmount'
 import { CommodityType } from '../domain/commodityType'
 
 export class CommodityMap implements IMapper<Commodity> {
-  public static toDTO(commodity: Commodity): CommodityDto {
+  public static async  toListDto(commodityList: Commodity[]): Promise<CommodityDto[]> {
+    let commodityDtoList = []
+    for (let item of commodityList) {
+      commodityDtoList.push(await this.toDTO(item))
+    }
+    return commodityDtoList
+  }
+
+  public static async toDTO(commodity: Commodity): Promise<CommodityDto> {
     return {
       _id: commodity.id.toString(),
       name: commodity.name.value,
-      price: commodity.price.value,
+      amount: commodity.amount.value,
       description: commodity.description,
       images: commodity.images,
-      fakePrice: commodity.fakePrice,
+      fakeAmount: commodity.fakeAmount,
       sales: commodity.sales,
       restrictedPurchaseQuantity: commodity.restrictedPurchaseQuantity,
       limitedPurchasePerPerson: commodity.limitedPurchasePerPerson,
@@ -31,15 +39,15 @@ export class CommodityMap implements IMapper<Commodity> {
     }
 
     const commodityNameOrErrors = CommodityName.create({ name: raw.name })
-    const commdityPriceOrErrors = CommodityPrice.create({ price: raw.price })
+    const commdityAmountOrErrors = CommodityAmount.create({ amount: raw.amount })
 
     const commodityOrError = Commodity.create(
       {
         name: commodityNameOrErrors.getValue(),
-        price: commdityPriceOrErrors.getValue(),
+        amount: commdityAmountOrErrors.getValue(),
         description: raw.description,
         images: raw.images,
-        fakePrice: raw.fakePrice,
+        fakeAmount: raw.fakeAmount,
         sales: raw.sales,
         restrictedPurchaseQuantity: raw.restrictedPurchaseQuantity,
         limitedPurchasePerPerson: raw.limitedPurchasePerPerson,
@@ -58,10 +66,10 @@ export class CommodityMap implements IMapper<Commodity> {
     return {
       _id: commodity.id.toString(),
       name: commodity.name.value,
-      price: commodity.price.value,
+      amount: commodity.amount.value,
       description: commodity.description,
       images: commodity.images,
-      fakePrice: commodity.fakePrice,
+      fakeAmount: commodity.fakeAmount,
       sales: commodity.sales,
       restrictedPurchaseQuantity: commodity.restrictedPurchaseQuantity,
       limitedPurchasePerPerson: commodity.limitedPurchasePerPerson,

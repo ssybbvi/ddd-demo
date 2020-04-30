@@ -5,7 +5,7 @@ import { Commodity } from '../../../domain/commodity'
 import { CreateCommodityDto } from './createCommodityDto'
 import { ICommodityRepo } from '../../../repos/iCommodityRepo'
 import { CommodityName } from '../../../domain/commodityName'
-import { CommodityPrice } from '../../../domain/commodityPrice'
+import { CommodityAmount } from '../../../domain/commodityAmount'
 import { CommodityType } from '../../../domain/commodityType'
 
 type Response = Either<AppError.UnexpectedError, Result<void>>
@@ -19,24 +19,24 @@ export class CreateCommodityUseCase implements UseCase<CreateCommodityDto, Promi
 
   public async execute(request: CreateCommodityDto): Promise<Response> {
     try {
-      const { name, price, description, images, fakePrice, sales, restrictedPurchaseQuantity, tags, imgesDescrptionList, limitedPurchasePerPerson, type } = request
+      const { name, amount, description, images, fakeAmount, sales, restrictedPurchaseQuantity, tags, imgesDescrptionList, limitedPurchasePerPerson, type } = request
 
       const commodityNameOrErrors = CommodityName.create({ name })
       if (commodityNameOrErrors.isFailure) {
         return left(commodityNameOrErrors)
       }
 
-      const commdityPriceOrErrors = CommodityPrice.create({ price })
-      if (commdityPriceOrErrors.isFailure) {
-        return left(commdityPriceOrErrors)
+      const commdityAmountOrErrors = CommodityAmount.create({ amount })
+      if (commdityAmountOrErrors.isFailure) {
+        return left(commdityAmountOrErrors)
       }
 
       const commodityOrErrors = Commodity.create({
         name: commodityNameOrErrors.getValue(),
-        price: commdityPriceOrErrors.getValue(),
+        amount: commdityAmountOrErrors.getValue(),
         description,
         images,
-        fakePrice,
+        fakeAmount,
         sales,
         restrictedPurchaseQuantity,
         limitedPurchasePerPerson,

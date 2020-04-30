@@ -6,10 +6,7 @@ import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
 export interface IPurchaseHistoryProps {
   userId: string
   commodityId: string
-  nickName: string
   craeteAt?: number
-  avatarUrl: string
-  gender: number
 }
 
 export class PurchaseHistory extends AggregateRoot<IPurchaseHistoryProps> {
@@ -25,21 +22,11 @@ export class PurchaseHistory extends AggregateRoot<IPurchaseHistoryProps> {
     return this.props.commodityId
   }
 
-  get nickName(): string {
-    return this.props.nickName
-  }
 
   get craeteAt(): number {
     return this.props.craeteAt
   }
 
-  get avatarUrl(): string {
-    return this.props.avatarUrl
-  }
-
-  get gender(): number {
-    return this.props.gender
-  }
 
   public static create(props: IPurchaseHistoryProps, id?: UniqueEntityID): Result<PurchaseHistory> {
     const guardArgs: IGuardArgument[] = [

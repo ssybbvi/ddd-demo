@@ -5,8 +5,7 @@ import { Guard } from "../../../shared/core/Guard";
 
 export interface IParticipantProps {
   userId: string
-  name: string
-  price: number
+  amount: number
   weights: number
   createAt?: number
 }
@@ -21,12 +20,9 @@ export class Participant extends Entity<IParticipantProps> {
     return this.props.userId
   }
 
-  get name(): string {
-    return this.props.name
-  }
 
-  get price(): number {
-    return this.props.price
+  get amount(): number {
+    return this.props.amount
   }
 
   get weights(): number {
@@ -41,8 +37,7 @@ export class Participant extends Entity<IParticipantProps> {
   public static create(props: IParticipantProps, id?: UniqueEntityID): Result<Participant> {
     const nullGuard = Guard.againstNullOrUndefinedBulk([
       { argument: props.userId, argumentName: '用户编号' },
-      { argument: props.name, argumentName: '姓名' },
-      { argument: props.price, argumentName: '砍价' },
+      { argument: props.amount, argumentName: '砍价' },
       { argument: props.weights, argumentName: '权重' },
     ]);
 

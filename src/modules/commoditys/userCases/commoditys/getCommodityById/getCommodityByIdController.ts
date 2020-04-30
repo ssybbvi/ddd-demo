@@ -5,7 +5,7 @@ import { Commodity } from '../../../domain/commodity'
 import { CommodityMap } from '../../../mappers/commodityMap'
 import { GetCommodityByIdUseCase } from './getCommodityByIdUseCase'
 import { CommodityDto } from '../../../dtos/commodityDto'
-import { GetCommodityErrors } from './getCommodityErrors'
+import { NotFoundError } from '../../../../../shared/core/NotFoundError'
 
 export class GetCommodityByIdController extends BaseController {
   private useCase: GetCommodityByIdUseCase
@@ -27,14 +27,14 @@ export class GetCommodityByIdController extends BaseController {
         const error = result.value
 
         switch (error.constructor) {
-          case GetCommodityErrors.CommodityNotFound:
+          case NotFoundError:
             return this.fail(res, error.errorValue().message)
           default:
             return this.fail(res, error.errorValue())
         }
       } else {
         const commodity = result.value.getValue() as Commodity
-        const commodityDto = CommodityMap.toDTO(commodity)
+        const commodityDto = await CommodityMap.toDTO(commodity)
         return this.ok<CommodityDto>(res, commodityDto)
       }
     } catch (err) {

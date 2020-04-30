@@ -10,6 +10,7 @@ import { CommodityItemMap } from './commodityItemMap'
 import { PaymentInfoMap } from './paymentInfoMap'
 import { CancelInfoMap } from './cancelInfoMap'
 import { ICommodityItemDbModel } from '../dbModels/commodityItemDbModel'
+import { userIdToDto } from '../../users/infra/decorators/wxUserDtoDecorators'
 
 
 export class OrderMap implements IMapper<Order> {
@@ -67,18 +68,26 @@ export class OrderMap implements IMapper<Order> {
     }
   }
 
+  public static async toListDto(orderList: Order[]): Promise<OrderDto[]> {
+    const list = []
+    for (let item of orderList) {
+      list.push(await this.toDTO(item))
+    }
+    return list
+  }
 
-  public static toDTO(order: Order): OrderDto {
+  @userIdToDto()
+  public static async  toDTO(order: Order): Promise<OrderDto> {
     if (!order) {
       return null
     }
-
     const orderStatus = order.cancelInfo ? 'cancel' :
       order.deliveryInfo.finishAt ? 'received' :
         order.deliveryInfo.beginAt ? 'shipped' :
           order.paymentInfo ? 'shipping' : 'unpaid'
 
-    const commodityItems = order.commodityItems.getItems().map(item => CommodityItemMap.toDTO(item))
+
+    const commodityItemDtoList = await CommodityItemMap.toListDto(order.commodityItems.getItems())
     return {
       _id: order.id.toString(),
       userId: order.userId,
@@ -91,7 +100,7 @@ export class OrderMap implements IMapper<Order> {
       paymentInfo: PaymentInfoMap.toDTO(order.paymentInfo),
       deliveryInfo: DeliveryInfoMap.toDTO(order.deliveryInfo),
 
-      commodityItems: commodityItems,
+      commodityItems: commodityItemDtoList,
       status: orderStatus
     }
   }
