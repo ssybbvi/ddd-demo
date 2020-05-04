@@ -7,8 +7,6 @@ import { OrderUser } from '../../../domain/orderUser'
 import { OrderUserMap } from '../../../mappers/orderUserMap'
 import { IOrderUserDto } from '../../../dtos/orderUserDto'
 
-
-
 export class GetOrderUserController extends BaseController {
   private useCase: GetOrderUserUseCase
 
@@ -18,21 +16,15 @@ export class GetOrderUserController extends BaseController {
   }
 
   async executeImpl(req: DecodedExpressRequest, res: express.Response): Promise<any> {
-    const { userId } = req.decoded;
+    const { userId } = req.decoded
     const dto: GetOrderUserDto = req.body as GetOrderUserDto
     dto.userId = userId
-
 
     try {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       }
       const orderUser = result.value.getValue() as OrderUser
       const orderUserDto = OrderUserMap.toDTO(orderUser)

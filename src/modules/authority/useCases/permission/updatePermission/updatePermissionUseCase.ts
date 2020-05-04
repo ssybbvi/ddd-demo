@@ -9,7 +9,7 @@ import { IPermissionRepo } from '../../../repos/permissionRepo'
 import { UpdatePermissionErrors } from './updatePermissionError'
 
 type Response = Either<
-  UpdatePermissionErrors.PermissionExistSameNameError | AppError.UnexpectedError,
+  UpdatePermissionErrors.PermissionExistSameNameError | AppError.UnexpectedError | Result<any>,
   Result<void>
 >
 
@@ -31,7 +31,7 @@ export class UpdatePermissionUseCase implements UseCase<UpdatePermissionRequestD
     }
 
     let permissionList = await this.permissionRepo.findByName(request.name)
-    if (permissionList.some(item => item.permissionId.id.toString() !== request._id)) {
+    if (permissionList.some((item) => item.permissionId.id.toString() !== request._id)) {
       return left(new UpdatePermissionErrors.PermissionExistSameNameError(request.name))
     }
 

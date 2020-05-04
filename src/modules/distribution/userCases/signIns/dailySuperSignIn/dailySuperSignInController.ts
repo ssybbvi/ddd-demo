@@ -18,21 +18,14 @@ export class DailySuperSignInController extends BaseController {
     const { userId } = req.decoded
 
     const dto: DailySuperSignInDto = {
-      userId: userId
+      userId: userId,
     }
 
     try {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case DailySuperSignInErrors.NonCompliantErrors:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       } else {
         return this.ok<DailySuperSignInDtoResult>(res, result.value.getValue())
       }

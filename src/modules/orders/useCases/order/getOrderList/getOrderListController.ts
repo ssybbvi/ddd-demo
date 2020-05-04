@@ -16,21 +16,16 @@ export class GetOrderListController extends BaseController {
   }
 
   async executeImpl(req: DecodedExpressRequest, res: express.Response): Promise<any> {
-    const decoded = req.decoded;
+    const decoded = req.decoded
     const dto: GetOrderListDto = {
-      userId: decoded ? decoded.userId : null
+      userId: decoded ? decoded.userId : null,
     }
 
     try {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       }
       const orderList = result.value.getValue() as Order[]
       const orderDtoList = await OrderMap.toListDto(orderList)

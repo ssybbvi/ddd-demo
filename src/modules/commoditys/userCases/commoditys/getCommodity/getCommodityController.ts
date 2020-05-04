@@ -15,27 +15,21 @@ export class GetCommodityController extends BaseController {
   }
 
   async executeImpl(req: any, res: express.Response): Promise<any> {
-
     const dto: GetCommodityDto = {
-      name: req.query.name || "",
-      tag: req.query.tag || ""
+      name: req.query.name || '',
+      tag: req.query.tag || '',
     }
 
     try {
       const result = await this.useCase.execute(dto)
-
+      const resultValue = result.value
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       } else {
-        const commodityList = result.value.getValue() as Commodity[]
+        const commodityList = resultValue.getValue() as Commodity[]
         const commodityDtoList = await CommodityMap.toListDto(commodityList)
         return this.ok<GetCommodityDtoResult>(res, {
-          commoditys: commodityDtoList
+          commoditys: commodityDtoList,
         })
       }
     } catch (err) {

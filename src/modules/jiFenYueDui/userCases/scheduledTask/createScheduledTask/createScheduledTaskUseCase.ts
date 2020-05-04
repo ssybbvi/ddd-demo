@@ -5,7 +5,7 @@ import { CreateScheduledTaskDto } from './createScheduledTaskDto'
 import { IScheduledTaskRepo } from '../../../repos/scheduledTaskRepo'
 import { ScheduledTask } from '../../../domain/scheduledTask'
 
-type Response = Either<AppError.UnexpectedError, Result<void>>
+type Response = Either<AppError.UnexpectedError | Result<ScheduledTask>, Result<void>>
 
 export class CreateScheduledTaskUseCase implements UseCase<CreateScheduledTaskDto, Promise<Response>> {
   private scheduledTaskRepo: IScheduledTaskRepo
@@ -23,7 +23,7 @@ export class CreateScheduledTaskUseCase implements UseCase<CreateScheduledTaskDt
         userId,
         type,
         executionTime,
-        relationId
+        relationId,
       })
 
       if (scheduledTaskOrErrors.isFailure) {

@@ -12,31 +12,27 @@ import { GetOrderUserUseCase } from '../../orderUser/getOrderUser/getOrderUserUs
 import { OrderUser, DotBuyRepeatOnceCommodityError } from '../../../domain/orderUser'
 import { CommodityItems } from '../../../domain/commodityItems'
 import { DeliveryInfo } from '../../../domain/deliveryInfo'
-import { OrderAddress } from '../../../domain/orderAddress'
+import { AddressInfo } from '../../../domain/addressInfo'
 import { NotFoundError } from '../../../../../shared/core/NotFoundError'
 import { OrderAssertionService } from '../../../domain/service/assertionService'
 
-
 type Response = Either<
-  NotFoundError
+  | NotFoundError
   | DotBuyRepeatOnceCommodityError
   | CreateOrderErrors.CommodityItemNotNull
   | Result<any>
-  | AppError.UnexpectedError, Result<Order>>
-
-
+  | AppError.UnexpectedError,
+  Result<Order>
+>
 
 export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo
   private orderAssertionService: OrderAssertionService
 
-  constructor(
-    orderRepo: IOrderRepo,
-    orderAssertionService: OrderAssertionService) {
+  constructor(orderRepo: IOrderRepo, orderAssertionService: OrderAssertionService) {
     this.orderRepo = orderRepo
     this.orderAssertionService = orderAssertionService
   }
-
 
   public async execute(request: CreateOrderDto): Promise<Response> {
     try {
@@ -44,12 +40,13 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
         userId,
         remark,
 
-        commodityItems
+        commodityItems,
       } = request
 
       const addressResult = await this.orderAssertionService.assertionAddress(request)
+      const addressResultValue = addressResult.value
       if (addressResult.isLeft()) {
-        return left(addressResult)
+        return left(addressResult.value)
       }
 
       const assertionCommodityItemsResult = await this.orderAssertionService.assertionCommodityItems(commodityItems)
@@ -64,18 +61,10 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
       //   return left(buyOneceAssertioResult.value)
       // }
 
-      const deliveryInfoResult = DeliveryInfo.create({
-        address: addressResult.value.getValue()
-      })
-
-      if (deliveryInfoResult.isFailure) {
-        return left(deliveryInfoResult)
-      }
-
       const orderOrErrors = Order.create({
         userId: userId,
         remark: remark,
-        deliveryInfo: deliveryInfoResult.getValue(),
+        addressInfo: addressResultValue.getValue(),
         commodityItems: CommodityItems.create(commodityItemList),
       })
 

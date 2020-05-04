@@ -9,8 +9,8 @@ import { AuthorityUser } from '../../../domain/authorityUser'
 type Response = Either<
   | CreateAuthorityUserErrors.AuthorityUserAlreadyExistsError
   | CreateAuthorityUserErrors.UserDoesntExistError
-  | AppError.UnexpectedError
-  ,
+  | Result<any>
+  | AppError.UnexpectedError,
   Result<void>
 >
 
@@ -27,7 +27,7 @@ export class CreateAuthorityUserUseCase implements UseCase<CreateAuthorityUserDT
     try {
       const authorityUserOrError: Result<AuthorityUser> = AuthorityUser.create({
         name: request.name,
-        roleIds: []
+        roleIds: [],
       })
 
       if (authorityUserOrError.isFailure) {

@@ -7,10 +7,7 @@ import { IUserRepo } from '../../../repos/userRepo'
 import { AppError } from '../../../../../shared/core/AppError'
 import { RefreshToken, JWTToken } from '../../../domain/jwt'
 
-type Response = Either<
-  LoginUseCaseErrors.PasswordDoesntMatchError | LoginUseCaseErrors.UserNameDoesntExistError | AppError.UnexpectedError,
-  Result<LoginDTOResponse>
->
+type Response = Either<AppError.UnexpectedError, Result<LoginDTOResponse>>
 
 export class LoginUserUseCase implements UseCase<LoginDTO, Promise<Response>> {
   private userRepo: IUserRepo
@@ -28,7 +25,7 @@ export class LoginUserUseCase implements UseCase<LoginDTO, Promise<Response>> {
 
       const refreshToken: RefreshToken = this.authService.createRefreshToken()
       const accessToken: JWTToken = this.authService.signJWT({
-        userId: userId
+        userId: userId,
       })
 
       user.setAccessToken(accessToken, refreshToken)
@@ -38,7 +35,7 @@ export class LoginUserUseCase implements UseCase<LoginDTO, Promise<Response>> {
       return right(
         Result.ok<LoginDTOResponse>({
           accessToken,
-          refreshToken
+          refreshToken,
         })
       )
     } catch (err) {

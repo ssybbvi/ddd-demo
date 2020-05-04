@@ -7,21 +7,19 @@ import { OrderReceived } from './events/orderReceived'
 import { OrderPaymented } from './events/orderPaymented'
 import { OrderShipped } from './events/orderShipped'
 import { OrderCreated } from './events/orderCreated'
-import { DeliveryInfo } from './deliveryInfo'
+import { DeliveryInfo, RepeatShipmentError, ExpectNotReceivedError, NotShippingError } from './deliveryInfo'
 import { CancelInfo } from './cancelInfo'
 import { PaymentInfo } from './paymentInfo'
 import { UseCaseError } from '../../../shared/core/UseCaseError'
 import { OrderCode } from './orderCode'
 import { CommodityItems } from './commodityItems'
 import { AppError } from '../../../shared/core/AppError'
-
-
-
+import { AddressInfo } from './addressInfo'
 
 export class ExpectPaidError extends Result<UseCaseError> {
   constructor() {
     super(false, {
-      message: `订单未支付`
+      message: `订单未支付`,
     } as UseCaseError)
   }
 }
@@ -29,7 +27,7 @@ export class ExpectPaidError extends Result<UseCaseError> {
 export class ExpectNotPaidError extends Result<UseCaseError> {
   constructor() {
     super(false, {
-      message: `订单已支付`
+      message: `订单已支付`,
     } as UseCaseError)
   }
 }
@@ -37,7 +35,7 @@ export class ExpectNotPaidError extends Result<UseCaseError> {
 export class UnableToPaidError extends Result<UseCaseError> {
   constructor() {
     super(false, {
-      message: `积分不足无法支付`
+      message: `积分不足无法支付`,
     } as UseCaseError)
   }
 }
@@ -45,7 +43,7 @@ export class UnableToPaidError extends Result<UseCaseError> {
 export class ExpectPaymentTimeExpiredError extends Result<UseCaseError> {
   constructor() {
     super(false, {
-      message: `支付时间未过期`
+      message: `支付时间未过期`,
     } as UseCaseError)
   }
 }
@@ -53,16 +51,15 @@ export class ExpectPaymentTimeExpiredError extends Result<UseCaseError> {
 export class ExpectPaymentTimeNotExpiredError extends Result<UseCaseError> {
   constructor() {
     super(false, {
-      message: `支付时间已过期`
+      message: `支付时间已过期`,
     } as UseCaseError)
   }
 }
 
-
 export class DoesNotBelongToYouError extends Result<UseCaseError> {
   constructor() {
     super(false, {
-      message: `该订单不属于你`
+      message: `该订单不属于你`,
     } as UseCaseError)
   }
 }
@@ -70,11 +67,10 @@ export class DoesNotBelongToYouError extends Result<UseCaseError> {
 export class AlreadyCanceledError extends Result<UseCaseError> {
   constructor() {
     super(false, {
-      message: `订单已经取消`
+      message: `订单已经取消`,
     } as UseCaseError)
   }
 }
-
 
 export interface OrderProps {
   userId: string
@@ -85,7 +81,8 @@ export interface OrderProps {
 
   cancelInfo?: CancelInfo
   paymentInfo?: PaymentInfo
-  deliveryInfo: DeliveryInfo
+  deliveryInfo?: DeliveryInfo
+  addressInfo: AddressInfo
   commodityItems: CommodityItems
 }
 
@@ -130,6 +127,10 @@ export class Order extends AggregateRoot<OrderProps> {
     return this.props.commodityItems
   }
 
+  get addressInfo(): AddressInfo {
+    return this.props.addressInfo
+  }
+
   public autoCancel() {
     if (this.paymentInfo) {
       return left(new ExpectNotPaidError())
@@ -162,7 +163,7 @@ export class Order extends AggregateRoot<OrderProps> {
     return right(Result.ok<void>())
   }
 
-  public close() {
+  public close(): Either<AlreadyCanceledError | Result<any>, Result<void>> {
     if (this.cancelInfo) {
       return left(new AlreadyCanceledError())
     }
@@ -176,7 +177,13 @@ export class Order extends AggregateRoot<OrderProps> {
     return right(Result.ok<void>())
   }
 
-  public payment(userId: string, accountAmount: number) {
+  public payment(
+    userId: string,
+    accountAmount: number
+  ): Either<
+    ExpectNotPaidError | ExpectPaymentTimeNotExpiredError | DoesNotBelongToYouError | UnableToPaidError | Result<any>,
+    Result<void>
+  > {
     if (this.paymentInfo) {
       return left(new ExpectNotPaidError())
     }
@@ -202,23 +209,26 @@ export class Order extends AggregateRoot<OrderProps> {
     return right(Result.ok<void>())
   }
 
-  public shipped(shippingNumber: string, shippingType: string) {
+  public shipped(
+    shippingNumber: string,
+    shippingType: string
+  ): Either<RepeatShipmentError | ExpectPaidError | Result<any>, Result<void>> {
     if (!this.paymentInfo) {
       return left(new ExpectPaidError())
     }
 
     const shippedResult = this.deliveryInfo.shipped(shippingNumber, shippingType)
     if (shippedResult.isLeft()) {
-      return left(shippedResult)
+      return left(shippedResult.value)
     }
     this.addDomainEvent(new OrderShipped(this))
     return right(Result.ok<void>())
   }
 
-  public received() {
+  public received(): Either<NotShippingError | ExpectNotReceivedError, Result<void>> {
     const shippedResult = this.deliveryInfo.received()
     if (shippedResult.isLeft()) {
-      return left(shippedResult)
+      return left(shippedResult.value)
     }
     this.addDomainEvent(new OrderReceived(this))
     return right(Result.ok<void>())
@@ -228,19 +238,17 @@ export class Order extends AggregateRoot<OrderProps> {
     return this.props.createAt + 1000 * 60 * 15 > Date.now()
   }
 
-
   private calculationCommodityItemAmountTotal(): void {
     this.props.totalAmount = this.commodityItems.getItems().reduce((acc, item) => (acc += item.amount), 0)
   }
 
   public static create(props: OrderProps, id?: UniqueEntityID): Result<Order> {
-
     const isNew = !!id === false
     const order = new Order(
       {
         ...props,
         createAt: props.createAt ? props.createAt : Date.now(),
-        code: props.code ? props.code : OrderCode.create({}).getValue()
+        code: props.code ? props.code : OrderCode.create({}).getValue(),
       },
       id
     )

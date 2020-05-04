@@ -19,14 +19,7 @@ export class UpdateRoleController extends BaseController {
       const result = await this.updateRole.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case UpdateRoleErrors.RoleExistSameNameError:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       } else {
         return this.ok(res)
       }

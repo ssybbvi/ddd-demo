@@ -14,7 +14,7 @@ export class InviteBargainController extends BaseController {
   }
 
   async executeImpl(req: DecodedExpressRequest, res: express.Response): Promise<any> {
-    const { userId } = req.decoded;
+    const { userId } = req.decoded
     const dto: InviteBargainDto = req.body as InviteBargainDto
     dto.userId = userId
 
@@ -22,20 +22,8 @@ export class InviteBargainController extends BaseController {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case InviteBargainErrors.ExpiredError:
-            return this.fail(res, error.errorValue().message)
-          case InviteBargainErrors.IsFinishError:
-            return this.fail(res, error.errorValue().message)
-          case InviteBargainErrors.HasParticipantError:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       }
-
 
       return this.ok<void>(res)
     } catch (err) {

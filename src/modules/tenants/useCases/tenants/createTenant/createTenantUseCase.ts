@@ -9,7 +9,7 @@ import { TenantName } from '../../../domain/tenantName'
 import { TenantConnectionString } from '../../../domain/tenantConnectionString'
 
 type Response = Either<
-  CreateTenantErrors.TenantExistSameNameError | AppError.UnexpectedError,
+  CreateTenantErrors.TenantExistSameNameError | Result<Tenant> | Result<void> | AppError.UnexpectedError,
   Result<void>
 >
 
@@ -38,7 +38,7 @@ export class CreateTenantUseCase implements UseCase<CreateTenantRequestDto, Prom
     const tenantOrError: Result<Tenant> = Tenant.create({
       name: tenantNameOrError.getValue(),
       connectionString: tenantConnectionStringOrError.getValue(),
-      isActive: request.isActive
+      isActive: request.isActive,
     })
 
     if (tenantOrError.isFailure) {

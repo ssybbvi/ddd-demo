@@ -8,7 +8,7 @@ import { CommodityName } from '../../../domain/commodityName'
 import { CommodityAmount } from '../../../domain/commodityAmount'
 import { CommodityType } from '../../../domain/commodityType'
 
-type Response = Either<AppError.UnexpectedError, Result<void>>
+type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 
 export class CreateCommodityUseCase implements UseCase<CreateCommodityDto, Promise<Response>> {
   private commodityRepo: ICommodityRepo
@@ -19,7 +19,19 @@ export class CreateCommodityUseCase implements UseCase<CreateCommodityDto, Promi
 
   public async execute(request: CreateCommodityDto): Promise<Response> {
     try {
-      const { name, amount, description, images, fakeAmount, sales, restrictedPurchaseQuantity, tags, imgesDescrptionList, limitedPurchasePerPerson, type } = request
+      const {
+        name,
+        amount,
+        description,
+        images,
+        fakeAmount,
+        sales,
+        restrictedPurchaseQuantity,
+        tags,
+        imgesDescrptionList,
+        limitedPurchasePerPerson,
+        type,
+      } = request
 
       const commodityNameOrErrors = CommodityName.create({ name })
       if (commodityNameOrErrors.isFailure) {
@@ -42,7 +54,7 @@ export class CreateCommodityUseCase implements UseCase<CreateCommodityDto, Promi
         limitedPurchasePerPerson,
         tags,
         imgesDescrptionList,
-        type: type as CommodityType
+        type: type as CommodityType,
       })
 
       if (commodityOrErrors.isFailure) {

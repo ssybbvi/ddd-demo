@@ -1,9 +1,9 @@
-import { CommonRedisClient } from "../../../../shared/infra/database/redis/commonRedisClient";
-import { left } from "../../../../shared/core/Result";
-import { GetCommodityUseCase } from "../../userCases/commoditys/getCommodity/getCommodityUseCase";
-import { Commodity } from "../../domain/commodity";
-import { CommodityDto } from "../../dtos/commodityDto";
-import { CommodityMap } from "../../mappers/commodityMap";
+import { CommonRedisClient } from '../../../../shared/infra/database/redis/commonRedisClient'
+import { left } from '../../../../shared/core/Result'
+import { GetCommodityUseCase } from '../../userCases/commoditys/getCommodity/getCommodityUseCase'
+import { Commodity } from '../../domain/commodity'
+import { CommodityDto } from '../../dtos/commodityDto'
+import { CommodityMap } from '../../mappers/commodityMap'
 
 export class CommodityCache {
   private useCase: GetCommodityUseCase
@@ -19,11 +19,12 @@ export class CommodityCache {
 
   public async load() {
     const listResult = await this.useCase.execute({})
+    const resultValue = listResult.value
     if (listResult.isLeft()) {
       return left(listResult)
     }
-    const list = listResult.value.getValue()
-    list.forEach(item => {
+    const list = resultValue.getValue()
+    list.forEach((item) => {
       this.set(item)
     })
   }

@@ -8,7 +8,7 @@ import { IUpUserRepo } from '../../../repos/upUserRepo'
 import { CreateUpUserUseDto } from './createUpUserDto'
 import { CreateUpUserErrors } from './createUpUserErrors'
 
-type Response = Either<CreateUpUserErrors.UserNameExistError | AppError.UnexpectedError, Result<void>>
+type Response = Either<CreateUpUserErrors.UserNameExistError | Result<UpUser> | AppError.UnexpectedError, Result<void>>
 
 export class CreateUpUserUseCase implements UseCase<CreateUpUserUseDto, Promise<Response>> {
   private upUserRepo: IUpUserRepo
@@ -39,7 +39,7 @@ export class CreateUpUserUseCase implements UseCase<CreateUpUserUseDto, Promise<
 
       const newUpUserOrError = UpUser.create({
         userName: userName,
-        password: password
+        password: password,
       })
 
       if (newUpUserOrError.isFailure) {

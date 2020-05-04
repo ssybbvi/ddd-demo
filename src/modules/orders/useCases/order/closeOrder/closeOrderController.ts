@@ -4,7 +4,6 @@ import { CloseOrderUseCase } from './closeOrderUseCase'
 import { CloseOrderDto } from './closeOrderDto'
 import { CloseOrderErrors } from './closeOrderErrors'
 
-
 export class CloseOrderController extends BaseController {
   private useCase: CloseOrderUseCase
 
@@ -20,16 +19,7 @@ export class CloseOrderController extends BaseController {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case CloseOrderErrors.OrderNotFound:
-            return this.fail(res, error.errorValue().message)
-          case CloseOrderErrors.StatusError:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       }
 
       return this.ok<void>(res)

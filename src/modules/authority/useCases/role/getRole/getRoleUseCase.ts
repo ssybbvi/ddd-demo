@@ -6,7 +6,7 @@ import { IRoleRepo } from '../../../repos/roleRepo'
 import { RoleMap } from '../../../mappers/roleMap'
 import { RoleDTO } from '../../../dtos/roleDto'
 
-type Response = Either<AppError.UnexpectedError, Result<RoleDTO[]>>
+type Response = Either<AppError.UnexpectedError | Result<any>, Result<RoleDTO[]>>
 
 export class GetRoleUseCase implements UseCase<GetRoleReqeustDto, Promise<Response>> {
   private roleRepo: IRoleRepo
@@ -18,7 +18,7 @@ export class GetRoleUseCase implements UseCase<GetRoleReqeustDto, Promise<Respon
   async execute(request?: GetRoleReqeustDto): Promise<Response> {
     try {
       let roleList = await this.roleRepo.filter()
-      let roleDtoList = roleList.map(item => RoleMap.toDto(item))
+      let roleDtoList = roleList.map((item) => RoleMap.toDto(item))
       return right(Result.ok<RoleDTO[]>(roleDtoList))
     } catch (err) {
       return left(new AppError.UnexpectedError(err))

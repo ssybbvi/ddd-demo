@@ -1,6 +1,6 @@
-import { IDeliveryInfoDto } from "./deliveryInfoDto";
-import { IParticipantDto } from "./participantDto";
-import { ICommodityItemDto } from "./commodityItemDto";
+import { IDeliveryInfoDto, IAddressInfoDto } from './deliveryInfoDto'
+import { IParticipantDto } from './participantDto'
+import { ICommodityItemDto } from './commodityItemDto'
 
 export interface IBargainDto {
   _id: string
@@ -14,5 +14,5 @@ export interface IBargainDto {
   participants: IParticipantDto[]
   commodityItems: ICommodityItemDto[]
   deliveryInfo: IDeliveryInfoDto
+  addressInfo: IAddressInfoDto
 }
-

@@ -8,8 +8,6 @@ import { AuthCodeMap } from '../../../mappers/authCodeMapper'
 import { IAuthCodeDto } from '../../../dtos/authCodeDto'
 import { CreateAuthCodeErrors } from './createAuthCodeErrors'
 
-
-
 export class CreateAuthCodeController extends BaseController {
   private useCase: CreateAuthCodeUseCase
 
@@ -22,22 +20,16 @@ export class CreateAuthCodeController extends BaseController {
     const { userId } = req.decoded
     const dto: CreateAuthCodeDto = {
       appId: req.query.appId,
-      userId
+      userId,
     }
 
     try {
       const result = await this.useCase.execute(dto)
+      const resultValue = result.value
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case CreateAuthCodeErrors.DoseNotExistAppId:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       }
-      const authCode = result.value.getValue() as AuthCode
+      const authCode = resultValue.getValue() as AuthCode
       const authCodeDto = AuthCodeMap.toDTO(authCode)
       return this.ok<IAuthCodeDto>(res, authCodeDto)
     } catch (err) {

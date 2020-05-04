@@ -9,7 +9,7 @@ import { IRoleRepo } from '../../../repos/roleRepo'
 import { CreateRoleErrors } from './cerateRoleErrors'
 import { PermissionIds } from '../../../domain/permissionIds'
 
-type Response = Either<CreateRoleErrors.RoleExistSameNameError | AppError.UnexpectedError, Result<void>>
+type Response = Either<CreateRoleErrors.RoleExistSameNameError | Result<any> | AppError.UnexpectedError, Result<void>>
 
 export class CreateRoleUseCase implements UseCase<CreateRoleRequestDto, Promise<Response>> {
   private roleRepo: IRoleRepo
@@ -37,7 +37,7 @@ export class CreateRoleUseCase implements UseCase<CreateRoleRequestDto, Promise<
     const roleOrError: Result<Role> = Role.create({
       name: roleNameOrError.getValue(),
       description: roleDescriptionOrError.getValue(),
-      permissionIds: rolePermissionIdsOrError.getValue()
+      permissionIds: rolePermissionIdsOrError.getValue(),
     })
 
     if (roleOrError.isFailure) {

@@ -6,7 +6,7 @@ import { IRoleRepo } from '../../../repos/roleRepo'
 import { DeleteRoleErrors } from './deleteRoleErrors'
 import { Guard } from '../../../../../shared/core/Guard'
 
-type Response = Either<DeleteRoleErrors.RoleIdIsNullError | AppError.UnexpectedError, Result<void>>
+type Response = Either<DeleteRoleErrors.RoleIdIsNullError | AppError.UnexpectedError | Result<any>, Result<void>>
 
 export class DeleteRoleUseCase implements UseCase<DeleteRoleRequestDto, Promise<Response>> {
   private roleRepo: IRoleRepo

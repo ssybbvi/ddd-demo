@@ -10,7 +10,7 @@ import { DeletePermissionErrors } from './deletePermissionErrors'
 import { Guard } from '../../../../../shared/core/Guard'
 
 type Response = Either<
-  DeletePermissionErrors.PermissionIdIsNullError | AppError.UnexpectedError,
+  DeletePermissionErrors.PermissionIdIsNullError | Result<any> | AppError.UnexpectedError,
   Result<void>
 >
 

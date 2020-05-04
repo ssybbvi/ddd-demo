@@ -21,21 +21,12 @@ export class RefreshAccessTokenController extends BaseController {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case RefreshAccessTokenErrors.RefreshTokenNotFound:
-            return this.notFound(res, error.errorValue().message)
-          case RefreshAccessTokenErrors.UserNotFoundOrDeletedError:
-            return this.notFound(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue() + '')
-        }
+        return this.fail(res, result.value.errorValue())
       } else {
         const accessToken: JWTToken = result.value.getValue() as JWTToken
         return this.ok<LoginDTOResponse>(res, {
           refreshToken: dto.refreshToken,
-          accessToken: accessToken
+          accessToken: accessToken,
         })
       }
     } catch (err) {

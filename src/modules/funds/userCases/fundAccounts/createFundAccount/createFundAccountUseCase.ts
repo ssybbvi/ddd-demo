@@ -6,7 +6,7 @@ import { FundAccount } from '../../../domain/fundAccount'
 import { UseCase } from '../../../../../shared/core/UseCase'
 import { CreateFundAccountDto } from './createFundAccountDto'
 
-type Response = Either<AppError.UnexpectedError, Result<void>>
+type Response = Either<AppError.UnexpectedError | Result<FundAccount>, Result<void>>
 
 export class CreateFundAccountUseCase implements UseCase<CreateFundAccountDto, Promise<Response>> {
   private fundAccountRepo: IFundAccountRepo
@@ -21,7 +21,7 @@ export class CreateFundAccountUseCase implements UseCase<CreateFundAccountDto, P
 
       const fundAccountOrErrors = FundAccount.create(
         {
-          totalAmounnt: 0
+          totalAmounnt: 0,
         },
         new UniqueEntityID(recommendedUserId),
         true

@@ -15,12 +15,7 @@ export class ExecutionScheduleTaskController extends BaseController {
       const result = await this.useCase.execute({})
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       } else {
         return this.ok<void>(res)
       }

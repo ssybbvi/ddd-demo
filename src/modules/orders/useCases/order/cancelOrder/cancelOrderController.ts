@@ -5,8 +5,6 @@ import { CancelOrderDto } from './cancelOrderDto'
 import { NotFoundError } from '../../../../../shared/core/NotFoundError'
 import { AlreadyCanceledError } from '../../../domain/order'
 
-
-
 export class CancelOrderController extends BaseController {
   private useCase: CancelOrderUseCase
 
@@ -22,16 +20,7 @@ export class CancelOrderController extends BaseController {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case NotFoundError:
-            return this.fail(res, error.errorValue().message)
-          case AlreadyCanceledError:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       }
 
       return this.ok<void>(res)

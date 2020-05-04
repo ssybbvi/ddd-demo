@@ -4,7 +4,6 @@ import { CreateUpUserUseDto } from './createUpUserDto'
 import { CreateUpUserErrors } from './createUpUserErrors'
 import { CreateUpUserUseCase } from './createUpUserUseCase'
 
-
 export class CreateUpUserController extends BaseController {
   private useCase: CreateUpUserUseCase
 
@@ -20,14 +19,7 @@ export class CreateUpUserController extends BaseController {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case CreateUpUserErrors.UserNameExistError:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       } else {
         return this.ok<void>(res)
       }

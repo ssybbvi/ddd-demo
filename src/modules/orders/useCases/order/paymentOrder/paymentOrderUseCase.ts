@@ -5,13 +5,27 @@ import { IOrderRepo } from '../../../repos/orderRepo'
 import { PaymentOrderDto } from './paymentOrderDto'
 import { PaymentOrderErrors } from './paymentOrderErrors'
 import { IFundAccountRepo } from '../../../../funds/repos/iFundAccountRepo'
+import {
+  ExpectNotPaidError,
+  ExpectPaymentTimeNotExpiredError,
+  DoesNotBelongToYouError,
+  UnableToPaidError,
+} from '../../../domain/order'
+import { NotFoundError } from '../../../../../shared/core/NotFoundError'
 
 type Response = Either<
-  PaymentOrderErrors.OrderNotFound |
-  PaymentOrderErrors.OrderStatusNotPaid |
-  PaymentOrderErrors.UnableToPaid |
-  PaymentOrderErrors.DoesNotBelongToYou
-  | AppError.UnexpectedError, Result<void>>
+  | NotFoundError
+  | PaymentOrderErrors.OrderStatusNotPaid
+  | PaymentOrderErrors.UnableToPaid
+  | PaymentOrderErrors.DoesNotBelongToYou
+  | ExpectNotPaidError
+  | ExpectPaymentTimeNotExpiredError
+  | DoesNotBelongToYouError
+  | UnableToPaidError
+  | Result<any>
+  | AppError.UnexpectedError,
+  Result<void>
+>
 
 export class PaymentOrderUseCase implements UseCase<PaymentOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo

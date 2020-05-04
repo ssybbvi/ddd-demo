@@ -10,7 +10,7 @@ import { GetPermissionResponseDto } from './getPermissionResponseDto'
 import { PermissionMap } from '../../../mappers/permissionMap'
 import { PermissionDTO } from '../../../dtos/permissionDTO'
 
-type Response = Either<AppError.UnexpectedError, Result<PermissionDTO[]>>
+type Response = Either<AppError.UnexpectedError | Result<any>, Result<PermissionDTO[]>>
 
 export class GetPermissionUseCase implements UseCase<GetPermissionRequestDto, Promise<Response>> {
   private permissionRepo: IPermissionRepo
@@ -22,7 +22,7 @@ export class GetPermissionUseCase implements UseCase<GetPermissionRequestDto, Pr
   async execute(request?: GetPermissionRequestDto): Promise<Response> {
     try {
       let permissionList = await this.permissionRepo.filter()
-      let permissionDtoList = permissionList.map(item => PermissionMap.toDto(item))
+      let permissionDtoList = permissionList.map((item) => PermissionMap.toDto(item))
       return right(Result.ok<PermissionDTO[]>(permissionDtoList))
     } catch (err) {
       return left(new AppError.UnexpectedError(err))

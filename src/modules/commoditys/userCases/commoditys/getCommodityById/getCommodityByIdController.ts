@@ -17,23 +17,16 @@ export class GetCommodityByIdController extends BaseController {
 
   async executeImpl(req: any, res: express.Response): Promise<any> {
     const dto: GetCommodityByIdDto = {
-      commodityId: req.params.commodityId
+      commodityId: req.params.commodityId,
     }
 
     try {
       const result = await this.useCase.execute(dto)
-
+      const resultValue = result.value
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case NotFoundError:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       } else {
-        const commodity = result.value.getValue() as Commodity
+        const commodity = resultValue.getValue() as Commodity
         const commodityDto = await CommodityMap.toDTO(commodity)
         return this.ok<CommodityDto>(res, commodityDto)
       }

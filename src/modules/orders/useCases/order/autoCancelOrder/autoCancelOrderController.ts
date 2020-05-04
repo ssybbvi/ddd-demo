@@ -2,8 +2,6 @@ import { BaseController } from '../../../../../shared/infra/http/models/BaseCont
 import * as express from 'express'
 import { AutoCancelOrderUseCase } from './autoCancelOrderUseCase'
 
-
-
 export class AutoCancelOrderController extends BaseController {
   private useCase: AutoCancelOrderUseCase
 
@@ -13,17 +11,11 @@ export class AutoCancelOrderController extends BaseController {
   }
 
   async executeImpl(req: any, res: express.Response): Promise<any> {
-
     try {
       const result = await this.useCase.execute({})
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       }
       return this.ok<void>(res)
     } catch (err) {

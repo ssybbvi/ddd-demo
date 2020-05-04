@@ -4,10 +4,13 @@ import { UseCase } from '../../../../../shared/core/UseCase'
 import { IThirdPartyAppRepo } from '../../../repos/thirdPartyAppRepo'
 import { CreateThirdPartyAppDto } from './createThirdPartyAppDto'
 import { ThirdPartyApp } from '../../../domain/thirdPartyApp'
-import uuid from 'uuid/v4';
+import uuid from 'uuid/v4'
 import { CreateThirdPartyAppErrors } from './createThirdPartErrors'
 
-type Response = Either<AppError.UnexpectedError | CreateThirdPartyAppErrors.ExistName, Result<void>>
+type Response = Either<
+  AppError.UnexpectedError | Result<ThirdPartyApp> | CreateThirdPartyAppErrors.ExistName,
+  Result<void>
+>
 
 export class CreateThirdPartyAppUseCase implements UseCase<CreateThirdPartyAppDto, Promise<Response>> {
   private thirdPartyAppRepo: IThirdPartyAppRepo

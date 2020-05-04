@@ -3,15 +3,14 @@ export interface IDeliveryInfoDto {
   code?: string
   finishAt?: number
   type?: string
-  address: IOrderAddressDto
 }
 
-export interface IOrderAddressDto {
-  userName: string,
-  provinceName: string,
-  cityName: string,
-  countyName: string,
-  detailAddressInfo: string,
-  nationalCode: string,
+export interface IAddressInfoDto {
+  userName: string
+  provinceName: string
+  cityName: string
+  countyName: string
+  detailAddressInfo: string
+  nationalCode: string
   telNumber: string
 }

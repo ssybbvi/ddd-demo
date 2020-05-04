@@ -6,8 +6,7 @@ import { OrderUser } from '../../../domain/orderUser'
 import { CreateOrderUserDto } from './createOrderUserDto'
 import { UniqueEntityID } from '../../../../../shared/domain/UniqueEntityID'
 
-
-type Response = Either<AppError.UnexpectedError, Result<void>>
+type Response = Either<AppError.UnexpectedError | Result<OrderUser>, Result<void>>
 
 export class CreateOrderUserUseCase implements UseCase<CreateOrderUserDto, Promise<Response>> {
   private orderUserRepo: IOrderUserRepo

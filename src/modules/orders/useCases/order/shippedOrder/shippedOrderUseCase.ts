@@ -4,9 +4,19 @@ import { UseCase } from '../../../../../shared/core/UseCase'
 import { IOrderRepo } from '../../../repos/orderRepo'
 import { ShippedOrderDto } from './shippedOrderDto'
 import { ShippedOrderErrors } from './shippedOrderErrors'
+import { ExpectPaidError } from '../../../domain/order'
+import { RepeatShipmentError } from '../../../domain/deliveryInfo'
+import { NotFoundError } from '../../../../../shared/core/NotFoundError'
 
 type Response = Either<
-  | AppError.UnexpectedError | ShippedOrderErrors.OrderNotPayment, Result<void>>
+  | AppError.UnexpectedError
+  | ExpectPaidError
+  | RepeatShipmentError
+  | Result<any>
+  | NotFoundError
+  | ShippedOrderErrors.OrderNotPayment,
+  Result<void>
+>
 
 export class ShippedOrderUseCase implements UseCase<ShippedOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo
@@ -22,7 +32,7 @@ export class ShippedOrderUseCase implements UseCase<ShippedOrderDto, Promise<Res
       const order = await this.orderRepo.getById(orderId)
 
       if (!!order === false) {
-        return left(new ShippedOrderErrors.OrderNotFound())
+        return left(new NotFoundError())
       }
 
       const result = order.shipped(shippedNumber, shippedType)

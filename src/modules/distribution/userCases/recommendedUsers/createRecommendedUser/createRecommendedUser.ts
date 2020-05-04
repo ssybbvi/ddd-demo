@@ -9,9 +9,9 @@ import { FundType } from '../../../../funds/domain/fundType'
 import { RecommendedUserDistributionRelation } from '../../../domain/recommendedUserDistributionRelation'
 import { IUserRepo } from '../../../../users/repos/userRepo'
 
-type Response = Either<AppError.UnexpectedError, Result<void>>
+type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 type CreateRecommendedUserDistributionRelationResponse = Either<
-  AppError.UnexpectedError,
+  Result<any>,
   Result<RecommendedUserDistributionRelation[]>
 >
 
@@ -26,12 +26,12 @@ export class CreateRecommendedUser implements UseCase<CreateRecommendedUserDTO, 
   private inviteDistributionRewardRelationList: inviteDistributionRewardRelation[] = [
     {
       distributionRate: 0.1,
-      fundType: 'primaryDistribution'
+      fundType: 'primaryDistribution',
     },
     {
       distributionRate: 0.05,
-      fundType: 'secondaryDistribution'
-    }
+      fundType: 'secondaryDistribution',
+    },
   ]
 
   constructor(recommendedUserRepo: IRecommendedUserRepo, userRepo: IUserRepo) {
@@ -51,15 +51,15 @@ export class CreateRecommendedUser implements UseCase<CreateRecommendedUserDTO, 
         inviteDistributionRewardRelationListTemp,
         []
       )
-
+      const createRecommendedUserDistributionRelationResultValue = createRecommendedUserDistributionRelationResult.value
       if (createRecommendedUserDistributionRelationResult.isLeft()) {
         return left(createRecommendedUserDistributionRelationResult.value)
       }
-      const distributionRelationList = createRecommendedUserDistributionRelationResult.value.getValue()
+      const distributionRelationList = createRecommendedUserDistributionRelationResultValue.getValue()
 
       const recommendedUserOrError: Result<RecommendedUser> = RecommendedUser.create(
         {
-          distributionRelationList: distributionRelationList
+          distributionRelationList: distributionRelationList,
         },
         new UniqueEntityID(userId),
         true
@@ -90,7 +90,7 @@ export class CreateRecommendedUser implements UseCase<CreateRecommendedUserDTO, 
       let recommendedUserDistributionRelationOrErrors = RecommendedUserDistributionRelation.create({
         recommendedUserId: user.inviteRecommendedUserId,
         distributionRate: inviteDistributionRewardRelation.distributionRate,
-        fundType: inviteDistributionRewardRelation.fundType
+        fundType: inviteDistributionRewardRelation.fundType,
       })
 
       if (recommendedUserDistributionRelationOrErrors.isFailure) {

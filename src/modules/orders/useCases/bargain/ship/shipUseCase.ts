@@ -4,16 +4,15 @@ import { UseCase } from '../../../../../shared/core/UseCase'
 import { IBargainRepo } from '../../../repos/bargainRepo'
 import { ShipDto } from './shipDto'
 import { ShipErrors } from './shipErrors'
+import { RepeatShipmentError } from '../../../domain/deliveryInfo'
+import { NotSeccessError } from '../../../domain/bargain'
 
-
-type Response = Either<AppError.UnexpectedError, Result<void>>
-
+type Response = Either<NotSeccessError | RepeatShipmentError | Result<any>, Result<void>>
 
 export class ShipUseCase implements UseCase<ShipDto, Promise<Response>> {
   private bargainRepo: IBargainRepo
 
-  constructor(
-    bargainRepo: IBargainRepo) {
+  constructor(bargainRepo: IBargainRepo) {
     this.bargainRepo = bargainRepo
   }
 

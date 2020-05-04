@@ -4,19 +4,25 @@ import { UseCase } from '../../../../../shared/core/UseCase'
 import { IBargainRepo } from '../../../repos/bargainRepo'
 import { InviteBargainDto } from './inviteBargainDto'
 import { InviteBargainErrors } from './inviteBargainErrors'
+import { ExpiredError, IsFinishError } from '../../../domain/bargain'
+import { RepeatShipmentError } from '../../../domain/deliveryInfo'
 
-
-type Response = Either<AppError.UnexpectedError, Result<void>>
-
+type Response = Either<
+  | AppError.UnexpectedError
+  | ExpiredError
+  | IsFinishError
+  | Result<any>
+  | RepeatShipmentError
+  | AppError.UnexpectedError,
+  Result<void>
+>
 
 export class InviteBargainUseCase implements UseCase<InviteBargainDto, Promise<Response>> {
   private bargainRepo: IBargainRepo
 
-  constructor(
-    bargainRepo: IBargainRepo) {
+  constructor(bargainRepo: IBargainRepo) {
     this.bargainRepo = bargainRepo
   }
-
 
   public async execute(request: InviteBargainDto): Promise<Response> {
     try {
@@ -46,7 +52,4 @@ export class InviteBargainUseCase implements UseCase<InviteBargainDto, Promise<R
       return left(new AppError.UnexpectedError(err))
     }
   }
-
-
-
 }

@@ -8,6 +8,7 @@ import { DeliveryInfoMap } from './deliveryInfoMap'
 import { ParticipantMap } from './participantMap'
 import { CommodityItemMap } from './commodityItemMap'
 import { CommodityItems } from '../domain/commodityItems'
+import { AddressInfoMap } from './AddressInfoMap'
 
 export class BargainMap implements IMapper<Bargain> {
   public static toDomain(raw: IBargainDbModel): Bargain {
@@ -15,8 +16,8 @@ export class BargainMap implements IMapper<Bargain> {
       return null
     }
 
-    const participantList = raw.participants.map(item => ParticipantMap.toDomain(item))
-    const commodityItems = raw.commodityItems.map(item => CommodityItemMap.toDomain(item))
+    const participantList = raw.participants.map((item) => ParticipantMap.toDomain(item))
+    const commodityItems = raw.commodityItems.map((item) => CommodityItemMap.toDomain(item))
     const bargainOrError = Bargain.create(
       {
         userId: raw.userId,
@@ -28,7 +29,8 @@ export class BargainMap implements IMapper<Bargain> {
         expiredAt: raw.expiredAt,
         commodityItems: CommodityItems.create(commodityItems),
         participants: Participants.create(participantList),
-        deliveryInfo: DeliveryInfoMap.toDomain(raw.deliveryInfo)
+        deliveryInfo: DeliveryInfoMap.toDomain(raw.deliveryInfo),
+        addressInfo: AddressInfoMap.toDomain(raw.addressInfo),
       },
       new UniqueEntityID(raw._id)
     )
@@ -41,10 +43,10 @@ export class BargainMap implements IMapper<Bargain> {
       return null
     }
 
-    const commodityItems = bargain.commodityItems.getItems().map(item => CommodityItemMap.toPersistence(item))
-    const participants = bargain.participants.getItems().map(item => ParticipantMap.toPersistence(item))
+    const commodityItems = bargain.commodityItems.getItems().map((item) => CommodityItemMap.toPersistence(item))
+    const participants = bargain.participants.getItems().map((item) => ParticipantMap.toPersistence(item))
     const deliveryInfoDbModel = DeliveryInfoMap.toPersistence(bargain.deliveryInfo)
-
+    const addressInfoDbModel = AddressInfoMap.toPersistence(bargain.addressInfo)
     return {
       _id: bargain.bargainId.toString(),
       userId: bargain.userId,
@@ -56,7 +58,8 @@ export class BargainMap implements IMapper<Bargain> {
       expiredAt: bargain.expiredAt,
       commodityItems: commodityItems,
       participants: participants,
-      deliveryInfo: deliveryInfoDbModel
+      deliveryInfo: deliveryInfoDbModel,
+      addressInfo: addressInfoDbModel,
     }
   }
 
@@ -76,7 +79,7 @@ export class BargainMap implements IMapper<Bargain> {
     const commodityItems = await CommodityItemMap.toListDto(bargain.commodityItems.getItems())
     const participantList = await ParticipantMap.toDtoList(bargain.participants.getItems())
     const deliveryInfoDto = DeliveryInfoMap.toDTO(bargain.deliveryInfo)
-
+    const addressInfoDto = AddressInfoMap.toDTO(bargain.addressInfo)
     return {
       _id: bargain.bargainId,
       userId: bargain.userId,
@@ -88,7 +91,8 @@ export class BargainMap implements IMapper<Bargain> {
       expiredAt: bargain.expiredAt,
       commodityItems: commodityItems,
       participants: participantList,
-      deliveryInfo: deliveryInfoDto
+      deliveryInfo: deliveryInfoDto,
+      addressInfo: addressInfoDto,
     }
   }
 }

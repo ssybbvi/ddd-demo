@@ -1,13 +1,13 @@
-import { OrderAddress } from "./orderAddress";
-import { Result, left, right, Either } from "../../../shared/core/Result";
-import { Guard } from "../../../shared/core/Guard";
-import { UseCaseError } from "../../../shared/core/UseCaseError";
-import { ValueObject } from "../../../shared/domain/ValueObject";
+import { AddressInfo } from './addressInfo'
+import { Result, left, right, Either } from '../../../shared/core/Result'
+import { Guard } from '../../../shared/core/Guard'
+import { UseCaseError } from '../../../shared/core/UseCaseError'
+import { ValueObject } from '../../../shared/domain/ValueObject'
 
 export class RepeatShipmentError extends Result<UseCaseError> {
   constructor() {
     super(false, {
-      message: `无法重复发货`
+      message: `无法重复发货`,
     } as UseCaseError)
   }
 }
@@ -15,7 +15,7 @@ export class RepeatShipmentError extends Result<UseCaseError> {
 export class NotShippingError extends Result<UseCaseError> {
   constructor() {
     super(false, {
-      message: `还没有发货`
+      message: `还没有发货`,
     } as UseCaseError)
   }
 }
@@ -23,27 +23,19 @@ export class NotShippingError extends Result<UseCaseError> {
 export class ExpectNotReceivedError extends Result<UseCaseError> {
   constructor() {
     super(false, {
-      message: `无法重复收货`
+      message: `无法重复收货`,
     } as UseCaseError)
   }
 }
 
-
 export interface IDeliveryInfoProps {
-  address: OrderAddress
   beginAt?: number
   code?: string
   finishAt?: number
   type?: string
 }
 
-
 export class DeliveryInfo extends ValueObject<IDeliveryInfoProps> {
-
-  get address(): OrderAddress {
-    return this.props.address
-  }
-
   get beginAt(): number {
     return this.props.beginAt
   }
@@ -64,10 +56,10 @@ export class DeliveryInfo extends ValueObject<IDeliveryInfoProps> {
     const nullGuard = Guard.againstNullOrUndefinedBulk([
       { argument: code, argumentName: '运单号' },
       { argument: type, argumentName: '配送方式' },
-    ]);
+    ])
 
     if (!nullGuard.succeeded) {
-      return left(Result.fail<DeliveryInfo>(nullGuard.message))
+      return left(Result.fail<void>(nullGuard.message))
     }
 
     if (this.props.beginAt) {
@@ -79,7 +71,7 @@ export class DeliveryInfo extends ValueObject<IDeliveryInfoProps> {
     return right(Result.ok<void>())
   }
 
-  public received(): Either<NotShippingError, Result<void>> {
+  public received(): Either<NotShippingError | ExpectNotReceivedError, Result<void>> {
     if (!this.props.beginAt) {
       return left(new NotShippingError())
     }
@@ -93,20 +85,11 @@ export class DeliveryInfo extends ValueObject<IDeliveryInfoProps> {
   }
 
   public static create(props: IDeliveryInfoProps): Result<DeliveryInfo> {
-    const nullGuard = Guard.againstNullOrUndefinedBulk([
-      { argument: props.address, argumentName: 'address' },
-    ]);
-
-    if (!nullGuard.succeeded) {
-      return Result.fail<DeliveryInfo>(nullGuard.message);
-    }
-
     const defaultProps: IDeliveryInfoProps = {
       ...props,
     }
 
-    const model = new DeliveryInfo(defaultProps);
-    return Result.ok<DeliveryInfo>(model);
+    const model = new DeliveryInfo(defaultProps)
+    return Result.ok<DeliveryInfo>(model)
   }
 }
-

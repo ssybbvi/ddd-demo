@@ -12,11 +12,18 @@ import { RefreshSessionKeyUseCase } from '../refreshSessionKey/refreshSessionKey
 import { WechatUtil, WechatRetError, WechatSession } from '../../../../../shared/infra/wx/wxCommon'
 import { RecommendedByInviteTokenUseCase } from '../../user/recommendedByInviteToken/recommendedByInviteTokenUseCase'
 import { IUserRepo } from '../../../repos/userRepo'
+import { CreateWxUserErrors } from '../createWxUser/createWxUserErrors'
+import { User } from '../../../domain/user'
 
 type Response = Either<
   | WxAuthorizationErrors.WxJsCodeToSessionError
   | WxAuthorizationErrors.LoginForbidInviteTokenError
   | WxAuthorizationErrors.InviteTokenInValidError
+  | CreateWxUserErrors.OpenIdAlreadyExist
+  | CreateWxUserErrors.WxJsCodeToSessionError
+  | CreateWxUserErrors.OpenIdAlreadyExist
+  | Result<WechatRetError>
+  | Result<User>
   | AppError.UnexpectedError,
   Result<LoginDTOResponse>
 >
@@ -56,7 +63,7 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
       }
 
       let jsCodeToSessionResult = await WechatUtil.jsCodeToSession(code)
-      if ('errmsg' in jsCodeToSessionResult) {
+      if (Reflect.has(jsCodeToSessionResult, 'errmsg')) {
         return left(Result.fail<WechatRetError>(JSON.stringify(jsCodeToSessionResult)))
       }
 
@@ -78,7 +85,7 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
         if (inviteToken) {
           const recommendedByInviteTokenUseCaseResult = await this.recommendedByInviteTokenUseCase.execute({
             userId: wxUser.id.toString(),
-            inviteToken: inviteToken
+            inviteToken: inviteToken,
           })
 
           if (recommendedByInviteTokenUseCaseResult.isLeft()) {
@@ -88,7 +95,7 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
       } else {
         const refreshSessionKeyUseCaseResult = await this.refreshSessionKeyUseCase.execute({
           userId: wxUser.id.toString(),
-          sessionKey: wechatSession.session_key
+          sessionKey: wechatSession.session_key,
         })
         if (refreshSessionKeyUseCaseResult.isLeft()) {
           return left(refreshSessionKeyUseCaseResult.value)
@@ -96,15 +103,14 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
       }
 
       const loginUserUseCaseResult = await this.loginUserUseCase.execute({
-        userId: wxUser.id.toString()
+        userId: wxUser.id.toString(),
       })
 
-      const loginUserUseCaseResultValue = loginUserUseCaseResult.value
       if (loginUserUseCaseResult.isLeft()) {
-        return left(loginUserUseCaseResultValue)
+        return left(loginUserUseCaseResult.value)
       }
 
-      const loginDTOResponse = loginUserUseCaseResultValue.getValue() as LoginDTOResponse
+      const loginDTOResponse = loginUserUseCaseResult.value.getValue() as LoginDTOResponse
       return right(Result.ok<LoginDTOResponse>(loginDTOResponse))
     } catch (err) {
       return left(new AppError.UnexpectedError(err.toString()))

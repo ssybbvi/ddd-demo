@@ -4,8 +4,6 @@ import { UpdateCommodityTagUseCase } from './updateCommodityTagUseCase'
 import { UpdateCommodityTagDto } from './updateCommodityTagDto'
 import { UpdateCommodityTagErrors } from './updateCommodityTagErrors'
 
-
-
 export class UpdateCommodityTagController extends BaseController {
   private useCase: UpdateCommodityTagUseCase
 
@@ -17,21 +15,16 @@ export class UpdateCommodityTagController extends BaseController {
   async executeImpl(req: express.Request, res: express.Response): Promise<any> {
     const { _id, name, description } = req.body
     const dto: UpdateCommodityTagDto = {
-      _id, name, description
+      _id,
+      name,
+      description,
     }
 
     try {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case UpdateCommodityTagErrors.NotExistKey:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       } else {
         return this.ok<void>(res)
       }

@@ -1,25 +1,22 @@
-import { AggregateRoot } from "../../../shared/domain/AggregateRoot";
-import { UniqueEntityID } from "../../../shared/domain/UniqueEntityID";
-import { Result, Either, left, right } from "../../../shared/core/Result";
-import { Participants } from "./participants";
-import { Participant } from "./participant";
-import { Guard } from "../../../shared/core/Guard";
-import { BargainCreated } from "./events/bargainCreated";
-import { AppError } from "../../../shared/core/AppError";
-import { bargainService } from "./service";
-import { BargainSeccessed } from "./events/bargainSeccessed";
-import { DeliveryInfo, RepeatShipmentError, NotShippingError } from "./deliveryInfo";
-import { UseCaseError } from "../../../shared/core/UseCaseError";
-import { CommodityItems } from "./commodityItems";
-
-type BargainResponse = Either<
-  ExpiredError | IsFinishError |
-  AppError.UnexpectedError, Result<void>>
+import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
+import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
+import { Result, Either, left, right } from '../../../shared/core/Result'
+import { Participants } from './participants'
+import { Participant } from './participant'
+import { Guard } from '../../../shared/core/Guard'
+import { BargainCreated } from './events/bargainCreated'
+import { AppError } from '../../../shared/core/AppError'
+import { bargainService } from './service'
+import { BargainSeccessed } from './events/bargainSeccessed'
+import { DeliveryInfo, RepeatShipmentError, NotShippingError } from './deliveryInfo'
+import { UseCaseError } from '../../../shared/core/UseCaseError'
+import { CommodityItems } from './commodityItems'
+import { AddressInfo } from './addressInfo'
 
 export class ExpiredError extends Result<UseCaseError> {
   constructor() {
     super(false, {
-      message: `砍价活动已过期`
+      message: `砍价活动已过期`,
     } as UseCaseError)
   }
 }
@@ -27,7 +24,7 @@ export class ExpiredError extends Result<UseCaseError> {
 export class IsFinishError extends Result<UseCaseError> {
   constructor() {
     super(false, {
-      message: `砍价活动已结束`
+      message: `砍价活动已结束`,
     } as UseCaseError)
   }
 }
@@ -35,12 +32,10 @@ export class IsFinishError extends Result<UseCaseError> {
 export class NotSeccessError extends Result<UseCaseError> {
   constructor() {
     super(false, {
-      message: `活动未成功`
+      message: `活动未成功`,
     } as UseCaseError)
   }
 }
-
-
 
 interface IBargainProps {
   userId: string
@@ -52,7 +47,8 @@ interface IBargainProps {
   expiredAt?: number
   commodityItems: CommodityItems
   participants?: Participants
-  deliveryInfo: DeliveryInfo
+  deliveryInfo?: DeliveryInfo
+  addressInfo: AddressInfo
 }
 
 export class Bargain extends AggregateRoot<IBargainProps> {
@@ -67,7 +63,6 @@ export class Bargain extends AggregateRoot<IBargainProps> {
   get userId(): string {
     return this.props.userId
   }
-
 
   get currentAmount(): number {
     return this.props.currentAmount
@@ -102,10 +97,17 @@ export class Bargain extends AggregateRoot<IBargainProps> {
   }
 
   get deliveryInfo(): DeliveryInfo {
-    return this.props.deliveryInfo;
+    return this.props.deliveryInfo
   }
 
-  public bargain(userId: string, weights: number): BargainResponse {
+  get addressInfo(): AddressInfo {
+    return this.props.addressInfo
+  }
+
+  public bargain(
+    userId: string,
+    weights: number
+  ): Either<ExpiredError | IsFinishError | Result<any> | RepeatShipmentError | AppError.UnexpectedError, Result<void>> {
     if (this.isExpired()) {
       return left(new ExpiredError())
     }
@@ -113,14 +115,14 @@ export class Bargain extends AggregateRoot<IBargainProps> {
     if (this.isSuccess) {
       return left(new IsFinishError())
     }
-    const newWeights = this.participants.getItems().reduce((acc, item) => acc += item.weights, 0) + weights //目前权重
+    const newWeights = this.participants.getItems().reduce((acc, item) => (acc += item.weights), 0) + weights //目前权重
     const totalWeights = this.amount / 100
     const bargainAmount = bargainService.bargain(this.amount, this.currentAmount, totalWeights, newWeights)
 
     const participantOrError = Participant.create({
       userId: userId,
       amount: bargainAmount,
-      weights: weights
+      weights: weights,
     })
 
     if (participantOrError.isFailure) {
@@ -129,7 +131,7 @@ export class Bargain extends AggregateRoot<IBargainProps> {
 
     const participant = participantOrError.getValue()
 
-    this.props.participants.add(participant);
+    this.props.participants.add(participant)
     this.props.currentAmount -= bargainAmount
     if (this.props.currentAmount === 0) {
       this.props.isSuccess = true
@@ -139,7 +141,10 @@ export class Bargain extends AggregateRoot<IBargainProps> {
     return right(Result.ok<void>())
   }
 
-  public shipped(code: string, type: string): Either<NotSeccessError | RepeatShipmentError, Result<void>> {
+  public shipped(
+    code: string,
+    type: string
+  ): Either<NotSeccessError | RepeatShipmentError | Result<any>, Result<void>> {
     if (!this.props.isSuccess) {
       return left(new NotSeccessError())
     }
@@ -163,7 +168,7 @@ export class Bargain extends AggregateRoot<IBargainProps> {
   }
 
   public isHasParticipants(userId: string): boolean {
-    return this.props.participants.getItems().some(item => item.userId === userId)
+    return this.props.participants.getItems().some((item) => item.userId === userId)
   }
 
   private calculationCommodityItemAmountTotal(): void {
@@ -171,14 +176,14 @@ export class Bargain extends AggregateRoot<IBargainProps> {
     this.props.currentAmount = this.props.amount
   }
 
-
   public static create(props: IBargainProps, id?: UniqueEntityID): Result<Bargain> {
     const nullGuard = Guard.againstNullOrUndefinedBulk([
       { argument: props.commodityItems, argumentName: 'commodityItems' },
-    ]);
+      { argument: props.addressInfo, argumentName: 'addressInfo' },
+    ])
 
     if (!nullGuard.succeeded) {
-      return Result.fail<Bargain>(nullGuard.message);
+      return Result.fail<Bargain>(nullGuard.message)
     }
 
     const domainModel = new Bargain(
@@ -186,7 +191,7 @@ export class Bargain extends AggregateRoot<IBargainProps> {
         ...props,
         createAt: props.createAt ? props.createAt : Date.now(),
         expiredAt: props.expiredAt ? props.expiredAt : Date.now() + 1000 * 60 * 60 * 24 * 2,
-        participants: props.participants ? props.participants : Participants.create([])
+        participants: props.participants ? props.participants : Participants.create([]),
       },
       id
     )
@@ -200,5 +205,3 @@ export class Bargain extends AggregateRoot<IBargainProps> {
     return Result.ok<Bargain>(domainModel)
   }
 }
-
-

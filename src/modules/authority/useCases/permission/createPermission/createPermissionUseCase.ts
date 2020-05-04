@@ -9,7 +9,7 @@ import { IPermissionRepo } from '../../../repos/permissionRepo'
 import { CreatePermissionErrors } from './createPermissionError'
 
 type Response = Either<
-  CreatePermissionErrors.PermissionExistSameNameError | AppError.UnexpectedError,
+  CreatePermissionErrors.PermissionExistSameNameError | Result<any> | AppError.UnexpectedError,
   Result<void>
 >
 
@@ -37,7 +37,7 @@ export class CreatePermissionUseCase implements UseCase<CreatePermissionRequestD
 
     const permissionOrError: Result<Permission> = Permission.create({
       name: permissionNameOrError.getValue(),
-      discriminator: permissionDiscriminatorOrError.getValue()
+      discriminator: permissionDiscriminatorOrError.getValue(),
     })
 
     if (permissionOrError.isFailure) {

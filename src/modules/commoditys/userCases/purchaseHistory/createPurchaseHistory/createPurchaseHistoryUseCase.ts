@@ -7,7 +7,7 @@ import { CreatePurchaseHistoryDto } from './createPurchaseHistoryDto'
 import { IUserRepo } from '../../../../users/repos/userRepo'
 import { IWxUserRepo } from '../../../../users/repos/wxUserRepo'
 
-type Response = Either<AppError.UnexpectedError, Result<void>>
+type Response = Either<AppError.UnexpectedError | Result<PurchaseHistory>, Result<void>>
 
 export class CreatePurchaseHistoryUseCase implements UseCase<CreatePurchaseHistoryDto, Promise<Response>> {
   private purchaseHistoryRepo: IPurchaseHistoryRepo
@@ -19,7 +19,6 @@ export class CreatePurchaseHistoryUseCase implements UseCase<CreatePurchaseHisto
   public async execute(request: CreatePurchaseHistoryDto): Promise<Response> {
     try {
       const { userId, commodityId } = request
-
 
       const purchaseHistoryOrEerros = PurchaseHistory.create({
         userId: userId,

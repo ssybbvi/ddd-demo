@@ -19,33 +19,18 @@ export class CreateBargainController extends BaseController {
   }
 
   async executeImpl(req: DecodedExpressRequest, res: express.Response): Promise<any> {
-    const { userId } = req.decoded;
+    const { userId } = req.decoded
     const dto: CreateBargainDto = req.body as CreateBargainDto
     dto.userId = userId
 
     try {
       const result = await this.useCase.execute(dto)
-
+      const resultValue = result.value
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case NotFoundError:
-            return this.fail(res, error.errorValue().message)
-          case DotBuyRepeatOnceCommodityError:
-            return this.fail(res, error.errorValue().message)
-          case CreateBargainErrors.CommodityItemNotNullError:
-            return this.fail(res, error.errorValue().message)
-          case CreateBargainErrors.NotBargainCommodityError:
-            return this.fail(res, error.errorValue().message)
-          case CreateBargainErrors.DotMultipleBargainActivitiesError:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       }
 
-      const bargain = result.value.getValue() as Bargain
+      const bargain = resultValue.getValue() as Bargain
       const bargainDto = await BargainMap.toDTO(bargain)
       return this.ok<IBargainDto>(res, bargainDto)
     } catch (err) {

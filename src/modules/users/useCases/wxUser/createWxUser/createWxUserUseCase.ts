@@ -10,8 +10,9 @@ import { CreateWxUserDto } from './createWxUserDto'
 type Response = Either<
   | CreateWxUserErrors.WxJsCodeToSessionError
   | CreateWxUserErrors.OpenIdAlreadyExist
-  | AppError.UnexpectedError
-  , Result<void>
+  | Result<User>
+  | AppError.UnexpectedError,
+  Result<void>
 >
 
 export class CreateWxUserUseCase implements UseCase<CreateWxUserDto, Promise<Response>> {

@@ -6,9 +6,6 @@ import { CommodityTagDto } from '../../../dtos/commodityTagDto'
 import { GetCommodityTagListUseCase } from './getCommodityTagListUseCase'
 import { GetCommodityTagListDto } from './getCommodityTagListDto'
 
-
-
-
 export class GetCommodityTagListController extends BaseController {
   private useCase: GetCommodityTagListUseCase
 
@@ -18,23 +15,17 @@ export class GetCommodityTagListController extends BaseController {
   }
 
   async executeImpl(req: express.Request, res: express.Response): Promise<any> {
-    const { } = req.body
-    const dto: GetCommodityTagListDto = {
-    }
+    const {} = req.body
+    const dto: GetCommodityTagListDto = {}
 
     try {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       } else {
         const commodityTagList = result.value.getValue() as CommodityTag[]
-        const commodityTagListDto = commodityTagList.map(item => CommodityTagMap.toDTO(item))
+        const commodityTagListDto = commodityTagList.map((item) => CommodityTagMap.toDTO(item))
         return this.ok<CommodityTagDto[]>(res, commodityTagListDto)
       }
     } catch (err) {

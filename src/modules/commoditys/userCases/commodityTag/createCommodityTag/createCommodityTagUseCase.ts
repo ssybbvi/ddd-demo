@@ -7,7 +7,10 @@ import { UniqueEntityID } from '../../../../../shared/domain/UniqueEntityID'
 import { CreateCommodityTagErrors } from './createCommodityTagErrors'
 import { CreateCommodityTagDto } from './createCommodityTagDto'
 
-type Response = Either<AppError.UnexpectedError | CreateCommodityTagErrors.ExistKey, Result<void>>
+type Response = Either<
+  AppError.UnexpectedError | Result<CommodityTag> | CreateCommodityTagErrors.ExistKey,
+  Result<void>
+>
 
 export class CreateCommodityTagUseCase implements UseCase<CreateCommodityTagDto, Promise<Response>> {
   private commodityTagRepo: ICommodityTagRepo
@@ -26,7 +29,9 @@ export class CreateCommodityTagUseCase implements UseCase<CreateCommodityTagDto,
       }
 
       const commodityTagOrErrors = CommodityTag.create({
-        name, description, tag
+        name,
+        description,
+        tag,
       })
 
       if (commodityTagOrErrors.isFailure) {

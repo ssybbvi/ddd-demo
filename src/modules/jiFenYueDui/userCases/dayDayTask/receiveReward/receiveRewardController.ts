@@ -25,16 +25,7 @@ export class ReceiveRewardController extends BaseController {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case ReceiveRewardErrors.DayDayTaskNotFound:
-            return this.fail(res, error.errorValue().message)
-          case ReceiveRewardErrors.RewardAlreadyReceive:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       } else {
         const dayDayTask = result.value.getValue() as DayDayTask
         const dayDayTaskDto = DayDayTaskMap.toDTO(dayDayTask)

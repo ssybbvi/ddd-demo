@@ -27,16 +27,7 @@ export class GetOrderByIdController extends BaseController {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case GetOrderByIdErrors.DoesNotBelongToYou:
-            return this.fail(res, error.errorValue().message)
-          case GetOrderByIdErrors.OrderNotFound:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       }
       const order = result.value.getValue() as Order
       const orderDto = await OrderMap.toDTO(order)

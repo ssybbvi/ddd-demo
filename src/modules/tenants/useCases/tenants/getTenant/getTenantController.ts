@@ -18,17 +18,12 @@ export class GetTenantController extends BaseController {
       const result = await this.useCase.execute()
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       }
 
       const list = result.value.getValue()
       return this.ok<IGetTenantResponseDto>(res, {
-        tenants: list.map(d => TenantMap.toDTO(d))
+        tenants: list.map((d) => TenantMap.toDTO(d)),
       })
     } catch (err) {
       return this.fail(res, err)

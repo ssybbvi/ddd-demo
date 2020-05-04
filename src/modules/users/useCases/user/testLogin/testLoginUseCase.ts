@@ -18,15 +18,14 @@ export class TestLoginUseCase implements UseCase<TestLoginDto, Promise<Response>
     const { userId } = request
     try {
       const loginUserUseCaseResult = await this.loginUserUseCase.execute({
-        userId
+        userId,
       })
 
-      const loginUserUseCaseResultValue = loginUserUseCaseResult.value
       if (loginUserUseCaseResult.isLeft()) {
-        return left(loginUserUseCaseResultValue)
+        return left(loginUserUseCaseResult.value)
       }
 
-      const loginDTOResponse = loginUserUseCaseResultValue.getValue() as LoginDTOResponse
+      const loginDTOResponse = loginUserUseCaseResult.value.getValue() as LoginDTOResponse
       return right(Result.ok<LoginDTOResponse>(loginDTOResponse))
     } catch (err) {
       return left(new AppError.UnexpectedError(err.toString()))

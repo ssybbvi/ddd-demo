@@ -8,7 +8,7 @@ import { SignIn } from '../../../domain/signIn'
 import { DailySignInDtoResult } from './dailySignInDtoResult'
 
 type Response = Either<
-  DailySignInErrors.TodayAlreadySignInError | AppError.UnexpectedError,
+  DailySignInErrors.TodayAlreadySignInError | AppError.UnexpectedError | Result<any>,
   Result<DailySignInDtoResult>
 >
 
@@ -31,7 +31,7 @@ export class DailySignInUseCase implements UseCase<DailySignInDto, Promise<Respo
       const signInOrError = SignIn.create({
         userId: request.userId,
         reward: reward,
-        superReward: 0
+        superReward: 0,
       })
 
       if (signInOrError.isFailure) {
@@ -42,7 +42,7 @@ export class DailySignInUseCase implements UseCase<DailySignInDto, Promise<Respo
 
       return right(
         Result.ok<DailySignInDtoResult>({
-          reward: reward
+          reward: reward,
         })
       )
     } catch (err) {

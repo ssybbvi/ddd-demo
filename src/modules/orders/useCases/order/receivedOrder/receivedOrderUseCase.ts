@@ -4,9 +4,16 @@ import { UseCase } from '../../../../../shared/core/UseCase'
 import { IOrderRepo } from '../../../repos/orderRepo'
 import { ReceivedOrderDto } from './receivedOrderDto'
 import { ReceivedOrderErrors } from './receivedErrors'
+import { NotShippingError, ExpectNotReceivedError } from '../../../domain/deliveryInfo'
 
 type Response = Either<
-  | AppError.UnexpectedError | ReceivedOrderErrors.OrderNotShipping, Result<void>>
+  | AppError.UnexpectedError
+  | NotShippingError
+  | ExpectNotReceivedError
+  | ReceivedOrderErrors.OrderNotShipping
+  | Result<any>,
+  Result<void>
+>
 
 export class ReceivedOrderUseCase implements UseCase<ReceivedOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo

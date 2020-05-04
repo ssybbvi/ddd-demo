@@ -19,14 +19,7 @@ export class CreateTenantController extends BaseController {
       const result = await this.createTenant.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case CreateTenantErrors.TenantExistSameNameError:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       } else {
         return this.ok(res)
       }

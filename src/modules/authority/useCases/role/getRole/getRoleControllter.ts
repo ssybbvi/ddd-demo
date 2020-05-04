@@ -17,23 +17,18 @@ export class GetRoleController extends BaseController {
   async executeImpl(req: DecodedExpressRequest, res: express.Response): Promise<any> {
     const dto: GetRoleReqeustDto = {
       offset: req.query.offset,
-      userId: !!req.decoded === true ? req.decoded.userId : null
+      userId: !!req.decoded === true ? req.decoded.userId : null,
     }
 
     try {
       const result = await this.useCase.execute(dto)
-
+      const resultValue = result.value
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       } else {
-        const roleDtoList = result.value.getValue()
+        const roleDtoList = resultValue.getValue()
         return this.ok<GetRoleResponseDto>(res, {
-          roles: roleDtoList
+          roles: roleDtoList,
         })
       }
     } catch (err) {

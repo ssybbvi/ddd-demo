@@ -3,8 +3,6 @@ import * as express from 'express'
 import { CreateThirdPartyAppUseCase } from './createThirdPartyAppUseCase'
 import { CreateThirdPartyAppDto } from './createThirdPartyAppDto'
 
-
-
 export class CreateThirdPartyAppController extends BaseController {
   private useCase: CreateThirdPartyAppUseCase
 
@@ -19,12 +17,7 @@ export class CreateThirdPartyAppController extends BaseController {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       }
       return this.ok<void>(res)
     } catch (err) {

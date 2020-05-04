@@ -8,7 +8,7 @@ import { IRoleRepo } from '../../../repos/roleRepo'
 import { UpdateRoleErrors } from './updateRoleErrors'
 import { PermissionIds } from '../../../domain/permissionIds'
 
-type Response = Either<UpdateRoleErrors.RoleExistSameNameError | AppError.UnexpectedError, Result<void>>
+type Response = Either<UpdateRoleErrors.RoleExistSameNameError | Result<any> | AppError.UnexpectedError, Result<void>>
 
 export class UpdateRoleUseCase implements UseCase<UpdateRoleRequestDto, Promise<Response>> {
   private roleRepo: IRoleRepo

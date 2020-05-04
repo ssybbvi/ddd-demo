@@ -6,7 +6,7 @@ import { User } from '../../../domain/user'
 import { CreateUserDto } from './createUserDto'
 import { UniqueEntityID } from '../../../../../shared/domain/UniqueEntityID'
 
-type Response = Either<AppError.UnexpectedError, Result<void>>
+type Response = Either<Result<User> | AppError.UnexpectedError, Result<void>>
 
 export class CraeteUseCase implements UseCase<CreateUserDto, Promise<Response>> {
   private userRepo: IUserRepo

@@ -17,23 +17,18 @@ export class GetPermissionController extends BaseController {
   async executeImpl(req: DecodedExpressRequest, res: express.Response): Promise<any> {
     const dto: GetPermissionRequestDto = {
       offset: req.query.offset,
-      userId: !!req.decoded === true ? req.decoded.userId : null
+      userId: !!req.decoded === true ? req.decoded.userId : null,
     }
 
     try {
       const result = await this.useCase.execute(dto)
-
+      const resultValue = result.value
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       } else {
-        const permissionDtoList = result.value.getValue()
+        const permissionDtoList = resultValue.getValue()
         return this.ok<GetPermissionResponseDto>(res, {
-          permissions: permissionDtoList
+          permissions: permissionDtoList,
         })
       }
     } catch (err) {

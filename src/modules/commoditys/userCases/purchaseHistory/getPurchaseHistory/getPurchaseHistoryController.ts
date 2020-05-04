@@ -6,8 +6,6 @@ import { PurchaseHistory } from '../../../domain/purchaseHistory'
 import { PurchaseHistoryMap } from '../../../mappers/purchaseHistoryMap'
 import { PurchaseHistoryDto } from '../../../dtos/purchaseHistoryDto'
 
-
-
 export class GetPurchaseHistoryController extends BaseController {
   private useCase: GetPurchaseHistoryUseCase
 
@@ -18,19 +16,14 @@ export class GetPurchaseHistoryController extends BaseController {
 
   async executeImpl(req: any, res: express.Response): Promise<any> {
     const dto: GetPurchaseHistoryDto = {
-      commodityId: req.params.commodityId
+      commodityId: req.params.commodityId,
     }
 
     try {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       } else {
         const purchaseHistorys = result.value.getValue() as PurchaseHistory[]
         const purchaseHistoryDtos = await PurchaseHistoryMap.toDtoList(purchaseHistorys)

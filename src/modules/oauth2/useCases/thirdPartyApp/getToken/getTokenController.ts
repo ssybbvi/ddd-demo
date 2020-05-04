@@ -6,8 +6,6 @@ import { ThirdPartyAppMap } from '../../../mappers/thirdPartyAppMapper'
 import { IThirdPartyAppByTokenDto } from '../../../dtos/thirdPartyAppDto'
 import { GetTokenDto } from './getTokenDto'
 
-
-
 export class GetTokenController extends BaseController {
   private useCase: GetTokenUseCase
 
@@ -20,19 +18,16 @@ export class GetTokenController extends BaseController {
     const { appId, secret, grantType } = req.query
 
     const dto: GetTokenDto = {
-      appId, secret, grantType
+      appId,
+      secret,
+      grantType,
     }
 
     try {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       }
 
       const appUser = result.value.getValue() as ThirdPartyApp

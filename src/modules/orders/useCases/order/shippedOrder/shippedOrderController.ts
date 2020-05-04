@@ -13,26 +13,19 @@ export class ShippedOrderController extends BaseController {
   }
 
   async executeImpl(req: any, res: express.Response): Promise<any> {
-
     const { shippedNumber, shippedType } = req.body
 
     const dto: ShippedOrderDto = {
       orderId: req.body.orderId,
       shippedNumber,
-      shippedType
+      shippedType,
     }
 
     try {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-        switch (error.constructor) {
-          case ShippedOrderErrors.OrderNotPayment:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error)
-        }
+        return this.fail(res, result.value.errorValue())
       }
       return this.ok<void>(res)
     } catch (err) {

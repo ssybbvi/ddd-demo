@@ -1,7 +1,7 @@
 import { Either, Result, right, left } from '../../../../../shared/core/Result'
 import { AppError } from '../../../../../shared/core/AppError'
 import { UseCase } from '../../../../../shared/core/UseCase'
-import { OrderAddress } from '../../../domain/orderAddress'
+import { AddressInfo } from '../../../domain/addressInfo'
 
 import { CreateBargainDto } from './createBargainDto'
 import { CreateBargainErrors } from './createBargainErrors'
@@ -13,36 +13,34 @@ import { CommodityItem } from '../../../domain/commodityItem'
 import { OrderAssertionService } from '../../../domain/service/assertionService'
 import { CommodityItems } from '../../../domain/commodityItems'
 
-
 type Response = Either<
-  CreateBargainErrors.CommodityNotFoundError |
-  DotBuyRepeatOnceCommodityError |
-  CreateBargainErrors.CommodityItemNotNullError |
-  AppError.UnexpectedError, Result<Bargain>>
-
-type AddressResponse = Either<AppError.UnexpectedError, Result<OrderAddress>>
-
+  | CreateBargainErrors.CommodityNotFoundError
+  | DotBuyRepeatOnceCommodityError
+  | CreateBargainErrors.CommodityItemNotNullError
+  | Result<any>
+  | AppError.UnexpectedError,
+  Result<Bargain>
+>
 
 export class CreateBargainUseCase implements UseCase<CreateBargainDto, Promise<Response>> {
   private orderAssertionService: OrderAssertionService
   private bargainRepo: IBargainRepo
 
-  constructor(
-    orderAssertionService: OrderAssertionService,
-    bargainRepo: IBargainRepo) {
+  constructor(orderAssertionService: OrderAssertionService, bargainRepo: IBargainRepo) {
     this.orderAssertionService = orderAssertionService
     this.bargainRepo = bargainRepo
   }
 
-  private async assertionAddress({ userName,
+  private async assertionAddress({
+    userName,
     provinceName,
     cityName,
     countyName,
     detailAddressInfo,
     nationalCode,
-    telNumber }): Promise<AddressResponse> {
-
-    const orderAddressOrErrors = OrderAddress.create({
+    telNumber,
+  }): Promise<Either<AppError.UnexpectedError | Result<any>, Result<AddressInfo>>> {
+    const addressInfoOrErrors = AddressInfo.create({
       userName: userName,
       provinceName: provinceName,
       cityName: cityName,
@@ -52,24 +50,21 @@ export class CreateBargainUseCase implements UseCase<CreateBargainDto, Promise<R
       telNumber: telNumber,
     })
 
-    if (orderAddressOrErrors.isFailure) {
-      return left(orderAddressOrErrors)
+    if (addressInfoOrErrors.isFailure) {
+      return left(addressInfoOrErrors)
     }
 
-    return right(Result.ok<OrderAddress>(orderAddressOrErrors.getValue()))
+    return right(Result.ok<AddressInfo>(addressInfoOrErrors.getValue()))
   }
 
   public async execute(request: CreateBargainDto): Promise<Response> {
     try {
-      const {
-        userId,
-        commodityItems
-      } = request
+      const { userId, commodityItems } = request
 
-
-      const addressResult = await this.assertionAddress(request)
+      const addressResult = await this.orderAssertionService.assertionAddress(request)
+      const addressResultValue = addressResult.value
       if (addressResult.isLeft()) {
-        return left(addressResult)
+        return left(addressResult.value)
       }
 
       const assertionCommodityItemsResult = await this.orderAssertionService.assertionCommodityItems(commodityItems)
@@ -79,30 +74,20 @@ export class CreateBargainUseCase implements UseCase<CreateBargainDto, Promise<R
       }
       const commodityItemList = assertionCommodityItemsResultValue.getValue() as CommodityItem[]
 
-
-      if (!commodityItemList.every(item => item.isBargain())) {
+      if (!commodityItemList.every((item) => item.isBargain())) {
         return left(new CreateBargainErrors.NotBargainCommodityError())
       }
 
       const bargainList = await this.bargainRepo.filter(userId)
-      if (bargainList.some(item => !item.finishAt)) {
+      if (bargainList.some((item) => !item.finishAt)) {
         return left(new CreateBargainErrors.DotMultipleBargainActivitiesError())
-      }
-
-
-      const deliveryInfoOrErrors = DeliveryInfo.create({
-        address: addressResult.value.getValue()
-      })
-
-      if (deliveryInfoOrErrors.isFailure) {
-        return left(deliveryInfoOrErrors)
       }
 
       const commodityItems1 = CommodityItems.create(commodityItemList)
       const bargainOrErrors = Bargain.create({
         userId,
         commodityItems: commodityItems1,
-        deliveryInfo: deliveryInfoOrErrors.getValue()
+        addressInfo: addressResultValue.getValue(),
       })
       if (bargainOrErrors.isFailure) {
         return left(bargainOrErrors)
@@ -114,7 +99,6 @@ export class CreateBargainUseCase implements UseCase<CreateBargainDto, Promise<R
       const bargain = bargainOrErrors.getValue()
       bargain.bargain(userId, weights)
       await this.bargainRepo.save(bargain)
-
 
       return right(Result.ok<Bargain>(bargain))
     } catch (err) {

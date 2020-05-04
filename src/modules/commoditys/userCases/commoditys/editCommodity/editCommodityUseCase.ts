@@ -7,7 +7,7 @@ import { CommodityName } from '../../../domain/commodityName'
 import { CommodityAmount } from '../../../domain/commodityAmount'
 import { CommodityType } from '../../../domain/commodityType'
 
-type Response = Either<AppError.UnexpectedError, Result<void>>
+type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 
 export class EditCommodityUseCase implements UseCase<IEditCommodityDto, Promise<Response>> {
   private commodityRepo: ICommodityRepo
@@ -18,7 +18,18 @@ export class EditCommodityUseCase implements UseCase<IEditCommodityDto, Promise<
 
   public async execute(request: IEditCommodityDto): Promise<Response> {
     try {
-      const { _id, name, amount, description, images, fakeAmount, restrictedPurchaseQuantity, tags, imgesDescrptionList, type } = request
+      const {
+        _id,
+        name,
+        amount,
+        description,
+        images,
+        fakeAmount,
+        restrictedPurchaseQuantity,
+        tags,
+        imgesDescrptionList,
+        type,
+      } = request
 
       const commodity = await this.commodityRepo.getById(_id)
 

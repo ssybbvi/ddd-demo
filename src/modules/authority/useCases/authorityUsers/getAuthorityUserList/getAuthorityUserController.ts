@@ -19,18 +19,13 @@ export class GetAuthorityUserListController extends BaseController {
       const result = await this.useCase.execute(req)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       }
 
       const authorityUserList = result.value.getValue()
 
       return this.ok<GetAuthorityUserResponseDto>(res, {
-        authorityUsers: authorityUserList.map(item => AuthorityUserMap.toDTO(item))
+        authorityUsers: authorityUserList.map((item) => AuthorityUserMap.toDTO(item)),
       })
     } catch (err) {
       return this.fail(res, err)

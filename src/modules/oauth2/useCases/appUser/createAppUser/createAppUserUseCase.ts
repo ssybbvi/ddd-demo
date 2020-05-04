@@ -1,13 +1,16 @@
 import { Either, Result, right, left } from '../../../../../shared/core/Result'
 import { AppError } from '../../../../../shared/core/AppError'
 import { UseCase } from '../../../../../shared/core/UseCase'
-import uuid from 'uuid/v4';
+import uuid from 'uuid/v4'
 import { CreateAppUserDto } from './createAppUserDto'
 import { AppUser } from '../../../domain/appUser'
 import { IAppUserRepo } from '../../../repos/appUserRepo'
-import { CreateAppUserErrors } from './createAppUserErrors';
+import { CreateAppUserErrors } from './createAppUserErrors'
 
-type Response = Either<AppError.UnexpectedError | CreateAppUserErrors.ExistUserOpenId, Result<AppUser>>
+type Response = Either<
+  AppError.UnexpectedError | Result<AppUser> | CreateAppUserErrors.ExistUserOpenId,
+  Result<AppUser>
+>
 
 export class CreateAppUserUseCase implements UseCase<CreateAppUserDto, Promise<Response>> {
   private appUserRepo: IAppUserRepo
@@ -28,7 +31,7 @@ export class CreateAppUserUseCase implements UseCase<CreateAppUserDto, Promise<R
       const appUserOrError = AppUser.create({
         appId,
         openUserId,
-        userId
+        userId,
       })
 
       if (appUserOrError.isFailure) {

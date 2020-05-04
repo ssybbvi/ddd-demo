@@ -14,32 +14,17 @@ export class PaymentOrderController extends BaseController {
   }
 
   async executeImpl(req: DecodedExpressRequest, res: express.Response): Promise<any> {
-    const { userId } = req.decoded;
+    const { userId } = req.decoded
     const dto: PaymentOrderDto = {
       orderId: req.body.orderId,
-      userId: userId
+      userId: userId,
     }
 
     try {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case PaymentOrderErrors.DoesNotBelongToYou:
-            return this.fail(res, error.errorValue().message)
-          case PaymentOrderErrors.OrderNotFound:
-            return this.fail(res, error.errorValue().message)
-          case PaymentOrderErrors.OrderStatusNotPaid:
-            return this.fail(res, error.errorValue().message)
-          case PaymentOrderErrors.UnableToPaid:
-            return this.fail(res, error.errorValue().message)
-          case PaymentOrderErrors.PaymentTimeExpired:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       }
       return this.ok<void>(res)
     } catch (err) {

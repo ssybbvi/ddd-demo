@@ -18,23 +18,16 @@ export class DailySignInController extends BaseController {
     const { userId } = req.decoded
 
     const dto: DailySignInDto = {
-      userId: userId
+      userId: userId,
     }
 
     try {
       const result = await this.useCase.execute(dto)
-
+      const resultValue = result.value
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case DailySignInErrors.TodayAlreadySignInError:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       } else {
-        const dailySignInDtoResult: DailySignInDtoResult = result.value.getValue() as DailySignInDtoResult
+        const dailySignInDtoResult: DailySignInDtoResult = resultValue.getValue() as DailySignInDtoResult
         return this.ok<DailySignInDtoResult>(res, dailySignInDtoResult)
       }
     } catch (err) {

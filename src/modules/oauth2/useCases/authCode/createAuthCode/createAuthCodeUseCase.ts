@@ -7,7 +7,10 @@ import { AuthCode } from '../../../domain/authCode'
 import { IThirdPartyAppRepo } from '../../../repos/thirdPartyAppRepo'
 import { CreateAuthCodeErrors } from './createAuthCodeErrors'
 
-type Response = Either<AppError.UnexpectedError | CreateAuthCodeErrors.DoseNotExistAppId, Result<AuthCode>>
+type Response = Either<
+  AppError.UnexpectedError | Result<AuthCode> | CreateAuthCodeErrors.DoseNotExistAppId,
+  Result<AuthCode>
+>
 
 export class CreateAuthCodeUseCase implements UseCase<CreateAuthCodeDto, Promise<Response>> {
   private authCodeRepo: IAuthCodeRepo

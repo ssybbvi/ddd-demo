@@ -7,8 +7,9 @@ import { Fund } from '../../../domain/fund'
 import { FundType } from '../../../domain/fundType'
 import { CreateFundDto } from './createFundDto'
 import { FundStatus } from '../../../domain/fundStatus'
+import { AmountInfo } from '../../../../orders/domain/amountInfo'
 
-type Response = Either<AppError.UnexpectedError, Result<void>>
+type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 
 export class CreateFundUseCase implements UseCase<CreateFundDto, Promise<Response>> {
   private fundRepo: IFundRepo
@@ -19,17 +20,11 @@ export class CreateFundUseCase implements UseCase<CreateFundDto, Promise<Respons
 
   public async execute(request: CreateFundDto): Promise<Response> {
     try {
-      const { amount,
-        incomeUserId,
-        paymentUserId,
-        status,
-        description,
-        type,
-        relationId, } = request
+      const { amount, incomeUserId, paymentUserId, status, description, type, relationId } = request
 
-      const newAmount = Math.floor(amount)//去小数点后面的值
+      const newAmount = Math.floor(amount) //去小数点后面的值
       if (newAmount < 1) {
-        console.log("小于1的资金变动不记录")
+        console.log('小于1的资金变动不记录')
         return right(Result.ok<void>())
       }
 
@@ -46,7 +41,7 @@ export class CreateFundUseCase implements UseCase<CreateFundDto, Promise<Respons
         paymentUserId: paymentUserId,
         descrpiton: description,
         type: type as FundType,
-        relationId
+        relationId,
       })
 
       if (fundOrErrors.isFailure) {

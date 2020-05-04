@@ -7,8 +7,6 @@ import { AppUser } from '../../../domain/appUser'
 import { AppUserMap } from '../../../mappers/appUserMapper'
 import { IAppUserDto } from '../../../dtos/appUserDto'
 
-
-
 export class AuthorizationCodeController extends BaseController {
   private useCase: AuthorizationCodeUseCase
 
@@ -21,19 +19,17 @@ export class AuthorizationCodeController extends BaseController {
     const { appId, secret, code, grantType } = req.query
 
     const dto: AuthorizationCodeDto = {
-      appId, secret, code, grantType
+      appId,
+      secret,
+      code,
+      grantType,
     }
 
     try {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       }
 
       const appUser = result.value.getValue() as AppUser

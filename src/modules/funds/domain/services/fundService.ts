@@ -6,9 +6,7 @@ import { GetRecommendedUserUseCase } from '../../../distribution/userCases/recom
 import { RecommendedUser } from '../../../distribution/domain/recommendedUser'
 import { CreateFundUseCase } from '../../userCases/funds/createFund/createFundUseCase'
 
-type RecommendedUserResponse = Either<AppError.UnexpectedError, Result<RecommendedUser>>
-type FundListResponse = Either<AppError.UnexpectedError, Result<Fund[]>>
-type DistributionResponse = Either<AppError.UnexpectedError, Result<void>>
+type DistributionResponse = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 
 export class FundService {
   private getRecommendedUserUseCase: GetRecommendedUserUseCase
@@ -21,7 +19,7 @@ export class FundService {
 
   public async distribution(fund: Fund): Promise<DistributionResponse> {
     const getRecommendedUserUseCaseResult = await this.getRecommendedUserUseCase.execute({
-      recommendedUserId: fund.incomeUserId
+      recommendedUserId: fund.incomeUserId,
     })
     const getRecommendedUserUseCaseResultValue = getRecommendedUserUseCaseResult.value
     if (getRecommendedUserUseCaseResult.isLeft()) {
@@ -33,7 +31,7 @@ export class FundService {
     let fundList: Fund[] = [fund]
     for (let item of distributionRelationList) {
       const fundAmountOrError = FundAmount.create({
-        fundAmount: fund.amount.value * item.distributionRate
+        fundAmount: fund.amount.value * item.distributionRate,
       })
 
       if (fundAmountOrError.isFailure) {
@@ -45,7 +43,7 @@ export class FundService {
         incomeUserId: item.recommendedUserId,
         paymentUserId: fund.incomeUserId,
         type: item.fundType,
-        relationId: fund.relationId
+        relationId: fund.relationId,
       })
 
       if (fundOrErrors.isFailure) {
@@ -63,7 +61,7 @@ export class FundService {
         status: item.status,
         description: item.description,
         type: item.type,
-        relationId: item.relationId
+        relationId: item.relationId,
       })
       if (createFundUseCaseResult.isLeft()) {
         return left(createFundUseCaseResult.value)

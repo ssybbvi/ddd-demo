@@ -20,16 +20,7 @@ export class UpAuthorizationController extends BaseController {
       const result = await this.useCase.execute(dto)
 
       if (result.isLeft()) {
-        const error = result.value
-
-        switch (error.constructor) {
-          case UpAuthorizationErrors.PasswordDoesntMatchError:
-            return this.fail(res, error.errorValue().message)
-          case UpAuthorizationErrors.UserNameDoesntExistError:
-            return this.fail(res, error.errorValue().message)
-          default:
-            return this.fail(res, error.errorValue())
-        }
+        return this.fail(res, result.value.errorValue())
       } else {
         const wxAuthorizationDtoResult: LoginDTOResponse = result.value.getValue() as LoginDTOResponse
         return this.ok<LoginDTOResponse>(res, wxAuthorizationDtoResult)

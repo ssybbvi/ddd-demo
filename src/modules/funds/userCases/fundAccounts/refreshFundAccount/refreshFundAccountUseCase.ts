@@ -7,13 +7,11 @@ import { IFundAccountRepo } from '../../../repos/iFundAccountRepo'
 import { FundAccount } from '../../../domain/fundAccount'
 import { IFundRepo } from '../../../repos/iFundRepo'
 
-type Response = Either<AppError.UnexpectedError, Result<void>>
+type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 
 export class RefreshFundAccountUseCase implements UseCase<UpdateFundAccountDto, Promise<Response>> {
   private fundAccountRepo: IFundAccountRepo
   private fundRepo: IFundRepo
-
-
 
   constructor(fundAccountRepo: IFundAccountRepo, fundRepo: IFundRepo) {
     this.fundAccountRepo = fundAccountRepo
@@ -28,7 +26,7 @@ export class RefreshFundAccountUseCase implements UseCase<UpdateFundAccountDto, 
 
       const fundAccountOrErrors = FundAccount.create(
         {
-          totalAmounnt: totalAmount
+          totalAmounnt: totalAmount,
         },
         new UniqueEntityID(recommendedUserId)
       )
@@ -48,8 +46,7 @@ export class RefreshFundAccountUseCase implements UseCase<UpdateFundAccountDto, 
   private async getRecommendedUserTotalAmount(recommendedUserId: string) {
     let fundList = await this.fundRepo.getListByRecommendedUserId(recommendedUserId)
     let totalAmount = fundList.reduce((acc, item) => {
-      if (item.incomeUserId == recommendedUserId &&
-        item.status === "valid") {
+      if (item.incomeUserId == recommendedUserId && item.status === 'valid') {
         return acc + item.amount.value
       }
 
