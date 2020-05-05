@@ -1,5 +1,6 @@
 export interface JWTClaims {
   userId: string
+  tenantId?: string
 }
 
 export type JWTToken = string

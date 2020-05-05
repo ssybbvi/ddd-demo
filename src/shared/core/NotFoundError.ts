@@ -1,10 +1,10 @@
-import { UseCaseError } from "./UseCaseError";
-import { Result } from "./Result";
+import { UseCaseError } from './UseCaseError'
+import { Result } from './Result'
 
 export class NotFoundError extends Result<UseCaseError> {
-  constructor(message: string = "无此数据") {
+  constructor(message: string) {
     super(false, {
-      message
+      message,
     } as UseCaseError)
   }
 }

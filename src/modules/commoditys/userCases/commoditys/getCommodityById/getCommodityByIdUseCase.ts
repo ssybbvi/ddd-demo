@@ -21,7 +21,7 @@ export class GetCommodityByIdUseCase implements UseCase<GetCommodityByIdDto, Pro
 
       const commodity = await this.commodityRepo.getById(commodityId)
       if (commodity == null) {
-        return left(new NotFoundError())
+        return left(new NotFoundError(`没有这件商品：commodityId:${commodityId}`))
       }
 
       return right(Result.ok<Commodity>(commodity))

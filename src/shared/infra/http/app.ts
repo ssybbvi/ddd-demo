@@ -9,7 +9,7 @@ import { v1Router } from './api/v1'
 
 const origin = {
   // origin: isProduction ? 'https://xxx.com' : '*',
-  origin: '*'
+  origin: '*',
 }
 
 const app = express()
@@ -25,6 +25,12 @@ app.use('/api/v1', v1Router)
 
 const port = process.env.PORT || 5000
 
-app.listen(port, () => {
-  console.log(`[App]: Listening on port ${port}`)
-})
+const appLaunch = () => {
+  return new Promise((res, rjc) => {
+    app.listen(port, () => {
+      res()
+      console.log(`[App]: Listening on port ${port}`)
+    })
+  })
+}
+export { appLaunch }

@@ -4,7 +4,10 @@ const rateLimit = require('express-rate-limit')
 import * as fs from 'fs'
 import formidable from 'formidable'
 import ossAliyun from 'ali-oss'
-import uuid from 'uuid/v4';
+import uuid from 'uuid/v4'
+
+import cls from 'continuation-local-storage'
+const clsNameSpace = cls.createNamespace('xxx')
 
 export class Middleware {
   private authService: IAuthService
@@ -60,8 +63,9 @@ export class Middleware {
         }
 
         // See if the token was found
-        const { userId } = decoded
+        const { userId, tenantId } = decoded
         const tokens = await this.authService.getTokens(userId)
+        clsNameSpace.set('tenantId', tenantId)
 
         // if the token was found, just continue the request.
         if (tokens.length !== 0) {
@@ -83,7 +87,7 @@ export class Middleware {
   public static createRateLimit(mins: number, maxRequests: number) {
     return rateLimit({
       windowMs: mins * 60 * 1000,
-      max: maxRequests
+      max: maxRequests,
     })
   }
 
@@ -96,7 +100,7 @@ export class Middleware {
 
     const domain = req.headers.origin
 
-    const isValidDomain = !!approvedDomainList.find(d => d === domain)
+    const isValidDomain = !!approvedDomainList.find((d) => d === domain)
     console.log(`Domain =${domain}, valid?=${isValidDomain}`)
 
     if (!isValidDomain) {
@@ -106,46 +110,42 @@ export class Middleware {
     }
   }
 
-  public static upload() {//TODO 待优化
+  public static upload() {
+    //TODO 待优化
     return async (req, res, next) => {
-
       let client = new ossAliyun({
         region: 'oss-cn-shenzhen',
         accessKeyId: 'LTAI4FtmLY3CAR639p3otxJX',
         accessKeySecret: 'zgbVP5Il45Z4nJROIHe8HQ968zRvAv',
-        bucket: 'xiaoailingdong'
-      });
+        bucket: 'xiaoailingdong',
+      })
 
-      var form = new formidable.IncomingForm();
+      var form = new formidable.IncomingForm()
       form.parse(req, (error, fields, files) => {
-        console.log("error:", error);
-        console.log("fields", fields)
-        console.log(files.file.path);
+        console.log('error:', error)
+        console.log('fields', fields)
+        console.log(files.file.path)
 
         const newFileName = `${uuid()}.png`
         const newFilePath = `/JiFen-ZhuanLe/images/commodity/${newFileName}`
         const newUrl = `http://oss.ixald.com${newFilePath}`
 
         let stream = fs.createReadStream(files.file.path)
-        client.putStream(`/JiFen-ZhuanLe/images/commodity/${newFileName}`, stream).then(() => {
-          console.log("okokokok")
-          res.send({
-            "name": newFileName,
-            "status": "done",
-            "url": newUrl,
-            "thumbUrl": newUrl
+        client
+          .putStream(`/JiFen-ZhuanLe/images/commodity/${newFileName}`, stream)
+          .then(() => {
+            console.log('okokokok')
+            res.send({
+              name: newFileName,
+              status: 'done',
+              url: newUrl,
+              thumbUrl: newUrl,
+            })
           })
-        }).catch((error) => {
-          console.log("errorerror", error)
-        })
-
-      });
-
+          .catch((error) => {
+            console.log('errorerror', error)
+          })
+      })
     }
   }
-
-
-
-
-
 }

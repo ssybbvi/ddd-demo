@@ -3,27 +3,30 @@ import { Tenant } from '../domain/tenant'
 import { ITenantDTO } from '../dtos/tenantDTO'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { TenantName } from '../domain/tenantName'
-import { TenantConnectionString } from '../domain/tenantConnectionString'
 import { ITenantDbModels } from '../dbModels/iTenantDbModels'
+import { TenantMongodbConnection } from '../domain/tenantMongodbConnection'
 
 export class TenantMap implements IMapper<Tenant> {
   public static toDTO(tenant: Tenant): ITenantDTO {
     return {
       name: tenant.name.value,
-      connectionString: tenant.connectionString.value,
-      isActive: tenant.isActive
+      mongodbConnection: tenant.mongodbConnection,
+      isActive: tenant.isActive,
     }
   }
 
-  public static toDomain(raw: any): Tenant {
+  public static toDomain(raw: ITenantDbModels): Tenant {
     const tenantNameOrError = TenantName.create({ tenantName: raw.name })
-    const connectionStringOrError = TenantConnectionString.create({ connectionString: raw.connectionString })
+    const connectionStringOrError = TenantMongodbConnection.create({
+      url: raw.mongodbConnection.url,
+      dbName: raw.mongodbConnection.dbName,
+    })
 
     const tenantOrError = Tenant.create(
       {
         name: tenantNameOrError.getValue(),
-        connectionString: connectionStringOrError.getValue(),
-        isActive: raw.isActive
+        mongodbConnection: connectionStringOrError.getValue(),
+        isActive: raw.isActive,
       },
       new UniqueEntityID(raw._id)
     )
@@ -37,8 +40,8 @@ export class TenantMap implements IMapper<Tenant> {
     return {
       _id: tenant.tenantId.id.toString(),
       name: tenant.name.value,
-      connectionString: tenant.connectionString.value,
-      isActive: tenant.isActive
+      mongodbConnection: tenant.mongodbConnection,
+      isActive: tenant.isActive,
     }
   }
 }

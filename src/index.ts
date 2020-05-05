@@ -1,18 +1,6 @@
 require('dotenv').config()
 
-
-
 import './shared/core/ErrorToString'
-import './shared/infra/http/app'
-import { Global } from './shared/infra/database/mongodb/index'
-import { wxUserCache } from './modules/users/infra/cache';
-import { commodityCache } from './modules/commoditys/infra/cache';
-; (async () => {
-
-  await Global.instance.init()
-  wxUserCache.load()
-  commodityCache.load()
-})()
 
 // Subscriptions
 import './modules/users/subscriptions'
@@ -23,4 +11,13 @@ import './modules/jiFenYueDui/subscriptions'
 import './modules/orders/subscriptions'
 import './modules/oauth2/subscriptions'
 import './cronTaskTemp'
+import { Global } from './shared/infra/database/mongodb'
+import { TenantManager } from './shared/infra/tenant/tenantManager'
+import { appLaunch } from './shared/infra/http/app'
+import { commodityCache } from './modules/commoditys/infra/cache'
+import { wxUserCache } from './modules/users/infra/cache'
 
+Global.instance
+  .init()
+  .then(() => TenantManager.instance.init())
+  .then(() => Promise.all([appLaunch(), commodityCache.load(), wxUserCache.load()]))

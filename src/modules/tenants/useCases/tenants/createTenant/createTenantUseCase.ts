@@ -6,7 +6,7 @@ import { CreateTenantErrors } from './createTenantErrors'
 import { AppError } from '../../../../../shared/core/AppError'
 import { Tenant } from '../../../domain/tenant'
 import { TenantName } from '../../../domain/tenantName'
-import { TenantConnectionString } from '../../../domain/tenantConnectionString'
+import { TenantMongodbConnection } from '../../../domain/tenantMongodbConnection'
 
 type Response = Either<
   CreateTenantErrors.TenantExistSameNameError | Result<Tenant> | Result<void> | AppError.UnexpectedError,
@@ -22,9 +22,12 @@ export class CreateTenantUseCase implements UseCase<CreateTenantRequestDto, Prom
 
   async execute(request?: CreateTenantRequestDto): Promise<Response> {
     const tenantNameOrError = TenantName.create({ tenantName: request.name })
-    const tenantConnectionStringOrError = TenantConnectionString.create({ connectionString: request.connectionString })
+    const tenantMongodbConnectionOrError = TenantMongodbConnection.create({
+      url: request.mongodbConnection.url,
+      dbName: request.mongodbConnection.dbName,
+    })
 
-    const dtoResult = Result.combine([tenantNameOrError, tenantConnectionStringOrError])
+    const dtoResult = Result.combine([tenantNameOrError, tenantMongodbConnectionOrError])
 
     if (dtoResult.isFailure) {
       return left(Result.fail<void>(dtoResult.error)) as Response
@@ -37,7 +40,7 @@ export class CreateTenantUseCase implements UseCase<CreateTenantRequestDto, Prom
 
     const tenantOrError: Result<Tenant> = Tenant.create({
       name: tenantNameOrError.getValue(),
-      connectionString: tenantConnectionStringOrError.getValue(),
+      mongodbConnection: tenantMongodbConnectionOrError.getValue(),
       isActive: request.isActive,
     })
 

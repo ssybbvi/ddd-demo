@@ -32,7 +32,7 @@ export class ShippedOrderUseCase implements UseCase<ShippedOrderDto, Promise<Res
       const order = await this.orderRepo.getById(orderId)
 
       if (!!order === false) {
-        return left(new NotFoundError())
+        return left(new NotFoundError(`没有这个订单 order:${orderId}`))
       }
 
       const result = order.shipped(shippedNumber, shippedType)

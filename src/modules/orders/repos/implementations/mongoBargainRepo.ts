@@ -9,7 +9,7 @@ import { IBargainRepo } from '../bargainRepo'
 import { RandomUtils } from '../../../../shared/utils/RandomUtils'
 
 export class MongoBargainRepo implements IBargainRepo {
-  constructor() { }
+  constructor() {}
 
   private createCollection(): Collection<IBargainDbModel> {
     return Global.instance.mongoDb.collection<IBargainDbModel>('bargain')
@@ -35,7 +35,8 @@ export class MongoBargainRepo implements IBargainRepo {
           commodityItems: raw.commodityItems,
           participants: raw.participants,
           deliveryInfo: raw.deliveryInfo,
-        }
+          addressInfo: raw.addressInfo,
+        },
       },
       { upsert: true }
     )
@@ -48,9 +49,9 @@ export class MongoBargainRepo implements IBargainRepo {
     return !!bargain === true
   }
 
-  public async  filter(userId?: string): Promise<Bargain[]> {
+  public async filter(userId?: string): Promise<Bargain[]> {
     const list = await this.createCollection().find({ userId }).toArray()
-    return list.map(item => BargainMap.toDomain(item))
+    return list.map((item) => BargainMap.toDomain(item))
   }
 
   public async getParticpantsCountByUserId(userId: string, recentTime: number = 1000 * 60 * 60 * 24 * 30) {

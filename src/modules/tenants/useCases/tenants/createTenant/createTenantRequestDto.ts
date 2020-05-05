@@ -1,5 +1,8 @@
 export class CreateTenantRequestDto {
   name: string
-  connectionString?: string
+  mongodbConnection?: {
+    url: string
+    dbName: string
+  }
   isActive: boolean
 }

@@ -31,11 +31,8 @@ export class MongoTenantRepo implements ITenantRepo {
   }
 
   async getAll(): Promise<Tenant[]> {
-    let list = await await Global.instance.mongoDb
-      .collection<ITenantDbModels>(this.tableNname)
-      .find({})
-      .toArray()
-    return list.map(item => TenantMap.toDomain(item))
+    let list = await await Global.instance.mongoDb.collection<ITenantDbModels>(this.tableNname).find({}).toArray()
+    return list.map((item) => TenantMap.toDomain(item))
   }
 
   async updateName(_id: string, name: string): Promise<void> {

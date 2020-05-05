@@ -1,5 +1,6 @@
 import { Db, MongoClient } from 'mongodb'
 import { authConfig } from '../../../../config'
+import { MongodbClient } from './mongodbClient'
 
 export class Global {
   mongoDb!: Db
@@ -22,7 +23,7 @@ export class Global {
     this.mongoDb = await this.getMongoDb(authConfig.mongoDatabaseUrl, authConfig.mongoDatabaseName)
   }
 
-  private getMongoDb(uri: string, dbName: string): Promise<Db> {
+  public getMongoDb(uri: string, dbName: string): Promise<Db> {
     console.log(`Start connecting db...(${uri})`)
     return new Promise<Db>((rs, rj) => {
       MongoClient.connect(
@@ -30,7 +31,7 @@ export class Global {
         {
           autoReconnect: true,
           useNewUrlParser: true,
-          poolSize: 5
+          poolSize: 5,
         },
         (err, client) => {
           if (err) {
@@ -45,3 +46,6 @@ export class Global {
     })
   }
 }
+
+const mongodbClient = new MongodbClient()
+export { mongodbClient }

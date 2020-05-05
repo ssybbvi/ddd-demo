@@ -8,7 +8,7 @@ import { OrderMap } from '../../mappers/orderMap'
 import { Order } from '../../domain/order'
 
 export class MongoOrderRepo implements IOrderRepo {
-  constructor() { }
+  constructor() {}
 
   private createCollection(): Collection<OrderDbModel> {
     return Global.instance.mongoDb.collection<OrderDbModel>('order')
@@ -34,9 +34,9 @@ export class MongoOrderRepo implements IOrderRepo {
           cancelInfo: raw.cancelInfo,
           paymentInfo: raw.paymentInfo,
           deliveryInfo: raw.deliveryInfo,
-
-          commodityItems: raw.commodityItems
-        }
+          addressInfo: raw.addressInfo,
+          commodityItems: raw.commodityItems,
+        },
       },
       { upsert: true }
     )
@@ -55,29 +55,26 @@ export class MongoOrderRepo implements IOrderRepo {
     if (!!userId === true) {
       query.userId = userId
     }
-    let orderList = await this.createCollection()
-      .find(query)
-      .sort({ createAt: -1 })
-      .toArray()
-    return orderList.map(item => OrderMap.toDomain(item))
+    let orderList = await this.createCollection().find(query).sort({ createAt: -1 }).toArray()
+    return orderList.map((item) => OrderMap.toDomain(item))
   }
 
   public async cancelOrder(unpaidTime: number): Promise<void> {
     await this.createCollection().update(
       {
         createAt: {
-          $lt: unpaidTime
+          $lt: unpaidTime,
         },
-        status: 'unpaid'
+        status: 'unpaid',
       },
       {
         $set: {
           status: 'cancel',
-          cancelTime: Date.now()
-        }
+          cancelTime: Date.now(),
+        },
       },
       {
-        multi: true
+        multi: true,
       }
     )
   }
