@@ -65,7 +65,7 @@ export class Middleware {
         // See if the token was found
         const { userId, tenantId } = decoded
         const tokens = await this.authService.getTokens(userId)
-        clsNameSpace.set('tenantId', "tt")
+        //clsNameSpace.set('tenantId', "tt")
 
         // if the token was found, just continue the request.
         if (tokens.length !== 0) {
