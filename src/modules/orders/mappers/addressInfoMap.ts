@@ -1,6 +1,6 @@
 import { IMapper } from '../../../shared/infra/Mapper'
 import { AddressInfo } from '../domain/addressInfo'
-import { IAddressInfoDbModel } from '../dbModels/AddressInfoDbModel'
+import { IAddressInfoDbModel } from '../dbModels/addressInfoDbModel'
 import { IAddressInfoDto } from '../dtos/deliveryInfoDto'
 
 export class AddressInfoMap implements IMapper<AddressInfo> {
