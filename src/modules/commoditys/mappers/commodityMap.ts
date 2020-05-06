@@ -34,7 +34,7 @@ export class CommodityMap implements IMapper<Commodity> {
   }
 
   public static toDomain(raw: ICommodityDbModel): Commodity {
-    if (raw == null) {
+    if (!raw) {
       return null
     }
 

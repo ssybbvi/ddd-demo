@@ -4,7 +4,7 @@ import { WxUserDTO } from '../dtos/wxUserDto'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 
 export class WxUserMap {
-  static async toListDto(wxUserList: WxUser[]) {
+  static async toListDto(wxUserList: WxUser[]): Promise<WxUserDTO[]> {
     const wxUserDtoList = []
     for (let item of wxUserList) {
       wxUserDtoList.push(await this.toDTO(item))

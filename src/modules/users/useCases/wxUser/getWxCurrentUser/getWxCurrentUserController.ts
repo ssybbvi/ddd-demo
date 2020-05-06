@@ -23,8 +23,9 @@ export class GetWxCurrentUserController extends BaseController {
         return this.fail(res, result.value.errorValue().message)
       } else {
         const wxuser = result.value.getValue()
+        const wxUserDot = await WxUserMap.toDTO(wxuser)
         return this.ok(res, {
-          user: WxUserMap.toDTO(wxuser)
+          user: wxUserDot
         })
       }
     } catch (err) {
