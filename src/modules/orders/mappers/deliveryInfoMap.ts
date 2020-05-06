@@ -3,7 +3,7 @@ import { DeliveryInfo } from '../domain/deliveryInfo'
 import { IDeliveryInfoDto } from '../dtos/deliveryInfoDto'
 import { DeliveryInfoType } from '../domain/deliveryType'
 import { IDeliveryInfoDbModel } from '../dbModels/deliveryInfoDbModel'
-import { AddressInfoMap } from './AddressInfoMap'
+import { AddressInfoMap } from './addressInfoMap'
 
 export class DeliveryInfoMap implements IMapper<DeliveryInfo> {
   public static toDomain(raw: IDeliveryInfoDbModel): DeliveryInfo {

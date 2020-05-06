@@ -11,7 +11,7 @@ import { PaymentInfoMap } from './paymentInfoMap'
 import { CancelInfoMap } from './cancelInfoMap'
 import { ICommodityItemDbModel } from '../dbModels/commodityItemDbModel'
 import { userIdToDto } from '../../users/infra/decorators/wxUserDtoDecorators'
-import { AddressInfoMap } from './AddressInfoMap'
+import { AddressInfoMap } from './addressInfoMap'
 
 export class OrderMap implements IMapper<Order> {
   public static toDomain(raw: OrderDbModel): Order {
@@ -84,12 +84,12 @@ export class OrderMap implements IMapper<Order> {
     const orderStatus = order.cancelInfo
       ? 'cancel'
       : order.deliveryInfo.finishAt
-      ? 'received'
-      : order.deliveryInfo.beginAt
-      ? 'shipped'
-      : order.paymentInfo
-      ? 'shipping'
-      : 'unpaid'
+        ? 'received'
+        : order.deliveryInfo.beginAt
+          ? 'shipped'
+          : order.paymentInfo
+            ? 'shipping'
+            : 'unpaid'
 
     const commodityItemDtoList = await CommodityItemMap.toListDto(order.commodityItems.getItems())
     return {

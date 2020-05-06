@@ -8,7 +8,7 @@ import { DeliveryInfoMap } from './deliveryInfoMap'
 import { ParticipantMap } from './participantMap'
 import { CommodityItemMap } from './commodityItemMap'
 import { CommodityItems } from '../domain/commodityItems'
-import { AddressInfoMap } from './AddressInfoMap'
+import { AddressInfoMap } from './addressInfoMap'
 
 export class BargainMap implements IMapper<Bargain> {
   public static toDomain(raw: IBargainDbModel): Bargain {

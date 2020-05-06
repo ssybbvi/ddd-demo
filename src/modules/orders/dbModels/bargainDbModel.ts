@@ -2,7 +2,7 @@ import { IBaseIdDbModels } from '../../../shared/infra/database/baseIdDbModels'
 import { IParticipantDbModel } from './participantDbModel'
 import { IDeliveryInfoDbModel } from './deliveryInfoDbModel'
 import { ICommodityItemDbModel } from './commodityItemDbModel'
-import { IAddressInfoDbModel } from './AddressInfoDbModel'
+import { IAddressInfoDbModel } from './addressInfoDbModel'
 
 export interface IBargainDbModel extends IBaseIdDbModels {
   userId: string

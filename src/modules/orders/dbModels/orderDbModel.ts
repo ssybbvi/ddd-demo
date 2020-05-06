@@ -3,7 +3,7 @@ import { ICancelInfoDbModel } from './cancelInfoDbModel'
 import { IPaymentInfoDbModel } from './paymentInfoDbModel'
 import { IDeliveryInfoDbModel } from './deliveryInfoDbModel'
 import { ICommodityItemDbModel } from './commodityItemDbModel'
-import { IAddressInfoDbModel } from './AddressInfoDbModel'
+import { IAddressInfoDbModel } from './addressInfoDbModel'
 
 export interface OrderDbModel extends IBaseIdDbModels {
   _id: string
