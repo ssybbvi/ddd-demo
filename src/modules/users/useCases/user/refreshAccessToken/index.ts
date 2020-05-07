@@ -1,6 +1,6 @@
 import { RefreshAccessToken } from './RefreshAccessToken'
 import { userRepo } from '../../../repos'
-import { authService } from '../../../services'
+import { authService } from '../../../../../shared/infra/auth'
 import { RefreshAccessTokenController } from './RefreshAccessTokenController'
 
 const refreshAccessToken = new RefreshAccessToken(userRepo, authService)

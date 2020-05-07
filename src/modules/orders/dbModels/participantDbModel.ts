@@ -1,4 +1,4 @@
-import { IBaseIdDbModels } from "../../../shared/infra/database/baseIdDbModels";
+import { IBaseIdDbModels } from "../../../shared/infra/database/dbModel/baseIdDbModels";
 
 export interface IParticipantDbModel extends IBaseIdDbModels {
   userId: string

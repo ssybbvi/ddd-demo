@@ -3,7 +3,7 @@ import { Tenant } from '../domain/tenant'
 import { ITenantDTO } from '../dtos/tenantDTO'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { TenantName } from '../domain/tenantName'
-import { ITenantDbModels } from '../dbModels/iTenantDbModels'
+import { ITenantDbModels, IMongodbConnectionDbModel } from '../dbModels/iTenantDbModels'
 import { TenantMongodbConnection } from '../domain/tenantMongodbConnection'
 
 export class TenantMap implements IMapper<Tenant> {
@@ -16,6 +16,9 @@ export class TenantMap implements IMapper<Tenant> {
   }
 
   public static toDomain(raw: ITenantDbModels): Tenant {
+    if (!raw) {
+      return null
+    }
     const tenantNameOrError = TenantName.create({ tenantName: raw.name })
     const connectionStringOrError = TenantMongodbConnection.create({
       url: raw.mongodbConnection.url,
@@ -37,10 +40,15 @@ export class TenantMap implements IMapper<Tenant> {
   }
 
   public static async toPersistence(tenant: Tenant): Promise<ITenantDbModels> {
+
+    const mongodbConnectionDbModel: IMongodbConnectionDbModel = {
+      url: tenant.mongodbConnection.url,
+      dbName: tenant.mongodbConnection.dbName
+    }
     return {
       _id: tenant.tenantId.id.toString(),
       name: tenant.name.value,
-      mongodbConnection: tenant.mongodbConnection,
+      mongodbConnection: mongodbConnectionDbModel,
       isActive: tenant.isActive,
     }
   }

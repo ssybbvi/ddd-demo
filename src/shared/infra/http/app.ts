@@ -5,7 +5,10 @@ import cors from 'cors'
 import helmet from 'helmet'
 import compression from 'compression'
 import { v1Router } from './api/v1'
+import { middleware } from '.'
 //import { isProduction } from '../../../config'
+
+
 
 const origin = {
   // origin: isProduction ? 'https://xxx.com' : '*',
@@ -20,6 +23,7 @@ app.use(cors())
 app.use(compression())
 app.use(helmet())
 app.use(morgan('combined'))
+app.use(middleware.ensureAuthenticatedTenant())
 
 app.use('/api/v1', v1Router)
 

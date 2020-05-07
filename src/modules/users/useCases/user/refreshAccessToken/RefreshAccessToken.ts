@@ -1,5 +1,5 @@
 import { UseCase } from '../../../../../shared/core/UseCase'
-import { IAuthService } from '../../../services/authService'
+import { IAuthService } from '../../../../../shared/infra/auth/authService'
 import { Either, Result, left, right } from '../../../../../shared/core/Result'
 import { AppError } from '../../../../../shared/core/AppError'
 import { JWTToken, RefreshToken } from '../../../domain/jwt'

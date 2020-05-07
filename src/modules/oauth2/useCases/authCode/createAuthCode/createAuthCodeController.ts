@@ -19,7 +19,7 @@ export class CreateAuthCodeController extends BaseController {
   async executeImpl(req: DecodedExpressRequest, res: express.Response): Promise<any> {
     const { userId } = req.decoded
     const dto: CreateAuthCodeDto = {
-      appId: req.query.appId,
+      appId: req.query.appId.toString(),
       userId,
     }
 

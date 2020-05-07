@@ -1,9 +1,8 @@
 import { Db, MongoClient } from 'mongodb'
 import { authConfig } from '../../../../config'
-import { MongodbClient } from './mongodbClient'
 
 export class Global {
-  mongoDb!: Db
+  public mongoDb!: Db
 
   private static _instance: Global
   static get instance(): Global {
@@ -14,7 +13,7 @@ export class Global {
   }
 
   private _isInited = false
-  async init() {
+  public async init() {
     if (this._isInited) {
       return
     }
@@ -22,6 +21,7 @@ export class Global {
     this._isInited = true
     this.mongoDb = await this.getMongoDb(authConfig.mongoDatabaseUrl, authConfig.mongoDatabaseName)
   }
+
 
   public getMongoDb(uri: string, dbName: string): Promise<Db> {
     console.log(`Start connecting db...(${uri})`)
@@ -38,7 +38,7 @@ export class Global {
             console.log(' Failed connected db.', err)
             rj(err)
           } else {
-            console.log(` Connect db succ.(${uri})`)
+            console.log(` Connect db succ.(${uri})  dbName:${dbName}`)
             rs(client.db(dbName))
           }
         }
@@ -46,6 +46,3 @@ export class Global {
     })
   }
 }
-
-const mongodbClient = new MongodbClient()
-export { mongodbClient }

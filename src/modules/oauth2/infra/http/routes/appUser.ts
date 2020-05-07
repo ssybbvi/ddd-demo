@@ -4,6 +4,6 @@ import { authorizationCodeController } from '../../../useCases/appUser/authoriza
 
 const appUserRouter = express.Router()
 
-appUserRouter.get('/authorization', (req, res) => authorizationCodeController.execute(req, res))
+appUserRouter.get('/authorization', middleware.ensureAuthenticated(), (req, res) => authorizationCodeController.execute(req, res))
 
 export { appUserRouter }

@@ -7,13 +7,14 @@ import { WxUser } from '../../domain/wxUser'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 
 export class MongoWxUserRepo implements IWxUserRepo {
-  constructor() {}
+  constructor() { }
 
   private createCollection(): Collection<IWxUserDbModels> {
     return Global.instance.mongoDb.collection<IWxUserDbModels>('wxUser')
   }
 
   public async getById(_id: string): Promise<WxUser> {
+
     let wxUser = await this.createCollection().findOne({ _id })
     return WxUserMap.toDomain(wxUser)
   }
@@ -26,6 +27,8 @@ export class MongoWxUserRepo implements IWxUserRepo {
   }
 
   async save(wxUser: WxUser): Promise<void> {
+
+
     const raw = await WxUserMap.toPersistence(wxUser)
     await this.createCollection().updateOne(
       { _id: raw._id },
@@ -42,6 +45,7 @@ export class MongoWxUserRepo implements IWxUserRepo {
       },
       { upsert: true }
     )
+
     await DomainEvents.dispatchEventsForAggregate(wxUser)
   }
 

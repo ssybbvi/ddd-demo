@@ -1,6 +1,3 @@
-import { Db, MongoClient, Collection } from 'mongodb'
-
-import { Global } from '../../../../shared/infra/database/mongodb'
 
 
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
@@ -8,22 +5,22 @@ import { IAppUserRepo } from '../appUserRepo'
 import { IAppUserDbModel } from '../../dbModels/appUserDbModel'
 import { AppUserMap } from '../../mappers/appUserMapper'
 import { AppUser } from '../../domain/appUser'
+import { MongodbWithTenant } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 
 export class MongoAppUserRepo implements IAppUserRepo {
-  constructor() { }
 
-  private createCollection(): Collection<IAppUserDbModel> {
-    return Global.instance.mongoDb.collection<IAppUserDbModel>('appUser')
+  private getCollection() {
+    return MongodbWithTenant.instance.Collection<IAppUserDbModel>('appUser')
   }
 
   public async getById(_id: string): Promise<AppUser> {
-    let appUser = await this.createCollection().findOne({ _id })
+    let appUser = await this.getCollection().findOne({ _id })
     return AppUserMap.toDomain(appUser)
   }
 
   public async save(appUser: AppUser): Promise<void> {
     const raw = await AppUserMap.toPersistence(appUser)
-    await this.createCollection().updateOne(
+    await this.getCollection().updateOne(
       { _id: raw._id },
       {
         $set: {
@@ -39,7 +36,7 @@ export class MongoAppUserRepo implements IAppUserRepo {
   }
 
   public async getAppUserByAppIdWithUserId(appId: string, userId: string): Promise<AppUser> {
-    const appUser = await this.createCollection().findOne({ appId, userId })
+    const appUser = await this.getCollection().findOne({ appId, userId })
     return AppUserMap.toDomain(appUser)
   }
 

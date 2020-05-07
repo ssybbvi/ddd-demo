@@ -53,6 +53,7 @@ export class WxAuthorizationUseCase implements UseCase<WxAuthorizationDto, Promi
   }
 
   public async execute(request: WxAuthorizationDto): Promise<Response> {
+
     try {
       const { code, inviteToken } = request
       if (inviteToken) {

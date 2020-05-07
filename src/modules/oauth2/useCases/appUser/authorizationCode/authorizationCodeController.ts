@@ -19,10 +19,10 @@ export class AuthorizationCodeController extends BaseController {
     const { appId, secret, code, grantType } = req.query
 
     const dto: AuthorizationCodeDto = {
-      appId,
-      secret,
-      code,
-      grantType,
+      appId: appId.toString(),
+      secret: secret.toString(),
+      code: code.toString(),
+      grantType: grantType.toString(),
     }
 
     try {

@@ -1,5 +1,5 @@
 export interface JWTClaims {
-  userId: string
+  userId?: string
   tenantId?: string
 }
 

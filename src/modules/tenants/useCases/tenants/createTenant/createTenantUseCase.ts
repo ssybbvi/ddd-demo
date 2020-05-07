@@ -49,7 +49,7 @@ export class CreateTenantUseCase implements UseCase<CreateTenantRequestDto, Prom
     }
 
     const tenant: Tenant = tenantOrError.getValue()
-    await this.tenantRepo.create(tenant)
+    await this.tenantRepo.save(tenant)
 
     return right(Result.ok<void>())
   }

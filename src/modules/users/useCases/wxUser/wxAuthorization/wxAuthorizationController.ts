@@ -15,7 +15,6 @@ export class WxAuthorizationController extends BaseController {
 
   async executeImpl(req: express.Request, res: express.Response): Promise<any> {
     const dto: WxAuthorizationDto = req.body as WxAuthorizationDto
-
     try {
       const result = await this.useCase.execute(dto)
       if (result.isLeft()) {

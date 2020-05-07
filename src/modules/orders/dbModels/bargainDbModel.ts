@@ -1,4 +1,4 @@
-import { IBaseIdDbModels } from '../../../shared/infra/database/baseIdDbModels'
+import { IBaseIdDbModels } from '../../../shared/infra/database/dbModel/baseIdDbModels'
 import { IParticipantDbModel } from './participantDbModel'
 import { IDeliveryInfoDbModel } from './deliveryInfoDbModel'
 import { ICommodityItemDbModel } from './commodityItemDbModel'

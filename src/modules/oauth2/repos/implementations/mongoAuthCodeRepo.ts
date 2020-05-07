@@ -1,29 +1,24 @@
-import { Db, MongoClient, Collection } from 'mongodb'
-
-import { Global } from '../../../../shared/infra/database/mongodb'
-
-
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 import { IAuthCodeDbModel } from '../../dbModels/authCodeDbModel'
 import { AuthCodeMap } from '../../mappers/authCodeMapper'
 import { AuthCode } from '../../domain/authCode'
 import { IAuthCodeRepo } from '../authCodeRepo'
+import { MongodbWithTenant } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 
 export class MongoAuthCodeRepo implements IAuthCodeRepo {
-  constructor() { }
 
-  private createCollection(): Collection<IAuthCodeDbModel> {
-    return Global.instance.mongoDb.collection<IAuthCodeDbModel>('authCode')
+  private getCollection() {
+    return MongodbWithTenant.instance.Collection<IAuthCodeDbModel>('authCode')
   }
 
   public async getById(_id: string): Promise<AuthCode> {
-    let authCode = await this.createCollection().findOne({ _id })
+    let authCode = await this.getCollection().findOne({ _id })
     return AuthCodeMap.toDomain(authCode)
   }
 
   public async save(authCode: AuthCode): Promise<void> {
     const raw = await AuthCodeMap.toPersistence(authCode)
-    await this.createCollection().updateOne(
+    await this.getCollection().updateOne(
       { _id: raw._id },
       {
         $set: {
@@ -40,12 +35,12 @@ export class MongoAuthCodeRepo implements IAuthCodeRepo {
   }
 
   public async getAuthCodeByAppIdWithCode(appId: string, code: string): Promise<AuthCode> {
-    const authCode = await this.createCollection().findOne({ appId, code })
+    const authCode = await this.getCollection().findOne({ appId, code })
     return AuthCodeMap.toDomain(authCode)
   }
 
   public async  getAuthCodeByAppIdWithUserId(appId: string, userId: string): Promise<AuthCode> {
-    const authCode = await this.createCollection().findOne({ appId, userId })
+    const authCode = await this.getCollection().findOne({ appId, userId })
     return AuthCodeMap.toDomain(authCode)
   }
 }

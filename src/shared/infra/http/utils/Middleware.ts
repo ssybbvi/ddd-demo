@@ -1,13 +1,13 @@
 import { isProduction } from '../../../../config'
-import { IAuthService } from '../../../../modules/users/services/authService'
+import { IAuthService } from '../../auth/authService'
 const rateLimit = require('express-rate-limit')
 import * as fs from 'fs'
 import formidable from 'formidable'
 import ossAliyun from 'ali-oss'
 import uuid from 'uuid/v4'
+import { clsNameSpace } from '../../cls'
+import express from 'express'
 
-import cls from 'cls-hooked'
-const clsNameSpace = cls.createNamespace('xxx')
 
 export class Middleware {
   private authService: IAuthService
@@ -49,38 +49,73 @@ export class Middleware {
     }
   }
 
+  public ensureAuthenticatedTenant() {
+    return async (req: express.Request, res, next) => {
+      if (req.url.includes('/api/v1/tenant')) {
+        next()
+        return
+      }
+
+      const token = req.headers['authorization']
+      if (token) {
+        return res.status(200).send({ message: 'No access token provided' })
+      }
+
+      const decoded = await this.authService.decodeJWT(token)
+      const signatureFailed = !!decoded === false
+
+      if (signatureFailed) {
+        return res.status(200).send({ message: 'Token过期啦' })
+      }
+
+      const { tenantId } = decoded
+      if (!tenantId) {
+        return res.status(200).send({ message: '请先获取tenantToken' })
+      }
+
+      clsNameSpace.run(() => {
+        console.log('==========set:tenantId==========', tenantId)
+        clsNameSpace.set('tenantId', tenantId)
+        return next()
+      });
+    }
+  }
+
   public ensureAuthenticated() {
     return async (req, res, next) => {
       const token = req.headers['authorization']
-      // Confirm that the token was signed with our signature.
-      if (token) {
-        const decoded = await this.authService.decodeJWT(token)
-        const signatureFailed = !!decoded === false
-
-        if (signatureFailed) {
-          //return this.endRequest(403, 'Token signature expired.', res)
-          return res.status(200).send({ message: 'Token过期啦' })
-        }
-
-        // See if the token was found
-        const { userId, tenantId } = decoded
-        const tokens = await this.authService.getTokens(userId)
-        //clsNameSpace.set('tenantId', "tt")
-
-        // if the token was found, just continue the request.
-        if (tokens.length !== 0) {
-          req.decoded = decoded
-          return next()
-        } else {
-          //return this.endRequest(403, 'Auth token not found. User is probably not logged in. Please login again.', res)
-          return res
-            .status(200)
-            .send({ message: 'Auth token not found. User is probably not logged in. Please login again.' })
-        }
-      } else {
-        // return this.endRequest(403, 'No access token provided', res)
+      if (!token) {
         return res.status(200).send({ message: 'No access token provided' })
       }
+
+      const decoded = await this.authService.decodeJWT(token)
+      const signatureFailed = !!decoded === false
+
+      if (signatureFailed) {
+        return res.status(200).send({ message: 'Token过期啦' })
+      }
+
+      const { userId, tenantId } = decoded
+      if (!userId) {
+        return res
+          .status(200)
+          .send({ message: '请登录获取token' })
+      }
+
+      const tokens = await this.authService.getTokens(userId)
+
+      if (tokens.length === 0) {
+        return res
+          .status(200)
+          .send({ message: 'Auth token not found. User is probably not logged in. Please login again.' })
+      }
+
+      req.decoded = decoded
+      clsNameSpace.run(() => {
+        console.log('==========set:tenantId==========', tenantId)
+        clsNameSpace.set('tenantId', tenantId)
+        return next()
+      });
     }
   }
 

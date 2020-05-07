@@ -3,6 +3,7 @@ import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { IThirdPartyAppDbModel } from '../dbModels/thirdPartyAppDbModel'
 import { ThirdPartyApp } from '../domain/thirdPartyApp'
 import { IThirdPartyAppDto, IThirdPartyAppByTokenDto } from '../dtos/thirdPartyAppDto'
+import { clsNameSpace } from '../../../shared/infra/cls'
 
 export class ThirdPartyAppMap implements IMapper<ThirdPartyApp> {
   public static toDTOByGetToken(thirdPartyApp: ThirdPartyApp): IThirdPartyAppByTokenDto {
@@ -51,7 +52,7 @@ export class ThirdPartyAppMap implements IMapper<ThirdPartyApp> {
       secret: thirdPartyApp.secret,
       createAt: thirdPartyApp.createAt,
       accessToken: thirdPartyApp.accessToken,
-      expiresIn: thirdPartyApp.expiresIn
+      expiresIn: thirdPartyApp.expiresIn,
     }
   }
 }

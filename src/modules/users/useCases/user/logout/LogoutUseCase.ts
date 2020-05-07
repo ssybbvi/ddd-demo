@@ -1,6 +1,6 @@
 import { UseCase } from '../../../../../shared/core/UseCase'
 import { IUserRepo } from '../../../repos/userRepo'
-import { IAuthService } from '../../../services/authService'
+import { IAuthService } from '../../../../../shared/infra/auth/authService'
 import { Either, left, Result, right } from '../../../../../shared/core/Result'
 import { LogoutDTO } from './LogoutDTO'
 import { AppError } from '../../../../../shared/core/AppError'

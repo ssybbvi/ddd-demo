@@ -16,7 +16,7 @@ export class GetTenantUseCase implements UseCase<IGetTenantRequestDto, Promise<R
 
   async execute(request?: IGetTenantRequestDto): Promise<Response> {
     try {
-      const tenant = await this.tenantRepo.getAll()
+      const tenant = await this.tenantRepo.filter()
       return right(Result.ok<Tenant[]>(tenant))
     } catch (err) {
       return left(new AppError.UnexpectedError(err))

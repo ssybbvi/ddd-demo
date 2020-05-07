@@ -7,6 +7,7 @@ import { IFundAccountRepo } from '../../../repos/iFundAccountRepo'
 import { FundAccount } from '../../../domain/fundAccount'
 import { IFundRepo } from '../../../repos/iFundRepo'
 
+
 type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 
 export class RefreshFundAccountUseCase implements UseCase<UpdateFundAccountDto, Promise<Response>> {

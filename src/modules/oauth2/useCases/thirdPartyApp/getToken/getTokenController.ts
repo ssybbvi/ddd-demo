@@ -18,9 +18,9 @@ export class GetTokenController extends BaseController {
     const { appId, secret, grantType } = req.query
 
     const dto: GetTokenDto = {
-      appId,
-      secret,
-      grantType,
+      appId: appId.toString(),
+      secret: secret.toString(),
+      grantType: grantType.toString(),
     }
 
     try {

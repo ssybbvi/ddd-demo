@@ -1,6 +1,6 @@
 import { LogoutUseCase } from './LogoutUseCase'
 import { userRepo } from '../../../repos'
-import { authService } from '../../../services'
+import { authService } from '../../../../../shared/infra/auth'
 import { LogoutController } from './LogoutController'
 
 const logoutUseCase = new LogoutUseCase(userRepo, authService)

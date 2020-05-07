@@ -12,12 +12,12 @@ import './modules/orders/subscriptions'
 import './modules/oauth2/subscriptions'
 import './cronTaskTemp'
 import { Global } from './shared/infra/database/mongodb'
-import { TenantManager } from './shared/infra/tenant/tenantManager'
 import { appLaunch } from './shared/infra/http/app'
 import { commodityCache } from './modules/commoditys/infra/cache'
 import { wxUserCache } from './modules/users/infra/cache'
+import { MongodbWithTenant } from './shared/infra/database/mongodb/mongodbTenant'
 
 Global.instance
   .init()
-  .then(() => TenantManager.instance.init())
+  .then(() => MongodbWithTenant.instance.init())
   .then(() => Promise.all([appLaunch(), commodityCache.load(), wxUserCache.load()]))

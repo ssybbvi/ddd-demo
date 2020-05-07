@@ -19,6 +19,7 @@ export class TestLoginUseCase implements UseCase<TestLoginDto, Promise<Response>
     try {
       const loginUserUseCaseResult = await this.loginUserUseCase.execute({
         userId,
+        tenantId: "29a9fa5f-05d8-473f-a01c-13e3771c80c7"
       })
 
       if (loginUserUseCaseResult.isLeft()) {

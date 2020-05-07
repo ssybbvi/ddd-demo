@@ -5,6 +5,6 @@ import { getTokenController } from '../../../useCases/thirdPartyApp/getToken'
 
 const thirdPartyAppRouter = express.Router()
 
-thirdPartyAppRouter.post('/', (req, res) => createThirdPartyAppController.execute(req, res))
-thirdPartyAppRouter.get('/', (req, res) => getTokenController.execute(req, res))
+thirdPartyAppRouter.post('/', middleware.ensureAuthenticated(), (req, res) => createThirdPartyAppController.execute(req, res))
+thirdPartyAppRouter.get('/', middleware.ensureAuthenticated(), (req, res) => getTokenController.execute(req, res))
 export { thirdPartyAppRouter }

@@ -1,6 +1,6 @@
 import { LoginUserUseCase } from './LoginUseCase'
 import { userRepo } from '../../../repos'
-import { authService } from '../../../services'
+import { authService } from '../../../../../shared/infra/auth'
 
 async function test() {
   // const username = await authService.getUserNameFromRefreshToken(`*${"KbeS2mf9r4Sq1na6NI6QlTPSp1Fx7tVEQbNeXmFyrgiCvMUYgiy3p45V03gCluo320xMt1N6yef1VPT2cXRzlM8BMznPecTI4ofykUNdkYFGIlNreLVvCP8GFyyDSJ49A27qcFbPLnPQg9hJfZHH4vtT2b4Yi8k1blj30PbfqZ252dFiC4yYeKR5nbYX4l78ThuDK7hmwp9M2WzxoiitIoQkthe0AA8jIyL1ra8DypLaiddULNOI7n5JygEibAcf"}*`)
