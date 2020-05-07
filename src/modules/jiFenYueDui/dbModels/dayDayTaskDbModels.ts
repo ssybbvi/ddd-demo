@@ -1,5 +1,8 @@
-export interface IDayDayTaskDbModels {
-  _id: string
+import { IBaseIdDbModels } from "../../../shared/infra/database/dbModel/baseIdDbModels";
+import { ITenantIdDbModel } from "../../../shared/infra/database/dbModel/tenantIdDbModel";
+
+export interface IDayDayTaskDbModels extends IBaseIdDbModels, ITenantIdDbModel {
+
   type: string
   reward: number
   createAt: number

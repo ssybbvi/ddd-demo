@@ -6,22 +6,23 @@ import { OrderDbModel } from '../../dbModels/orderDbModel'
 import { IOrderRepo } from '../orderRepo'
 import { OrderMap } from '../../mappers/orderMap'
 import { Order } from '../../domain/order'
+import { MongodbWithTenantCollection, MongodbWithTenant } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 
 export class MongoOrderRepo implements IOrderRepo {
-  constructor() {}
+  constructor() { }
 
-  private createCollection(): Collection<OrderDbModel> {
-    return Global.instance.mongoDb.collection<OrderDbModel>('order')
+  private getCollection(): MongodbWithTenantCollection<OrderDbModel> {
+    return MongodbWithTenant.instance.Collection<OrderDbModel>('order')
   }
 
   public async getById(_id: string): Promise<Order> {
-    let order = await this.createCollection().findOne({ _id })
+    let order = await this.getCollection().findOne({ _id })
     return OrderMap.toDomain(order)
   }
 
   public async save(order: Order): Promise<void> {
     const raw = await OrderMap.toPersistence(order)
-    await this.createCollection().updateOne(
+    await this.getCollection().updateOne(
       { _id: raw._id },
       {
         $set: {
@@ -45,7 +46,7 @@ export class MongoOrderRepo implements IOrderRepo {
   }
 
   public async exist(_id: string): Promise<boolean> {
-    let order = await this.createCollection().findOne({ _id })
+    let order = await this.getCollection().findOne({ _id })
     return !!order === true
   }
 
@@ -55,12 +56,12 @@ export class MongoOrderRepo implements IOrderRepo {
     if (!!userId === true) {
       query.userId = userId
     }
-    let orderList = await this.createCollection().find(query).sort({ createAt: -1 }).toArray()
+    let orderList = await this.getCollection().find(query).sort({ createAt: -1 }).toArray()
     return orderList.map((item) => OrderMap.toDomain(item))
   }
 
   public async cancelOrder(unpaidTime: number): Promise<void> {
-    await this.createCollection().update(
+    await this.getCollection().update(
       {
         createAt: {
           $lt: unpaidTime,

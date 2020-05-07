@@ -1,5 +1,8 @@
-export interface IScheduledTaskDbModels {
-  _id: string
+import { IBaseIdDbModels } from "../../../shared/infra/database/dbModel/baseIdDbModels";
+import { ITenantIdDbModel } from "../../../shared/infra/database/dbModel/tenantIdDbModel";
+
+export interface IScheduledTaskDbModels extends IBaseIdDbModels, ITenantIdDbModel {
+
   argument: any
   userId: string
   type: string

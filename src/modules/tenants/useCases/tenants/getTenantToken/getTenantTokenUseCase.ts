@@ -5,7 +5,7 @@ import { ITenantRepo } from '../../../repos/iTenantRepo'
 import { Tenant } from '../../../domain/tenant'
 import { GetTenantTokenDto } from './getTenantTokenDto'
 import { IAuthService } from '../../../../../shared/infra/auth/authService'
-import { JWTToken } from '../../../../users/domain/jwt'
+import { JWTToken, TenantJwtClaims } from '../../../../users/domain/jwt'
 import { NotFoundError } from '../../../../../shared/core/NotFoundError'
 import { GetTenantTokenDtoResponse } from './getTenantTokenDtoResponse'
 
@@ -27,7 +27,7 @@ export class GetTenantTokenUseCase implements UseCase<GetTenantTokenDto, Promise
       if (!tenant) {
         return left(new NotFoundError(`找不到该tenantId:${tenantId}`))
       }
-      const accessToken: JWTToken = this.authService.signJWT({
+      const accessToken: TenantJwtClaims = this.authService.signTenantJWT({
         tenantId
       })
 

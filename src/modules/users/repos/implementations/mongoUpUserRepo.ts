@@ -1,26 +1,25 @@
 import { IUpUserRepo } from '../upUserRepo'
-import { Collection } from 'mongodb'
 import { IUpUserDbModels } from '../../dbModels/iUpUserDbModels'
-import { Global } from '../../../../shared/infra/database/mongodb'
 import { UpUserMap } from '../../mappers/upUserMap'
 import { UpUser } from '../../domain/upUser'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 import { UpUserName } from '../../domain/upUserName'
+import { MongodbWithTenantCollection, MongodbWithTenant } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 
 export class MongoUpUserRepo implements IUpUserRepo {
   constructor() { }
 
-  private createCollection(): Collection<IUpUserDbModels> {
-    return Global.instance.mongoDb.collection<IUpUserDbModels>('upUser')
+  private getCollection(): MongodbWithTenantCollection<IUpUserDbModels> {
+    return MongodbWithTenant.instance.Collection<IUpUserDbModels>('upUser')
   }
 
   public async getById(_id: string): Promise<UpUser> {
-    let upUser = await this.createCollection().findOne({ _id })
+    let upUser = await this.getCollection().findOne({ _id })
     return UpUserMap.toDomain(upUser)
   }
 
   public async filter(): Promise<UpUser[]> {
-    let list = await this.createCollection()
+    let list = await this.getCollection()
       .find({})
       .toArray()
     return list.map(item => UpUserMap.toDomain(item))
@@ -28,7 +27,7 @@ export class MongoUpUserRepo implements IUpUserRepo {
 
   async save(upUser: UpUser): Promise<void> {
     const raw = await UpUserMap.toPersistence(upUser)
-    await this.createCollection().updateOne(
+    await this.getCollection().updateOne(
       { _id: raw._id },
       {
         $set: {
@@ -44,7 +43,7 @@ export class MongoUpUserRepo implements IUpUserRepo {
 
   async getUserByUserName(userName: UpUserName | string): Promise<UpUser> {
     const _userName = userName instanceof UpUserName ? (<UpUserName>userName).value : userName
-    const baseUser = await this.createCollection().findOne({
+    const baseUser = await this.getCollection().findOne({
       userName: _userName
     })
     return UpUserMap.toDomain(baseUser)

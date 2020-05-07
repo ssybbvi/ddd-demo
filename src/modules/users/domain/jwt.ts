@@ -1,6 +1,10 @@
 export interface JWTClaims {
-  userId?: string
-  tenantId?: string
+  userId: string
+
+}
+
+export interface TenantJwtClaims {
+  tenantId: string
 }
 
 export type JWTToken = string

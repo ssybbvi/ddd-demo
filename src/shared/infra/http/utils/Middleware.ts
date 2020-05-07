@@ -56,12 +56,12 @@ export class Middleware {
         return
       }
 
-      const token = req.headers['authorization']
-      if (token) {
-        return res.status(200).send({ message: 'No access token provided' })
+      const token = req.headers['authorization-tenant'] as string
+      if (!token) {
+        return res.status(200).send({ message: 'No access tenant-token provided' })
       }
 
-      const decoded = await this.authService.decodeJWT(token)
+      const decoded = await this.authService.decodeTenantJWT(token)
       const signatureFailed = !!decoded === false
 
       if (signatureFailed) {
@@ -95,7 +95,7 @@ export class Middleware {
         return res.status(200).send({ message: 'Token过期啦' })
       }
 
-      const { userId, tenantId } = decoded
+      const { userId } = decoded
       if (!userId) {
         return res
           .status(200)
@@ -111,11 +111,7 @@ export class Middleware {
       }
 
       req.decoded = decoded
-      clsNameSpace.run(() => {
-        console.log('==========set:tenantId==========', tenantId)
-        clsNameSpace.set('tenantId', tenantId)
-        return next()
-      });
+      return next()
     }
   }
 
@@ -184,3 +180,7 @@ export class Middleware {
     }
   }
 }
+
+
+
+

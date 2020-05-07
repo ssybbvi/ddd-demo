@@ -83,9 +83,9 @@ export class OrderMap implements IMapper<Order> {
     }
     const orderStatus = order.cancelInfo
       ? 'cancel'
-      : order.deliveryInfo.finishAt
+      : order.deliveryInfo && order.deliveryInfo.finishAt
         ? 'received'
-        : order.deliveryInfo.beginAt
+        : order.deliveryInfo && order.deliveryInfo.beginAt
           ? 'shipped'
           : order.paymentInfo
             ? 'shipping'

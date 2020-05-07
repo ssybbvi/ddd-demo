@@ -19,14 +19,13 @@ export class LoginUserUseCase implements UseCase<LoginDTO, Promise<Response>> {
   }
 
   public async execute(request: LoginDTO): Promise<Response> {
-    const { userId, tenantId } = request
+    const { userId } = request
     try {
       const user = await this.userRepo.getById(userId)
 
       const refreshToken: RefreshToken = this.authService.createRefreshToken()
       const accessToken: JWTToken = this.authService.signJWT({
-        userId: userId,
-        tenantId
+        userId: userId
       })
 
       user.setAccessToken(accessToken, refreshToken)

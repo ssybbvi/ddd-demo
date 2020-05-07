@@ -1,34 +1,31 @@
 import { IUserRepo } from '../userRepo'
 import { User } from '../../domain/user'
-import { Db, MongoClient, Collection } from 'mongodb'
-
 import { IUserDbModels } from '../../dbModels/iUserDbModels'
-import { Global } from '../../../../shared/infra/database/mongodb'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
-import { UpUserName } from '../../domain/upUserName'
 import { UserMap } from '../../mappers/userMap'
+import { MongodbWithTenantCollection, MongodbWithTenant } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 
 export class MongoUserRepo implements IUserRepo {
-  constructor() {}
+  constructor() { }
 
-  private createCollection(): Collection<IUserDbModels> {
-    return Global.instance.mongoDb.collection<IUserDbModels>('user')
+  private getCollection(): MongodbWithTenantCollection<IUserDbModels> {
+    return MongodbWithTenant.instance.Collection<IUserDbModels>('user')
   }
 
   public async getById(_id: string): Promise<User> {
-    let user = await this.createCollection().findOne({ _id })
+    let user = await this.getCollection().findOne({ _id })
     return UserMap.toDomain(user)
   }
 
   public async filter(): Promise<User[]> {
-    let list = await this.createCollection()
+    let list = await this.getCollection()
       .find({})
       .toArray()
     return list.map(item => UserMap.toDomain(item))
   }
 
   public async getUserByInviteToken(inviteToken: string): Promise<User> {
-    const baseUser = await this.createCollection().findOne({
+    const baseUser = await this.getCollection().findOne({
       inviteToken: inviteToken
     })
     return UserMap.toDomain(baseUser)
@@ -36,7 +33,7 @@ export class MongoUserRepo implements IUserRepo {
 
   async save(user: User): Promise<void> {
     const raw = await UserMap.toPersistence(user)
-    await this.createCollection().updateOne(
+    await this.getCollection().updateOne(
       { _id: raw._id },
       {
         $set: {
@@ -54,7 +51,7 @@ export class MongoUserRepo implements IUserRepo {
   }
 
   public async getUserByInviteRecommendedUserId(userId: string): Promise<User[]> {
-    let userList = await this.createCollection()
+    let userList = await this.getCollection()
       .find({
         inviteRecommendedUserId: userId
       })

@@ -5,7 +5,7 @@ import randtoken from 'rand-token'
 import { AbstractRedisClient } from '../database/redis/abstractRedisClient'
 import { IAuthService } from './authService'
 import { User } from '../../../modules/users/domain/user'
-import { RefreshToken, JWTClaims, JWTToken } from '../../../modules/users/domain/jwt'
+import { RefreshToken, JWTClaims, JWTToken, TenantJwtClaims } from '../../../modules/users/domain/jwt'
 import { authConfig } from '../../../config'
 
 /**
@@ -22,6 +22,7 @@ export class RedisAuthService extends AbstractRedisClient implements IAuthServic
   constructor(redisClient: RedisClient) {
     super(redisClient)
   }
+
 
   public async refreshTokenExists(refreshToken: RefreshToken): Promise<boolean> {
     const keys = await this.getAllKeys(`*${refreshToken}*`)
@@ -62,13 +63,23 @@ export class RedisAuthService extends AbstractRedisClient implements IAuthServic
   public signJWT(props: JWTClaims): JWTToken {
     const claims: JWTClaims = {
       userId: props.userId,
-      tenantId: props.tenantId
     }
 
     return jwt.sign(claims, authConfig.secret, {
       expiresIn: authConfig.tokenExpiryTime
     })
   }
+
+  signTenantJWT(props: TenantJwtClaims) {
+    const claims: TenantJwtClaims = {
+      tenantId: props.tenantId,
+    }
+
+    return jwt.sign(claims, authConfig.secret, {
+      expiresIn: authConfig.tokenExpiryTime
+    })
+  }
+
 
   /**
    * @method decodeJWT
@@ -79,6 +90,15 @@ export class RedisAuthService extends AbstractRedisClient implements IAuthServic
    */
 
   public decodeJWT(token: string): Promise<JWTClaims> {
+    return new Promise((resolve, reject) => {
+      jwt.verify(token, authConfig.secret, (err, decoded) => {
+        if (err) return resolve(null)
+        return resolve(decoded)
+      })
+    })
+  }
+
+  decodeTenantJWT(token: string): Promise<TenantJwtClaims> {
     return new Promise((resolve, reject) => {
       jwt.verify(token, authConfig.secret, (err, decoded) => {
         if (err) return resolve(null)

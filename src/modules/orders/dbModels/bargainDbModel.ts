@@ -3,8 +3,9 @@ import { IParticipantDbModel } from './participantDbModel'
 import { IDeliveryInfoDbModel } from './deliveryInfoDbModel'
 import { ICommodityItemDbModel } from './commodityItemDbModel'
 import { IAddressInfoDbModel } from './addressInfoDbModel'
+import { ITenantIdDbModel } from '../../../shared/infra/database/dbModel/tenantIdDbModel'
 
-export interface IBargainDbModel extends IBaseIdDbModels {
+export interface IBargainDbModel extends IBaseIdDbModels, ITenantIdDbModel {
   userId: string
   currentAmount: number
   amount: number

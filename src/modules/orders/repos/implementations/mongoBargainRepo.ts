@@ -7,22 +7,23 @@ import { Bargain } from '../../domain/bargain'
 import { IBargainDbModel } from '../../dbModels/bargainDbModel'
 import { IBargainRepo } from '../bargainRepo'
 import { RandomUtils } from '../../../../shared/utils/RandomUtils'
+import { MongodbWithTenantCollection, MongodbWithTenant } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 
 export class MongoBargainRepo implements IBargainRepo {
-  constructor() {}
+  constructor() { }
 
-  private createCollection(): Collection<IBargainDbModel> {
-    return Global.instance.mongoDb.collection<IBargainDbModel>('bargain')
+  private getCollection(): MongodbWithTenantCollection<IBargainDbModel> {
+    return MongodbWithTenant.instance.Collection<IBargainDbModel>('bargain')
   }
 
   public async getById(_id: string): Promise<Bargain> {
-    let bargain = await this.createCollection().findOne({ _id })
+    let bargain = await this.getCollection().findOne({ _id })
     return BargainMap.toDomain(bargain)
   }
 
   public async save(bargain: Bargain): Promise<void> {
     const raw = await BargainMap.toPersistence(bargain)
-    await this.createCollection().updateOne(
+    await this.getCollection().updateOne(
       { _id: raw._id },
       {
         $set: {
@@ -45,12 +46,12 @@ export class MongoBargainRepo implements IBargainRepo {
   }
 
   public async exist(_id: string): Promise<boolean> {
-    let bargain = await this.createCollection().findOne({ _id })
+    let bargain = await this.getCollection().findOne({ _id })
     return !!bargain === true
   }
 
   public async filter(userId?: string): Promise<Bargain[]> {
-    const list = await this.createCollection().find({ userId }).toArray()
+    const list = await this.getCollection().find({ userId }).toArray()
     return list.map((item) => BargainMap.toDomain(item))
   }
 

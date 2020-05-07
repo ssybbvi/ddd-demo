@@ -6,22 +6,23 @@ import { IFundDbModel } from '../../dbModels/iFundDbModel'
 import { Global } from '../../../../shared/infra/database/mongodb'
 import { FundType } from '../../domain/fundType'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
+import { MongodbWithTenantCollection, MongodbWithTenant } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 
 export class MongoFundRepo implements IFundRepo {
   constructor() { }
 
-  private createCollection(): Collection<IFundDbModel> {
-    return Global.instance.mongoDb.collection<IFundDbModel>('funds')
+  private getCollection(): MongodbWithTenantCollection<IFundDbModel> {
+    return MongodbWithTenant.instance.Collection<IFundDbModel>('funds')
   }
 
   async getById(_id: string): Promise<Fund> {
-    let Fund = await this.createCollection().findOne({ _id })
+    let Fund = await this.getCollection().findOne({ _id })
     return FundMap.toDomain(Fund)
   }
 
   async save(fund: Fund): Promise<void> {
     let raw = await FundMap.toPersistence(fund)
-    await this.createCollection().updateOne(
+    await this.getCollection().updateOne(
       { _id: raw._id },
       {
         $set: {
@@ -42,14 +43,14 @@ export class MongoFundRepo implements IFundRepo {
   }
 
   async filter(): Promise<Fund[]> {
-    let list = await this.createCollection()
+    let list = await this.getCollection()
       .find({})
       .toArray()
     return list.map(item => FundMap.toDomain(item))
   }
 
   async getListByRecommendedUserId(recommendedUserId: string): Promise<Fund[]> {
-    let list = await this.createCollection()
+    let list = await this.getCollection()
       .find({
         $or: [
           {
@@ -107,7 +108,7 @@ export class MongoFundRepo implements IFundRepo {
   }
 
   public async getByTypeWithRelationId(type: FundType, relationId: string): Promise<Fund> {
-    let Fund = await this.createCollection().findOne({
+    let Fund = await this.getCollection().findOne({
       type: type as string,
       relationId
     })

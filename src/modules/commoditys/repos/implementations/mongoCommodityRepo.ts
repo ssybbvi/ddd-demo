@@ -1,27 +1,25 @@
-import { Db, MongoClient, Collection } from 'mongodb'
-
-import { Global } from '../../../../shared/infra/database/mongodb'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 import { ICommodityRepo } from '../iCommodityRepo'
 import { ICommodityDbModel } from '../../dbModels/commodityDbModel'
 import { Commodity } from '../../domain/commodity'
 import { CommodityMap } from '../../mappers/commodityMap'
+import { MongodbWithTenantCollection, MongodbWithTenant } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 
 export class MongoCommodityRepo implements ICommodityRepo {
-  constructor() {}
+  constructor() { }
 
-  private createCollection(): Collection<ICommodityDbModel> {
-    return Global.instance.mongoDb.collection<ICommodityDbModel>('commodity')
+  private getCollection(): MongodbWithTenantCollection<ICommodityDbModel> {
+    return MongodbWithTenant.instance.Collection<ICommodityDbModel>('commodity')
   }
 
   public async getById(_id: string): Promise<Commodity> {
-    let commodity = await this.createCollection().findOne({ _id })
+    let commodity = await this.getCollection().findOne({ _id })
     return CommodityMap.toDomain(commodity)
   }
 
   public async save(commodity: Commodity): Promise<void> {
     const raw = await CommodityMap.toPersistence(commodity)
-    await this.createCollection().updateOne(
+    await this.getCollection().updateOne(
       { _id: raw._id },
       {
         $set: {
@@ -45,7 +43,7 @@ export class MongoCommodityRepo implements ICommodityRepo {
   }
 
   public async exist(_id: string): Promise<boolean> {
-    let commodity = await this.createCollection().findOne({ _id })
+    let commodity = await this.getCollection().findOne({ _id })
     return !!commodity === true
   }
 
@@ -71,7 +69,7 @@ export class MongoCommodityRepo implements ICommodityRepo {
       })
     }
 
-    let commodityList = await this.createCollection().find(query).toArray()
+    let commodityList = await this.getCollection().find(query).toArray()
     return commodityList.map((item) => CommodityMap.toDomain(item))
   }
 }

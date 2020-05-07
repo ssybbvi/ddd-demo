@@ -1,4 +1,4 @@
-import { FilterQuery, Cursor, UpdateQuery, UpdateWriteOpResult, MongoCallback, UpdateOneOptions, Collection, Db } from 'mongodb'
+import { FilterQuery, Cursor, UpdateQuery, UpdateWriteOpResult, MongoCallback, UpdateOneOptions, Collection, Db, MongoCountPreferences, WriteOpResult } from 'mongodb'
 import { ITenantIdDbModel } from '../dbModel/tenantIdDbModel'
 import { clsNameSpace } from '../../cls'
 import { ITenantDbModels } from '../../../../modules/tenants/dbModels/iTenantDbModels'
@@ -12,6 +12,12 @@ export interface MongodbWithTenantCollection<TSchema extends ITenantIdDbModel> {
     update: UpdateQuery<TSchema> | Partial<TSchema>,
     options?: UpdateOneOptions,
   ): Promise<UpdateWriteOpResult>
+  update(
+    filter: FilterQuery<TSchema>,
+    update: UpdateQuery<TSchema> | Partial<TSchema>,
+    options: UpdateOneOptions & { multi?: boolean }
+  ): Promise<WriteOpResult>;
+  count(query?: FilterQuery<TSchema>, options?: MongoCountPreferences): Promise<number>;
 }
 
 export class MongodbWithTenant {
@@ -81,8 +87,22 @@ export class MongodbWithTenant {
         filter.tenantId = tenantId
         update["$set"].tenantId = tenantId
         return collection.updateOne(filter, update, options)
-      }
+      },
+      update: (
+        filter: FilterQuery<TSchema>,
+        update: UpdateQuery<TSchema> | Partial<TSchema>,
+        options: UpdateOneOptions & { multi?: boolean },
+      ): Promise<WriteOpResult> => {
+        filter.tenantId = tenantId
+        return collection.update(filter, update, options)
+      },
+      count: (query?: FilterQuery<TSchema>, options?: MongoCountPreferences): Promise<number> => {
+        query.tenantId = tenantId
+        return collection.count(query, options)
+      },
+
     }
   }
 }
+
 

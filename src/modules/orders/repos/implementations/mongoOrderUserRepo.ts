@@ -6,22 +6,23 @@ import { OrderUserMap } from '../../mappers/orderUserMap'
 import { OrderUser } from '../../domain/orderUser'
 import { IOrderUserRepo } from '../orderUserRepo'
 import { IOrderUserDbModel } from '../../dbModels/orderUserDbModel'
+import { MongodbWithTenantCollection, MongodbWithTenant } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 
 export class MongoOrderUserRepo implements IOrderUserRepo {
   constructor() { }
 
-  private createCollection(): Collection<IOrderUserDbModel> {
-    return Global.instance.mongoDb.collection<IOrderUserDbModel>('orderUser')
+  private getCollection(): MongodbWithTenantCollection<IOrderUserDbModel> {
+    return MongodbWithTenant.instance.Collection<IOrderUserDbModel>('orderUser')
   }
 
   public async getById(_id: string): Promise<OrderUser> {
-    let orderUser = await this.createCollection().findOne({ _id })
+    let orderUser = await this.getCollection().findOne({ _id })
     return OrderUserMap.toDomain(orderUser)
   }
 
   public async save(orderUser: OrderUser): Promise<void> {
     const raw = await OrderUserMap.toPersistence(orderUser)
-    await this.createCollection().updateOne(
+    await this.getCollection().updateOne(
       { _id: raw._id },
       {
         $set: {
@@ -35,7 +36,7 @@ export class MongoOrderUserRepo implements IOrderUserRepo {
   }
 
   public async exist(_id: string): Promise<boolean> {
-    let orderUser = await this.createCollection().findOne({ _id })
+    let orderUser = await this.getCollection().findOne({ _id })
     return !!orderUser === true
   }
 

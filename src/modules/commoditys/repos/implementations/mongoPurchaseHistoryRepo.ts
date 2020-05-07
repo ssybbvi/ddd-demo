@@ -6,22 +6,23 @@ import { IPurchaseHistoryRepo } from '../iPurchaseHistoryRepo'
 import { IPurchaseHistoryDbModel } from '../../dbModels/purchaseHistoryDbModel'
 import { PurchaseHistory } from '../../domain/purchaseHistory'
 import { PurchaseHistoryMap } from '../../mappers/purchaseHistoryMap'
+import { MongodbWithTenantCollection, MongodbWithTenant } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 
 export class MongoPurchaseHistoryRepo implements IPurchaseHistoryRepo {
   constructor() { }
 
-  private createCollection(): Collection<IPurchaseHistoryDbModel> {
-    return Global.instance.mongoDb.collection<IPurchaseHistoryDbModel>('purchaseHistory')
+  private getCollection(): MongodbWithTenantCollection<IPurchaseHistoryDbModel> {
+    return MongodbWithTenant.instance.Collection<IPurchaseHistoryDbModel>('purchaseHistory')
   }
 
   public async getById(_id: string): Promise<PurchaseHistory> {
-    let purchaseHistory = await this.createCollection().findOne({ _id })
+    let purchaseHistory = await this.getCollection().findOne({ _id })
     return PurchaseHistoryMap.toDomain(purchaseHistory)
   }
 
   public async save(purchaseHistory: PurchaseHistory): Promise<void> {
     const raw = await PurchaseHistoryMap.toPersistence(purchaseHistory)
-    await this.createCollection().updateOne(
+    await this.getCollection().updateOne(
       { _id: raw._id },
       {
         $set: {
@@ -37,12 +38,12 @@ export class MongoPurchaseHistoryRepo implements IPurchaseHistoryRepo {
   }
 
   public async exist(_id: string): Promise<boolean> {
-    let purchaseHistory = await this.createCollection().findOne({ _id })
+    let purchaseHistory = await this.getCollection().findOne({ _id })
     return !!purchaseHistory === true
   }
 
   public async filter(commodityId: string): Promise<PurchaseHistory[]> {
-    let purchaseHistoryList = await this.createCollection()
+    let purchaseHistoryList = await this.getCollection()
       .find({ commodityId })
       .toArray()
     return purchaseHistoryList.map(item => PurchaseHistoryMap.toDomain(item))

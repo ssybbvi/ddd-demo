@@ -9,25 +9,25 @@ import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 export class MongoTenantRepo implements ITenantRepo {
   constructor() { }
 
-  private createCollection(): Collection<ITenantDbModels> {
+  private getCollection(): Collection<ITenantDbModels> {
     return Global.instance.mongoDb.collection<ITenantDbModels>('tenant')
   }
 
   async existsSameName(name: string): Promise<boolean> {
-    let isExistsSameName = await this.createCollection().findOne({ name: name })
+    let isExistsSameName = await this.getCollection().findOne({ name: name })
     return !!isExistsSameName
   }
 
   async getById(tenantId: string): Promise<Tenant> {
-    let tenant = await this.createCollection().findOne({ _id: tenantId })
+    let tenant = await this.getCollection().findOne({ _id: tenantId })
     return TenantMap.toDomain(tenant)
   }
 
   async save(tenant: Tenant): Promise<void> {
     let tenantModel = await TenantMap.toPersistence(tenant)
-    await this.createCollection().insertOne(tenantModel)
+    await this.getCollection().insertOne(tenantModel)
 
-    await this.createCollection().updateOne(
+    await this.getCollection().updateOne(
       { _id: tenantModel._id },
       {
         $set: {
@@ -43,7 +43,7 @@ export class MongoTenantRepo implements ITenantRepo {
   }
 
   async filter(): Promise<Tenant[]> {
-    let list = await this.createCollection().find({}).toArray()
+    let list = await this.getCollection().find({}).toArray()
     return list.map((item) => TenantMap.toDomain(item))
   }
 

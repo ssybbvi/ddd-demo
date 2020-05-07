@@ -5,22 +5,23 @@ import { ScheduledTask } from '../../domain/scheduledTask'
 import { ScheduledTaskMap } from '../../mappers/scheduledTaskMap'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 import { IScheduledTaskRepo } from '../scheduledTaskRepo'
+import { MongodbWithTenantCollection, MongodbWithTenant } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 
 export class MongoScheduledTaskRepo implements IScheduledTaskRepo {
-  constructor() {}
+  constructor() { }
 
-  private createCollection(): Collection<IScheduledTaskDbModels> {
-    return Global.instance.mongoDb.collection<IScheduledTaskDbModels>('scheduledTask')
+  private getCollection(): MongodbWithTenantCollection<IScheduledTaskDbModels> {
+    return MongodbWithTenant.instance.Collection<IScheduledTaskDbModels>('scheduledTask')
   }
 
   public async getById(_id: string): Promise<ScheduledTask> {
-    let scheduledTask = await this.createCollection().findOne({ _id })
+    let scheduledTask = await this.getCollection().findOne({ _id })
     return ScheduledTaskMap.toDomain(scheduledTask)
   }
 
   public async save(scheduledTask: ScheduledTask): Promise<void> {
     const raw = await ScheduledTaskMap.toPersistence(scheduledTask)
-    await this.createCollection().updateOne(
+    await this.getCollection().updateOne(
       { _id: raw._id },
       {
         $set: {
@@ -42,7 +43,7 @@ export class MongoScheduledTaskRepo implements IScheduledTaskRepo {
   }
 
   public async exist(_id: string): Promise<boolean> {
-    let scheduledTask = await this.createCollection().findOne({ _id })
+    let scheduledTask = await this.getCollection().findOne({ _id })
     return !!scheduledTask === true
   }
 
@@ -51,7 +52,7 @@ export class MongoScheduledTaskRepo implements IScheduledTaskRepo {
       userId
     }
 
-    let scheduledTaskList = await this.createCollection()
+    let scheduledTaskList = await this.getCollection()
       .find(query)
       .toArray()
     return scheduledTaskList.map(item => ScheduledTaskMap.toDomain(item))
@@ -63,7 +64,7 @@ export class MongoScheduledTaskRepo implements IScheduledTaskRepo {
       isExecuted: false
     }
 
-    let scheduledTaskList = await this.createCollection()
+    let scheduledTaskList = await this.getCollection()
       .find(query)
       .toArray()
     return scheduledTaskList.map(item => ScheduledTaskMap.toDomain(item))

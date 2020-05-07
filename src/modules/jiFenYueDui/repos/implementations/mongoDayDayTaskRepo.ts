@@ -5,23 +5,24 @@ import { Global } from "../../../../shared/infra/database/mongodb"
 import { DayDayTask } from "../../domain/dayDayTask"
 import { DayDayTaskMap } from "../../mappers/dayDayTaskMap"
 import { DomainEvents } from "../../../../shared/domain/events/DomainEvents"
+import { MongodbWithTenantCollection, MongodbWithTenant } from "../../../../shared/infra/database/mongodb/mongodbTenant"
 
 export class MongoDayDayTaskRepo implements IDayDayTaskRepo {
   constructor() { }
 
 
-  private createCollection(): Collection<IDayDayTaskDbModels> {
-    return Global.instance.mongoDb.collection<IDayDayTaskDbModels>('dayDayTask')
+  private getCollection(): MongodbWithTenantCollection<IDayDayTaskDbModels> {
+    return MongodbWithTenant.instance.Collection<IDayDayTaskDbModels>('dayDayTask')
   }
 
   public async getById(_id: string): Promise<DayDayTask> {
-    let dayDayTask = await this.createCollection().findOne({ _id })
+    let dayDayTask = await this.getCollection().findOne({ _id })
     return DayDayTaskMap.toDomain(dayDayTask)
   }
 
   public async save(dayDayTask: DayDayTask): Promise<void> {
     const raw = await DayDayTaskMap.toPersistence(dayDayTask)
-    await this.createCollection().updateOne(
+    await this.getCollection().updateOne(
       { _id: raw._id },
       {
         $set: {
@@ -40,7 +41,7 @@ export class MongoDayDayTaskRepo implements IDayDayTaskRepo {
   }
 
   public async exist(_id: string): Promise<boolean> {
-    let dayDayTask = await this.createCollection().findOne({ _id })
+    let dayDayTask = await this.getCollection().findOne({ _id })
     return !!dayDayTask === true
   }
 
@@ -59,7 +60,7 @@ export class MongoDayDayTaskRepo implements IDayDayTaskRepo {
 
     }
 
-    let dayDayTaskList = await this.createCollection()
+    let dayDayTaskList = await this.getCollection()
       .find(query)
       .toArray()
     return dayDayTaskList.map(item => DayDayTaskMap.toDomain(item))
@@ -80,7 +81,7 @@ export class MongoDayDayTaskRepo implements IDayDayTaskRepo {
       ]
     }
 
-    let dayDayTask = await this.createCollection()
+    let dayDayTask = await this.getCollection()
       .findOne(query)
     return DayDayTaskMap.toDomain(dayDayTask)
   }

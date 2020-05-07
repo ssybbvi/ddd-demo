@@ -1,26 +1,25 @@
 import { IWxUserRepo } from '../wxUserRepo'
-import { Collection } from 'mongodb'
 import { IWxUserDbModels } from '../../dbModels/iWxUserDbModels'
-import { Global } from '../../../../shared/infra/database/mongodb'
 import { WxUserMap } from '../../mappers/wxUserMap'
 import { WxUser } from '../../domain/wxUser'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
+import { MongodbWithTenantCollection, MongodbWithTenant } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 
 export class MongoWxUserRepo implements IWxUserRepo {
   constructor() { }
 
-  private createCollection(): Collection<IWxUserDbModels> {
-    return Global.instance.mongoDb.collection<IWxUserDbModels>('wxUser')
+  private getCollection(): MongodbWithTenantCollection<IWxUserDbModels> {
+    return MongodbWithTenant.instance.Collection<IWxUserDbModels>('wxUser')
   }
 
   public async getById(_id: string): Promise<WxUser> {
 
-    let wxUser = await this.createCollection().findOne({ _id })
+    let wxUser = await this.getCollection().findOne({ _id })
     return WxUserMap.toDomain(wxUser)
   }
 
   public async filter(): Promise<WxUser[]> {
-    let list = await this.createCollection()
+    let list = await this.getCollection()
       .find({})
       .toArray()
     return list.map(item => WxUserMap.toDomain(item))
@@ -30,7 +29,7 @@ export class MongoWxUserRepo implements IWxUserRepo {
 
 
     const raw = await WxUserMap.toPersistence(wxUser)
-    await this.createCollection().updateOne(
+    await this.getCollection().updateOne(
       { _id: raw._id },
       {
         $set: {
@@ -50,14 +49,14 @@ export class MongoWxUserRepo implements IWxUserRepo {
   }
 
   async getUserByWxOpenId(wxOpenId: string): Promise<WxUser> {
-    const baseUser = await this.createCollection().findOne({
+    const baseUser = await this.getCollection().findOne({
       openId: wxOpenId
     })
     return WxUserMap.toDomain(baseUser)
   }
 
   async existsWxOpenId(wxOpenId: string): Promise<boolean> {
-    const baseUser = await this.createCollection().findOne({
+    const baseUser = await this.getCollection().findOne({
       openId: wxOpenId
     })
     return !!baseUser === true

@@ -1,3 +1,5 @@
+import { TenantJwtClaims } from "../../../../users/domain/jwt";
+
 export interface GetTenantTokenDtoResponse {
-  tenantAccessToken: string
+  tenantAccessToken: TenantJwtClaims
 }

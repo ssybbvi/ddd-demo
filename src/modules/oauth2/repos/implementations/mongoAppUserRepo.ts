@@ -5,11 +5,11 @@ import { IAppUserRepo } from '../appUserRepo'
 import { IAppUserDbModel } from '../../dbModels/appUserDbModel'
 import { AppUserMap } from '../../mappers/appUserMapper'
 import { AppUser } from '../../domain/appUser'
-import { MongodbWithTenant } from '../../../../shared/infra/database/mongodb/mongodbTenant'
+import { MongodbWithTenant, MongodbWithTenantCollection } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 
 export class MongoAppUserRepo implements IAppUserRepo {
 
-  private getCollection() {
+  private getCollection(): MongodbWithTenantCollection<IAppUserDbModel> {
     return MongodbWithTenant.instance.Collection<IAppUserDbModel>('appUser')
   }
 
