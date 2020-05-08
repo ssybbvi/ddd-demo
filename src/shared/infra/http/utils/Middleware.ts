@@ -56,19 +56,7 @@ export class Middleware {
         return
       }
 
-      const token = req.headers['authorization-tenant'] as string
-      if (!token) {
-        return res.status(200).send({ message: 'No access tenant-token provided' })
-      }
-
-      const decoded = await this.authService.decodeTenantJWT(token)
-      const signatureFailed = !!decoded === false
-
-      if (signatureFailed) {
-        return res.status(200).send({ message: 'Token过期啦' })
-      }
-
-      const { tenantId } = decoded
+      const tenantId = req.headers['authorization-tenant'] as string
       if (!tenantId) {
         return res.status(200).send({ message: '请先获取tenantToken' })
       }

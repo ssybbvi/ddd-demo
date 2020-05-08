@@ -70,16 +70,6 @@ export class RedisAuthService extends AbstractRedisClient implements IAuthServic
     })
   }
 
-  signTenantJWT(props: TenantJwtClaims) {
-    const claims: TenantJwtClaims = {
-      tenantId: props.tenantId,
-    }
-
-    return jwt.sign(claims, authConfig.secret, {
-      expiresIn: authConfig.tokenExpiryTime
-    })
-  }
-
 
   /**
    * @method decodeJWT
@@ -98,14 +88,6 @@ export class RedisAuthService extends AbstractRedisClient implements IAuthServic
     })
   }
 
-  decodeTenantJWT(token: string): Promise<TenantJwtClaims> {
-    return new Promise((resolve, reject) => {
-      jwt.verify(token, authConfig.secret, (err, decoded) => {
-        if (err) return resolve(null)
-        return resolve(decoded)
-      })
-    })
-  }
 
   private constructKey(username: string, refreshToken: RefreshToken): string {
     return `refresh-${refreshToken}.${this.jwtHashName}.${username}`

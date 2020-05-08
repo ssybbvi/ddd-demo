@@ -8,7 +8,6 @@ function commodityIdToDto(key: string = "commodityId") {
       try {
         let id = result[key]
         let dto = await commodityCache.getValue(id)
-        console.log("dto", id, dto)
         let { name, amount, description, images, fakeAmount, sales, restrictedPurchaseQuantity, limitedPurchasePerPerson, tags, imgesDescrptionList, type } = dto
         return {
           commodityName: name,

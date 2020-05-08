@@ -21,7 +21,7 @@ export interface MongodbWithTenantCollection<TSchema extends ITenantIdDbModel> {
 }
 
 export class MongodbWithTenant {
-  private tenantMongodbMap = new Map<string, Db>()
+  public tenantMongodbMap = new Map<string, Db>()
 
   private static _instance: MongodbWithTenant
   static get instance(): MongodbWithTenant {
@@ -64,6 +64,10 @@ export class MongodbWithTenant {
       throw new Error(`tenantdb is null ${tenantId}`)
     }
     return tenantDb
+  }
+
+  public getTenantIds() {
+    return Array.from(this.tenantMongodbMap.keys());
   }
 
   public Collection<TSchema extends ITenantIdDbModel>(collectionName: string): MongodbWithTenantCollection<TSchema> {

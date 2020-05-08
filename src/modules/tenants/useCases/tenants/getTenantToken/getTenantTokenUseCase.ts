@@ -27,9 +27,9 @@ export class GetTenantTokenUseCase implements UseCase<GetTenantTokenDto, Promise
       if (!tenant) {
         return left(new NotFoundError(`找不到该tenantId:${tenantId}`))
       }
-      const accessToken: TenantJwtClaims = this.authService.signTenantJWT({
-        tenantId
-      })
+      const accessToken: TenantJwtClaims = {//TODO
+        tenantId: ""
+      }
 
       return right(Result.ok<GetTenantTokenDtoResponse>({
         tenantAccessToken: accessToken
