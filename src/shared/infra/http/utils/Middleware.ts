@@ -64,7 +64,7 @@ export class Middleware {
         return res.status(200).send({ message: '需要http请求头authorization-tenant' })
       }
 
-      if (tenantIds.includes(tenantId)) {
+      if (!tenantIds.includes(tenantId)) {
         return res.status(200).send({ message: 'authorization-tenant配置信息错误' })
       }
 
