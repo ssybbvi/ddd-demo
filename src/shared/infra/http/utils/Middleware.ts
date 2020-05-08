@@ -7,6 +7,7 @@ import ossAliyun from 'ali-oss'
 import uuid from 'uuid/v4'
 import { clsNameSpace } from '../../cls'
 import express from 'express'
+import { MongodbWithTenant } from '../../database/mongodb/mongodbTenant'
 
 
 export class Middleware {
@@ -57,8 +58,14 @@ export class Middleware {
       }
 
       const tenantId = req.headers['authorization-tenant'] as string
+
+      const tenantIds = MongodbWithTenant.instance.getTenantIds()
       if (!tenantId) {
-        return res.status(200).send({ message: '请先获取tenantToken' })
+        return res.status(200).send({ message: '需要http请求头authorization-tenant' })
+      }
+
+      if (tenantIds.includes(tenantId)) {
+        return res.status(200).send({ message: 'authorization-tenant配置信息错误' })
       }
 
       clsNameSpace.run(() => {
