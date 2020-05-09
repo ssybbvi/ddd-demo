@@ -9,17 +9,8 @@ import { authorityUserRouter } from '../../../../modules/authority/infra/http/ro
 import { Middleware } from '../utils/Middleware'
 import { dayDayTaskRouter, scheduleTaskRouter } from '../../../../modules/jiFenYueDui/infra/http/routes'
 
-import { sendMessage } from '../../ws'
 import { thirdPartyAppRouter, appUserRouter, authCodeRouter } from '../../../../modules/oauth2/infra/http/routes'
 import { commodityTagRouter } from '../../../../modules/commoditys/infra/http/routes/commodityTag'
-
-const wskRouter = express.Router()
-
-wskRouter.get('/', (req, res) => {
-  sendMessage({ test: "123" })
-  res.send("okxx")
-})
-
 
 
 const v1Router = express.Router()
@@ -49,7 +40,6 @@ v1Router.use('/authCode', authCodeRouter)
 v1Router.use('/commodityTag', commodityTagRouter)
 v1Router.use('/bargain', bargainRouter)
 
-v1Router.use('/ws', wskRouter)
 export { v1Router }
 
 

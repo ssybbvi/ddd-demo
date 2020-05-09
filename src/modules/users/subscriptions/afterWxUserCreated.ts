@@ -2,6 +2,7 @@ import { IHandle } from '../../../shared/domain/events/IHandle'
 import { DomainEvents } from '../../../shared/domain/events/DomainEvents'
 import { CraeteUseCase } from '../useCases/user/createUser/craeteUseCase'
 import { WxUserCreated } from '../domain/events/wxUserCreated'
+import { RedisSubscriptions } from '../../../shared/infra/ws/redisSubscriptions'
 
 export class AfterWxUserCreated implements IHandle<WxUserCreated> {
   private craeteUseCase: CraeteUseCase
@@ -30,6 +31,7 @@ export class AfterWxUserCreated implements IHandle<WxUserCreated> {
       if (result.isLeft()) {
         console.error(result.value)
       }
+
       console.log(`[AfterWxUserCreated]: 创建微信用户后创建基本用户`)
     } catch (err) {
       console.log(`[AfterWxUserCreated]: 创建微信用户后创建基本用户 ${err}`)

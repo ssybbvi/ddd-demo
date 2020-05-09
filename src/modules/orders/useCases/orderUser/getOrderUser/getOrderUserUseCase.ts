@@ -18,9 +18,7 @@ export class GetOrderUserUseCase implements UseCase<GetOrderUserDto, Promise<Res
   public async execute(request: GetOrderUserDto): Promise<Response> {
     try {
       const { userId } = request
-      console.log('==============================userId', userId, this.orderUserRepo)
       const orderUser = await this.orderUserRepo.getById(userId)
-      console.log('=====================orderUser', orderUser)
       if (!orderUser) {
         return left(new NotFoundError(`没有这个用户订单信息 orderUser:${userId}`))
       }
