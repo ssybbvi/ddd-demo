@@ -98,6 +98,7 @@ export class MongodbWithTenant {
         options: UpdateOneOptions & { multi?: boolean },
       ): Promise<WriteOpResult> => {
         filter.tenantId = tenantId
+        update["$set"].tenantId = tenantId
         return collection.update(filter, update, options)
       },
       count: (query?: FilterQuery<TSchema>, options?: MongoCountPreferences): Promise<number> => {

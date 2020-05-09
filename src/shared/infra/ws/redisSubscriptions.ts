@@ -59,7 +59,6 @@ export class RedisSubscriptions {
 
   public subscribeMessage() {
     this.subscribeRedis.on("message", (channel, message) => {
-      console.log("============subscribeMessage", channel, message)
       if (channel != this.subscribeName) {
         return
       }
