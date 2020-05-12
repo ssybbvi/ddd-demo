@@ -35,7 +35,6 @@ export class Coupon extends AggregateRoot<ICouponProps> {
     return this.props.reward
   }
 
-
   public static create(props: ICouponProps, id?: UniqueEntityID): Result<Coupon> {
     const guardArgs: IGuardArgument[] = [
       { argument: props.name, argumentName: '名称' },

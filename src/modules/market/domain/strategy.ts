@@ -16,10 +16,11 @@ export interface IStrategyProps {
   name: string
   description: string
   condition: IStrategyConditon[]
-  reward: RewardCoupon | RewardDiscount | RewardGiveaway | RewardReliefAmount
+  reward: IStrategyReward
 }
 
 export type IStrategyConditon = ConditionDate | ConditionCoupon | ConditionAmount
+export type IStrategyReward = RewardCoupon | RewardDiscount | RewardGiveaway | RewardReliefAmount
 
 export class Strategy extends AggregateRoot<IStrategyProps> {
   private constructor(props: IStrategyProps, id?: UniqueEntityID) {

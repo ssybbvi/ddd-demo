@@ -1,6 +1,6 @@
 import { ConditionAmountMap } from "./conditionAmountMap"
 import { IMapper } from "../../../shared/infra/Mapper"
-import { Strategy } from "../domain/strategy"
+import { Strategy, IStrategyConditon, IStrategyReward } from "../domain/strategy"
 import { StrategyDto } from "../dtos/strategyDto"
 import { ConditionAmount } from "../domain/conditionAmount"
 import { ConditionDateMap } from "./conditionDateMap"
@@ -11,7 +11,7 @@ import { RewardGiveawayMap } from "./rewardGiveawayMap"
 import { RewardGiveaway } from "../domain/rewardGiveaway"
 import { RewardReliefAmountMap } from "./rewardReliefAmountMap"
 import { RewardReliefAmount } from "../domain/rewardReliefAmount"
-import { IStrategyDbModel } from "../dbModels/strategyDbModel"
+import { IStrategyDbModel, IStrategyRewardDbModel, IStrategyConditonDbModel } from "../dbModels/strategyDbModel"
 import { IConditionAmountDbModel } from "../dbModels/conditionAmountDbModel"
 import { IConditionDateDbModel } from "../dbModels/conditionDateDbModel"
 import { IRewardDiscountDbModel } from "../dbModels/rewardDiscountDbModel"
@@ -26,32 +26,43 @@ import { IConditionCouponDbModel } from "../dbModels/conditionCouponDbModel"
 import { IRewardCouponDbModel } from "../dbModels/rewardCouponDbModel"
 
 export class StrategyMap implements IMapper<Strategy> {
-  public static toDTO(strategy: Strategy): StrategyDto {
+
+
+  public static toConditionDto(condition: IStrategyConditon[]) {
     let conditionDtoList = []
-    for (let item of strategy.condition) {
-      if (Reflect.has(item, 'amount')) {
+    for (let item of condition) {
+      if (item.type === 'amount') {
         conditionDtoList.push(ConditionAmountMap.toDTO(item as ConditionAmount))
-      } else if (Reflect.has(item, 'coupon')) {
+      } else if (item.type === 'coupon') {
         conditionDtoList.push(ConditionCouponMap.toDTO(item as ConditionCoupon))
-      } else if (Reflect.has(item, 'date')) {
+      } else if (item.type === 'date') {
         conditionDtoList.push(ConditionDateMap.toDTO(item as ConditionDate))
       } else {
         console.error(`StrategyMap.condition.toDTO.error: ${item}`)
       }
     }
+    return conditionDtoList
+  }
 
+  public static toRewardDto(reward: IStrategyReward) {
     let rewardDto = null
-    if (Reflect.has(strategy.reward, 'discount')) {
-      rewardDto = RewardDiscountMap.toDTO(strategy.reward as RewardDiscount)
-    } else if (Reflect.has(strategy.reward, 'giveaway')) {
-      rewardDto = RewardGiveawayMap.toDTO(strategy.reward as RewardGiveaway)
-    } else if (Reflect.has(strategy.reward, 'reliefAmount')) {
-      rewardDto = RewardReliefAmountMap.toDTO(strategy.reward as RewardReliefAmount)
-    } else if (Reflect.has(strategy.reward, 'reliefAmount')) {
-      rewardDto = RewardCouponMap.toDTO(strategy.reward as RewardCoupon)
+    if (reward.type === 'discount') {
+      rewardDto = RewardDiscountMap.toDTO(reward as RewardDiscount)
+    } else if (reward.type === 'giveaway') {
+      rewardDto = RewardGiveawayMap.toDTO(reward as RewardGiveaway)
+    } else if (reward.type === 'reliefAmount') {
+      rewardDto = RewardReliefAmountMap.toDTO(reward as RewardReliefAmount)
+    } else if (reward.type === 'reliefAmount') {
+      rewardDto = RewardCouponMap.toDTO(reward as RewardCoupon)
     } else {
-      console.error(`StrategyMap.reward.toDTO.error: ${strategy.reward}`)
+      console.error(`StrategyMap.reward.toDTO.error: ${reward}`)
     }
+    return rewardDto
+  }
+
+  public static toDTO(strategy: Strategy): StrategyDto {
+    let conditionDtoList = this.toConditionDto(strategy.condition)
+    let rewardDto = this.toRewardDto(strategy.reward)
 
     return {
       name: strategy.name,
@@ -61,10 +72,10 @@ export class StrategyMap implements IMapper<Strategy> {
     }
   }
 
-  public static toDomain(raw: IStrategyDbModel): Strategy {
 
+  public static toConditionDomain(conditions: IStrategyConditonDbModel[]) {
     let conditionList = []
-    for (let item of raw.condition) {
+    for (let item of conditions) {
       if (Reflect.has(item, 'amount')) {
         conditionList.push(ConditionAmountMap.toDomain(item as IConditionAmountDbModel))
       } else if (Reflect.has(item, 'coupon')) {
@@ -75,24 +86,33 @@ export class StrategyMap implements IMapper<Strategy> {
         console.error(`StrategyMap.condition.toDTO.error: ${item}`)
       }
     }
+    return conditionList
+  }
 
+  public static toRewardDomain(rewardDbModel: IStrategyRewardDbModel) {
     let reward = null
-    if (Reflect.has(raw.reward, 'discount')) {
-      reward = RewardDiscountMap.toDomain(raw.reward as IRewardDiscountDbModel)
-    } else if (Reflect.has(raw.reward, 'giveaway')) {
-      reward = RewardGiveawayMap.toDomain(raw.reward as IRewardGiveawayDbModel)
-    } else if (Reflect.has(raw.reward, 'reliefAmount')) {
-      reward = RewardReliefAmountMap.toDomain(raw.reward as IRewardReliefAmountDbModel)
-    } else if (Reflect.has(raw.reward, 'reliefAmount')) {
-      reward = RewardCouponMap.toDomain(raw.reward as IRewardCouponDbModel)
+    if (rewardDbModel.type === 'discount') {
+      reward = RewardDiscountMap.toDomain(rewardDbModel as IRewardDiscountDbModel)
+    } else if (rewardDbModel.type === 'giveaway') {
+      reward = RewardGiveawayMap.toDomain(rewardDbModel as IRewardGiveawayDbModel)
+    } else if (rewardDbModel.type === 'reliefAmount') {
+      reward = RewardReliefAmountMap.toDomain(rewardDbModel as IRewardReliefAmountDbModel)
+    } else if (rewardDbModel.type === 'coupon') {
+      reward = RewardCouponMap.toDomain(rewardDbModel as IRewardCouponDbModel)
     } else {
-      console.error(`StrategyMap.reward.toDTO.error: ${raw.reward}`)
+      console.error(`StrategyMap.reward.toDTO.error: ${rewardDbModel}`)
     }
+    return reward
+  }
+
+  public static toDomain(raw: IStrategyDbModel): Strategy {
+    const conditions = this.toConditionDomain(raw.condition)
+    let reward = this.toRewardDomain(raw.reward)
 
     const strategyOrError = Strategy.create(
       {
         name: raw.name,
-        condition: conditionList,
+        condition: conditions,
         reward: reward,
         description: raw.description,
       },
@@ -103,34 +123,43 @@ export class StrategyMap implements IMapper<Strategy> {
     return strategyOrError.isSuccess ? strategyOrError.getValue() : null
   }
 
-  public static toPersistence(strategy: Strategy): IStrategyDbModel {
 
+  public static toConditionPersistence(conditions: IStrategyConditon[]) {
     let conditionList = []
-    for (let item of strategy.condition) {
-      if (Reflect.has(item, 'amount')) {
+    for (let item of conditions) {
+      if (item.type === 'amount') {
         conditionList.push(ConditionAmountMap.toPersistence(item as ConditionAmount))
-      } else if (Reflect.has(item, 'coupon')) {
+      } else if (item.type === 'coupon') {
         conditionList.push(ConditionCouponMap.toPersistence(item as ConditionCoupon))
-      } else if (Reflect.has(item, 'date')) {
+      } else if (item.type === 'date') {
         conditionList.push(ConditionDateMap.toPersistence(item as ConditionDate))
       } else {
         console.error(`StrategyMap.condition.toDTO.error: ${item}`)
       }
     }
+    return conditionList
+  }
 
+  public static toRewardPersistence(rewardDomain: IStrategyReward) {
     let reward = null
-    if (Reflect.has(strategy.reward, 'discount')) {
-      reward = RewardDiscountMap.toPersistence(strategy.reward as RewardDiscount)
-    } else if (Reflect.has(strategy.reward, 'giveaway')) {
-      reward = RewardGiveawayMap.toPersistence(strategy.reward as RewardGiveaway)
-    } else if (Reflect.has(strategy.reward, 'reliefAmount')) {
-      reward = RewardReliefAmountMap.toPersistence(strategy.reward as RewardReliefAmount)
-    } else if (Reflect.has(strategy.reward, 'reliefAmount')) {
-      reward = RewardCouponMap.toPersistence(strategy.reward as RewardCoupon)
+    if (rewardDomain.type === 'discount') {
+      reward = RewardDiscountMap.toPersistence(rewardDomain as RewardDiscount)
+    } else if (rewardDomain.type === 'giveaway') {
+      reward = RewardGiveawayMap.toPersistence(rewardDomain as RewardGiveaway)
+    } else if (rewardDomain.type === 'reliefAmount') {
+      reward = RewardReliefAmountMap.toPersistence(rewardDomain as RewardReliefAmount)
+    } else if (rewardDomain.type === 'reliefAmount') {
+      reward = RewardCouponMap.toPersistence(rewardDomain as RewardCoupon)
     } else {
-      console.error(`StrategyMap.reward.toDTO.error: ${strategy.reward}`)
+      console.error(`StrategyMap.reward.toDTO.error: ${rewardDomain}`)
     }
+    return reward
+  }
 
+  public static toPersistence(strategy: Strategy): IStrategyDbModel {
+
+    let conditionList = this.toConditionPersistence(strategy.condition)
+    let reward = this.toRewardPersistence(strategy.reward)
     return {
       _id: strategy.id.toString(),
       name: strategy.name,

@@ -12,7 +12,8 @@ export interface IStrategyDbModel extends IBaseIdDbModels, ITenantIdDbModel {
   name: string
   description: string
   condition: IStrategyConditonDbModel[]
-  reward: IRewardCouponDbModel | IRewardDiscountDbModel | IRewardGiveawayDbModel | IRewardReliefAmountDbModel
+  reward: IStrategyRewardDbModel
 }
 
 export type IStrategyConditonDbModel = IConditionDateDbModel | IConditionCouponDbModel | IConditionAmountDbModel
+export type IStrategyRewardDbModel = IRewardCouponDbModel | IRewardDiscountDbModel | IRewardGiveawayDbModel | IRewardReliefAmountDbModel

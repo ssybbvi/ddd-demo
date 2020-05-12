@@ -23,9 +23,9 @@ export class CouponMap implements IMapper<Coupon> {
   public static toConditionDTO(couponConditon: ICouponConditon[]) {
     let conditionDtoList = []
     for (let item of couponConditon) {
-      if (Reflect.has(item, 'amount')) {
+      if (item.type === 'amount') {
         conditionDtoList.push(ConditionAmountMap.toDTO(item as ConditionAmount))
-      } else if (Reflect.has(item, 'date')) {
+      } else if (item.type === 'date') {
         conditionDtoList.push(ConditionDateMap.toDTO(item as ConditionDate))
       } else {
         console.error(`CouponMap.condition.toDTO.error: ${item}`)
@@ -36,11 +36,11 @@ export class CouponMap implements IMapper<Coupon> {
 
   public static toRewardDto(reward: ICouponReward) {
     let rewardDto = null
-    if (Reflect.has(reward, 'discount')) {
+    if (reward.type === 'discount') {
       rewardDto = RewardDiscountMap.toDTO(reward as RewardDiscount)
-    } else if (Reflect.has(reward, 'giveaway')) {
+    } else if (reward.type === 'giveaway') {
       rewardDto = RewardGiveawayMap.toDTO(reward as RewardGiveaway)
-    } else if (Reflect.has(reward, 'reliefAmount')) {
+    } else if (reward.type === 'reliefAmount') {
       rewardDto = RewardReliefAmountMap.toDTO(reward as RewardReliefAmount)
     } else {
       console.error(`CouponMap.reward.toDTO.error: ${reward}`)
@@ -60,14 +60,12 @@ export class CouponMap implements IMapper<Coupon> {
     }
   }
 
-
-
   public static toConditionDomain(condition: ICouponConditonDbModel[]) {
     let conditionList = []
     for (let item of condition) {
-      if (Reflect.has(item, 'amount')) {
+      if (item.type === 'amount') {
         conditionList.push(ConditionAmountMap.toDomain(item as IConditionAmountDbModel))
-      } else if (Reflect.has(item, 'date')) {
+      } else if (item.type === 'date') {
         conditionList.push(ConditionDateMap.toDomain(item as IConditionDateDbModel))
       } else {
         console.error(`CouponMap.condition.toDTO.error: ${item}`)
@@ -78,11 +76,11 @@ export class CouponMap implements IMapper<Coupon> {
 
   public static toRewardDomain(raw: ICouponRewardDbModel) {
     let reward = null
-    if (Reflect.has(raw, 'discount')) {
+    if (raw.type === 'discount') {
       reward = RewardDiscountMap.toDomain(raw as IRewardDiscountDbModel)
-    } else if (Reflect.has(raw, 'giveaway')) {
+    } else if (raw.type === 'giveaway') {
       reward = RewardGiveawayMap.toDomain(raw as IRewardGiveawayDbModel)
-    } else if (Reflect.has(raw, 'reliefAmount')) {
+    } else if (raw.type === 'reliefAmount') {
       reward = RewardReliefAmountMap.toDomain(raw as IRewardReliefAmountDbModel)
     } else {
       console.error(`CouponMap.reward.toDTO.error: ${raw}`)
@@ -112,9 +110,9 @@ export class CouponMap implements IMapper<Coupon> {
   public static toConditionPersistence(conditions: ICouponConditon[]) {
     let conditionDbModelList = []
     for (let item of conditions) {
-      if (Reflect.has(item, 'amount')) {
+      if (item.type === 'amount') {
         conditionDbModelList.push(ConditionAmountMap.toPersistence(item as ConditionAmount))
-      } else if (Reflect.has(item, 'date')) {
+      } else if (item.type === 'date') {
         conditionDbModelList.push(ConditionDateMap.toPersistence(item as ConditionDate))
       } else {
         console.error(`CouponMap.condition.toDTO.error: ${item}`)
@@ -125,11 +123,11 @@ export class CouponMap implements IMapper<Coupon> {
 
   public static toRewardPersistence(reward: ICouponReward) {
     let rewardDbModel = null
-    if (Reflect.has(reward, 'discount')) {
+    if (reward.type === 'discount') {
       rewardDbModel = RewardDiscountMap.toPersistence(reward as RewardDiscount)
-    } else if (Reflect.has(reward, 'giveaway')) {
+    } else if (reward.type === 'giveaway') {
       rewardDbModel = RewardGiveawayMap.toPersistence(reward as RewardGiveaway)
-    } else if (Reflect.has(reward, 'reliefAmount')) {
+    } else if (reward.type === 'reliefAmount') {
       rewardDbModel = RewardReliefAmountMap.toPersistence(reward as RewardReliefAmount)
     } else {
       console.error(`CouponMap.reward.toDTO.error: ${reward}`)

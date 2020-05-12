@@ -10,6 +10,8 @@ export interface ICouponDbModel extends IBaseIdDbModels, ITenantIdDbModel {
   name: string
   condition: ICouponConditonDbModel[]
   reward: ICouponRewardDbModel
+  receiveLimit: number
+  userReceiveLimit: number
 }
 
 export type ICouponConditonDbModel = IConditionDateDbModel | IConditionAmountDbModel

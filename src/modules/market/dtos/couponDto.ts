@@ -8,7 +8,8 @@ import { IConditionCouponDto } from "./conditionCouponDto";
 export interface CouponDto {
   name: string
   condition: ICouponConditonDto[]
-  reward: IRewardDiscountDto | IRewardGiveawayDto | IRewardReliefAmountDto
+  reward: IRewardDto
 }
 
-export type ICouponConditonDto = IConditionDateDto | IConditionAmountDto 
+export type ICouponConditonDto = IConditionDateDto | IConditionAmountDto
+export type IRewardDto = IRewardDiscountDto | IRewardGiveawayDto | IRewardReliefAmountDto

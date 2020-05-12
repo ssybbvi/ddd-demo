@@ -1,19 +1,19 @@
 import { BaseController } from '../../../../../shared/infra/http/models/BaseController'
 import * as express from 'express'
-import { CreateCouponUseCase } from './createCouponUseCase'
-import { ICreateCouponDto } from './createCouponDto'
+import { ReceiveCouponUseCase } from './receiveCouponUseCase'
+import { ReceiveCouponDto } from './receiveCouponDto'
 
-export class CreateCouponController extends BaseController {
-  private useCase: CreateCouponUseCase
+export class ReceiveCouponController extends BaseController {
+  private useCase: ReceiveCouponUseCase
 
-  constructor(useCase: CreateCouponUseCase) {
+  constructor(useCase: ReceiveCouponUseCase) {
     super()
     this.useCase = useCase
   }
 
   async executeImpl(req: any, res: express.Response): Promise<any> {
     try {
-      const dto = req.body as ICreateCouponDto
+      const dto = req.body as ReceiveCouponDto
 
       const result = await this.useCase.execute(dto)
 
