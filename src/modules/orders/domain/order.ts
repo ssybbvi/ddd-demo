@@ -13,8 +13,8 @@ import { PaymentInfo } from './paymentInfo'
 import { UseCaseError } from '../../../shared/core/UseCaseError'
 import { OrderCode } from './orderCode'
 import { CommodityItems } from './commodityItems'
-import { AppError } from '../../../shared/core/AppError'
 import { AddressInfo } from './addressInfo'
+import { StrategyItems } from './strategyItems'
 
 export class ExpectPaidError extends Result<UseCaseError> {
   constructor() {
@@ -84,6 +84,7 @@ export interface OrderProps {
   deliveryInfo?: DeliveryInfo
   addressInfo: AddressInfo
   commodityItems: CommodityItems
+  strategyItems?: StrategyItems
 }
 
 export class Order extends AggregateRoot<OrderProps> {
@@ -129,6 +130,10 @@ export class Order extends AggregateRoot<OrderProps> {
 
   get addressInfo(): AddressInfo {
     return this.props.addressInfo
+  }
+
+  get strategyItems(): StrategyItems {
+    return this.props.strategyItems
   }
 
   public autoCancel() {

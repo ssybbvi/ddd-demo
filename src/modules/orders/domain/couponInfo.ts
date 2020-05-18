@@ -5,10 +5,8 @@ import { Result } from '../../../shared/core/Result'
 export interface ICouponInfoProps {
   couponUserId: string
   couponId: string
-  amount?: number
+  amount: number
   couponName: string
-  couponRewardType: string
-  giveawayCommodityId?: string
 }
 
 export class CouponInfo extends ValueObject<ICouponInfoProps> {
@@ -32,22 +30,11 @@ export class CouponInfo extends ValueObject<ICouponInfoProps> {
     return this.props.couponName
   }
 
-  public couponRewardType(): string {
-    return this.props.couponRewardType
-  }
-
-  public giveawayCommodityId(): string {
-    return this.props.giveawayCommodityId
-  }
-
-
   public static create(props: ICouponInfoProps): Result<CouponInfo> {
     const guardArgs: IGuardArgument[] = [
       { argument: props.couponUserId, argumentName: 'couponUserId' },
       { argument: props.couponId, argumentName: 'couponId' },
       { argument: props.couponName, argumentName: 'couponName' },
-      { argument: props.couponRewardType, argumentName: 'couponRewardType' },
-      { argument: props.giveawayCommodityId, argumentName: 'giveawayCommodityId' },
     ]
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)
