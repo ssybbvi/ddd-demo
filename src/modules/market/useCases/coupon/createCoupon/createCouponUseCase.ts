@@ -11,7 +11,7 @@ import { IConditionAmountDto } from '../../../dtos/conditionAmountDto'
 import { IConditionDateDto } from '../../../dtos/conditionDateDto'
 import { CreateCouponError } from './createCouponError'
 
-type Response = Either<CreateCouponError.TypeNotFoundError | AppError.UnexpectedError, Result<void>>
+type Response = Either<CreateCouponError.TypeNotFoundError | AppError.UnexpectedError | Result<any>, Result<void>>
 
 export class CreateCouponUseCase implements UseCase<ICreateCouponDto, Promise<Response>> {
   private couponRepo: ICouponRepo
@@ -22,7 +22,7 @@ export class CreateCouponUseCase implements UseCase<ICreateCouponDto, Promise<Re
 
   public async execute(request: ICreateCouponDto): Promise<Response> {
     try {
-      const { name, condition, reward } = request
+      const { name, condition, reward, receiveLimit, userReceiveLimit } = request
 
       let conditionList = []
       for (let item of condition) {
@@ -30,7 +30,7 @@ export class CreateCouponUseCase implements UseCase<ICreateCouponDto, Promise<Re
           item = item as IConditionAmountDto
           const conditionAmountOrError = ConditionAmount.create({
             type: 'amount',
-            amount: item.amount
+            amount: item.amount,
           })
           if (conditionAmountOrError.isFailure) {
             return left(conditionAmountOrError)
@@ -41,23 +41,24 @@ export class CreateCouponUseCase implements UseCase<ICreateCouponDto, Promise<Re
           const conditionDateOrError = ConditionDate.create({
             type: 'date',
             beginAt: item.beginAt,
-            finishAt: item.finishAt
+            finishAt: item.finishAt,
           })
           if (conditionDateOrError.isFailure) {
             return left(conditionDateOrError)
           }
           conditionList.push(conditionDateOrError.getValue())
         } else {
-          return left(new CreateCouponError.TypeNotFoundError(item.type))
+          return left(new CreateCouponError.TypeNotFoundError('xx'))
         }
       }
 
-
-      const rewards = CouponMap.toRewardDomain(reward)//TODO
+      const rewards = CouponMap.toRewardDomain(reward) //TODO
       const couponOrError = Coupon.create({
         name: name,
         condition: conditionList,
-        reward: rewards
+        reward: rewards,
+        receiveLimit,
+        userReceiveLimit,
       })
 
       if (couponOrError.isFailure) {

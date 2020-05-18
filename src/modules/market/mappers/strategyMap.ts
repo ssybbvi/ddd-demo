@@ -1,33 +1,37 @@
-import { ConditionAmountMap } from "./conditionAmountMap"
-import { IMapper } from "../../../shared/infra/Mapper"
-import { Strategy, IStrategyConditon, IStrategyReward } from "../domain/strategy"
-import { StrategyDto } from "../dtos/strategyDto"
-import { ConditionAmount } from "../domain/conditionAmount"
-import { ConditionDateMap } from "./conditionDateMap"
-import { ConditionDate } from "../domain/conditionDate"
-import { RewardDiscountMap } from "./rewardDiscountMap"
-import { RewardDiscount } from "../domain/rewardDiscount"
-import { RewardGiveawayMap } from "./rewardGiveawayMap"
-import { RewardGiveaway } from "../domain/rewardGiveaway"
-import { RewardReliefAmountMap } from "./rewardReliefAmountMap"
-import { RewardReliefAmount } from "../domain/rewardReliefAmount"
-import { IStrategyDbModel, IStrategyRewardDbModel, IStrategyConditonDbModel } from "../dbModels/strategyDbModel"
-import { IConditionAmountDbModel } from "../dbModels/conditionAmountDbModel"
-import { IConditionDateDbModel } from "../dbModels/conditionDateDbModel"
-import { IRewardDiscountDbModel } from "../dbModels/rewardDiscountDbModel"
-import { IRewardGiveawayDbModel } from "../dbModels/rewardGiveawayDbModel"
-import { IRewardReliefAmountDbModel } from "../dbModels/rewardReliefAmountDbModel"
-import { UniqueEntityID } from "../../../shared/domain/UniqueEntityID"
-import { ConditionCouponMap } from "./conditionCouponMap"
-import { ConditionCoupon } from "../domain/conditionCoupon"
-import { RewardCouponMap } from "./rewardCouponMap"
-import { RewardCoupon } from "../domain/rewardCoupon"
-import { IConditionCouponDbModel } from "../dbModels/conditionCouponDbModel"
-import { IRewardCouponDbModel } from "../dbModels/rewardCouponDbModel"
+import { ConditionAmountMap } from './conditionAmountMap'
+import { IMapper } from '../../../shared/infra/Mapper'
+import { Strategy, IStrategyConditon, IStrategyReward } from '../domain/strategy'
+import { StrategyDto } from '../dtos/strategyDto'
+import { ConditionAmount } from '../domain/conditionAmount'
+import { ConditionDateMap } from './conditionDateMap'
+import { ConditionDate } from '../domain/conditionDate'
+import { RewardDiscountMap } from './rewardDiscountMap'
+import { RewardDiscount } from '../domain/rewardDiscount'
+import { RewardGiveawayMap } from './rewardGiveawayMap'
+import { RewardGiveaway } from '../domain/rewardGiveaway'
+import { RewardReliefAmountMap } from './rewardReliefAmountMap'
+import { RewardReliefAmount } from '../domain/rewardReliefAmount'
+import { IStrategyDbModel, IStrategyRewardDbModel, IStrategyConditonDbModel } from '../dbModels/strategyDbModel'
+import { IConditionAmountDbModel } from '../dbModels/conditionAmountDbModel'
+import { IConditionDateDbModel } from '../dbModels/conditionDateDbModel'
+import { IRewardDiscountDbModel } from '../dbModels/rewardDiscountDbModel'
+import { IRewardGiveawayDbModel } from '../dbModels/rewardGiveawayDbModel'
+import { IRewardReliefAmountDbModel } from '../dbModels/rewardReliefAmountDbModel'
+import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
+import { ConditionCouponMap } from './conditionCouponMap'
+import { ConditionCoupon } from '../domain/conditionCoupon'
+import { RewardCouponMap } from './rewardCouponMap'
+import { RewardCoupon } from '../domain/rewardCoupon'
+import { IConditionCouponDbModel } from '../dbModels/conditionCouponDbModel'
+import { IRewardCouponDbModel } from '../dbModels/rewardCouponDbModel'
+import { ConditionCommodityStrategyTagMap } from './conditionCommodityStrategyTagMap'
+import { ConditionCommodityQuantityMap } from './conditionCommodityQuantityMap'
+import { ConditionCommodityStrategyTag } from '../domain/conditionCommodityStrategyTag'
+import { ConditionCommodityQuantity } from '../domain/conditionCommodityQuantity'
+import { IConditionCommodityStrategyTagDbModel } from '../dbModels/conditionCommodityStrategyTagDbModel'
+import { IConditionCommodityQuantityDbModel } from '../dbModels/conditionCommodityQuantityDbModel'
 
 export class StrategyMap implements IMapper<Strategy> {
-
-
   public static toConditionDto(condition: IStrategyConditon[]) {
     let conditionDtoList = []
     for (let item of condition) {
@@ -37,6 +41,10 @@ export class StrategyMap implements IMapper<Strategy> {
         conditionDtoList.push(ConditionCouponMap.toDTO(item as ConditionCoupon))
       } else if (item.type === 'date') {
         conditionDtoList.push(ConditionDateMap.toDTO(item as ConditionDate))
+      } else if (item.type === 'commodityStrategyTag') {
+        conditionDtoList.push(ConditionCommodityStrategyTagMap.toDTO(item as ConditionCommodityStrategyTag))
+      } else if (item.type === 'commodityQuantity') {
+        conditionDtoList.push(ConditionCommodityQuantityMap.toDTO(item as ConditionCommodityQuantity))
       } else {
         console.error(`StrategyMap.condition.toDTO.error: ${item}`)
       }
@@ -68,10 +76,9 @@ export class StrategyMap implements IMapper<Strategy> {
       name: strategy.name,
       condition: conditionDtoList,
       reward: rewardDto,
-      description: strategy.description
+      description: strategy.description,
     }
   }
-
 
   public static toConditionDomain(conditions: IStrategyConditonDbModel[]) {
     let conditionList = []
@@ -82,6 +89,10 @@ export class StrategyMap implements IMapper<Strategy> {
         conditionList.push(ConditionCouponMap.toDomain(item as IConditionCouponDbModel))
       } else if (Reflect.has(item, 'date')) {
         conditionList.push(ConditionDateMap.toDomain(item as IConditionDateDbModel))
+      } else if (item.type === 'commodityStrategyTag') {
+        conditionList.push(ConditionCommodityStrategyTagMap.toDomain(item as IConditionCommodityStrategyTagDbModel))
+      } else if (item.type === 'commodityQuantity') {
+        conditionList.push(ConditionCommodityQuantityMap.toDomain(item as IConditionCommodityQuantityDbModel))
       } else {
         console.error(`StrategyMap.condition.toDTO.error: ${item}`)
       }
@@ -123,7 +134,6 @@ export class StrategyMap implements IMapper<Strategy> {
     return strategyOrError.isSuccess ? strategyOrError.getValue() : null
   }
 
-
   public static toConditionPersistence(conditions: IStrategyConditon[]) {
     let conditionList = []
     for (let item of conditions) {
@@ -133,6 +143,10 @@ export class StrategyMap implements IMapper<Strategy> {
         conditionList.push(ConditionCouponMap.toPersistence(item as ConditionCoupon))
       } else if (item.type === 'date') {
         conditionList.push(ConditionDateMap.toPersistence(item as ConditionDate))
+      } else if (item.type === 'commodityStrategyTag') {
+        conditionList.push(ConditionCommodityStrategyTagMap.toPersistence(item as ConditionCommodityStrategyTag))
+      } else if (item.type === 'commodityQuantity') {
+        conditionList.push(ConditionCommodityQuantityMap.toPersistence(item as ConditionCommodityQuantity))
       } else {
         console.error(`StrategyMap.condition.toDTO.error: ${item}`)
       }
@@ -157,7 +171,6 @@ export class StrategyMap implements IMapper<Strategy> {
   }
 
   public static toPersistence(strategy: Strategy): IStrategyDbModel {
-
     let conditionList = this.toConditionPersistence(strategy.condition)
     let reward = this.toRewardPersistence(strategy.reward)
     return {
@@ -165,7 +178,7 @@ export class StrategyMap implements IMapper<Strategy> {
       name: strategy.name,
       condition: conditionList,
       reward: reward,
-      description: strategy.description
+      description: strategy.description,
     }
   }
 }

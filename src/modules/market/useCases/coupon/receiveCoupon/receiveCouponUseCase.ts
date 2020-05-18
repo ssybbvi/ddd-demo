@@ -6,7 +6,7 @@ import { ICouponUserRepo } from '../../../repos/couponUserRepo'
 import { ICouponRepo } from '../../../repos/couponRepo'
 import { CouponUser } from '../../../domain/couponUser'
 
-type Response = Either<AppError.UnexpectedError, Result<void>>
+type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 
 export class ReceiveCouponUseCase implements UseCase<ReceiveCouponDto, Promise<Response>> {
   private couponUserRepo: ICouponUserRepo
@@ -24,7 +24,7 @@ export class ReceiveCouponUseCase implements UseCase<ReceiveCouponDto, Promise<R
 
       const couponUserOrError = CouponUser.create({
         userId,
-        couponId
+        couponId,
       })
 
       if (couponUserOrError.isFailure) {

@@ -1,7 +1,6 @@
 import { ConditionDate } from './conditionDate'
 import { ConditionAmount } from './conditionAmount'
 
-import { Entity } from '../../../shared/domain/Entity'
 import { RewardDiscount } from './rewardDiscount'
 import { RewardGiveaway } from './rewardGiveaway'
 import { RewardReliefAmount } from './rewardReliefAmount'
@@ -11,6 +10,8 @@ import { IGuardArgument, Guard } from '../../../shared/core/Guard'
 import { RewardCoupon } from './rewardCoupon'
 import { ConditionCoupon } from './conditionCoupon'
 import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
+import { ConditionCommodityStrategyTag } from './conditionCommodityStrategyTag'
+import { ConditionCommodityQuantity } from './conditionCommodityQuantity'
 
 export interface IStrategyProps {
   name: string
@@ -19,7 +20,12 @@ export interface IStrategyProps {
   reward: IStrategyReward
 }
 
-export type IStrategyConditon = ConditionDate | ConditionCoupon | ConditionAmount
+export type IStrategyConditon =
+  | ConditionDate
+  | ConditionCoupon
+  | ConditionAmount
+  | ConditionCommodityStrategyTag
+  | ConditionCommodityQuantity
 export type IStrategyReward = RewardCoupon | RewardDiscount | RewardGiveaway | RewardReliefAmount
 
 export class Strategy extends AggregateRoot<IStrategyProps> {
@@ -42,7 +48,6 @@ export class Strategy extends AggregateRoot<IStrategyProps> {
   get description(): string {
     return this.props.description
   }
-
 
   public static create(props: IStrategyProps, id?: UniqueEntityID): Result<Strategy> {
     const guardArgs: IGuardArgument[] = [

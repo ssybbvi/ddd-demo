@@ -48,7 +48,6 @@ export class CouponMap implements IMapper<Coupon> {
     return rewardDto
   }
 
-
   public static toDTO(coupon: Coupon): CouponDto {
     let conditionDtoList = this.toConditionDTO(coupon.condition)
     let rewardDto = this.toRewardDto(coupon.reward)
@@ -56,7 +55,9 @@ export class CouponMap implements IMapper<Coupon> {
     return {
       name: coupon.name,
       condition: conditionDtoList,
-      reward: rewardDto
+      reward: rewardDto,
+      receiveLimit: coupon.receiveLimit,
+      userReceiveLimit: coupon.userReceiveLimit,
     }
   }
 
@@ -96,7 +97,9 @@ export class CouponMap implements IMapper<Coupon> {
       {
         name: raw.name,
         condition: conditionList,
-        reward: reward
+        reward: reward,
+        receiveLimit: raw.receiveLimit,
+        userReceiveLimit: raw.userReceiveLimit,
       },
       new UniqueEntityID(raw._id)
     )
@@ -104,8 +107,6 @@ export class CouponMap implements IMapper<Coupon> {
     couponOrError.isFailure ? console.log(couponOrError.error) : ''
     return couponOrError.isSuccess ? couponOrError.getValue() : null
   }
-
-
 
   public static toConditionPersistence(conditions: ICouponConditon[]) {
     let conditionDbModelList = []
@@ -135,7 +136,6 @@ export class CouponMap implements IMapper<Coupon> {
     return rewardDbModel
   }
 
-
   public static toPersistence(coupon: Coupon): ICouponDbModel {
     const conditionDbModelList = this.toConditionPersistence(coupon.condition)
     const rewardDbModel = this.toRewardPersistence(coupon.reward)
@@ -144,7 +144,9 @@ export class CouponMap implements IMapper<Coupon> {
       _id: coupon.id.toString(),
       name: coupon.name,
       condition: conditionDbModelList,
-      reward: rewardDbModel
+      reward: rewardDbModel,
+      receiveLimit: coupon.receiveLimit,
+      userReceiveLimit: coupon.userReceiveLimit,
     }
   }
 }

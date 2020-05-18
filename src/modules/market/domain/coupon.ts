@@ -12,6 +12,8 @@ export interface ICouponProps {
   name: string
   condition: ICouponConditon[]
   reward: ICouponReward
+  receiveLimit: number
+  userReceiveLimit: number
 }
 
 export type ICouponConditon = ConditionDate | ConditionAmount
@@ -33,6 +35,14 @@ export class Coupon extends AggregateRoot<ICouponProps> {
 
   get reward(): RewardDiscount | RewardGiveaway | RewardReliefAmount {
     return this.props.reward
+  }
+
+  get receiveLimit(): number {
+    return this.props.receiveLimit
+  }
+
+  get userReceiveLimit(): number {
+    return this.props.userReceiveLimit
   }
 
   public static create(props: ICouponProps, id?: UniqueEntityID): Result<Coupon> {

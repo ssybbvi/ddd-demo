@@ -1,4 +1,4 @@
 export interface IConditionAmountDto {
-  type: string
+  type: 'amount'
   amount: number
 }

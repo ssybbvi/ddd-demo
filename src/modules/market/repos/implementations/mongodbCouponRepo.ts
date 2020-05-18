@@ -1,4 +1,3 @@
-
 import { MongodbWithTenant, MongodbWithTenantCollection } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 import { ICouponRepo } from '../couponRepo'
 import { ICouponDbModel } from '../../dbModels/couponDbModel'
@@ -7,7 +6,6 @@ import { CouponMap } from '../../mappers/couponMap'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 
 export class MongodbCouponRepo implements ICouponRepo {
-
   private getCollection(): MongodbWithTenantCollection<ICouponDbModel> {
     return MongodbWithTenant.instance.Collection<ICouponDbModel>('coupon')
   }
@@ -25,8 +23,10 @@ export class MongodbCouponRepo implements ICouponRepo {
         $set: {
           name: raw.name,
           condition: raw.condition,
-          reward: raw.reward
-        }
+          reward: raw.reward,
+          receiveLimit: raw.receiveLimit,
+          userReceiveLimit: raw.userReceiveLimit,
+        },
       },
       { upsert: true }
     )
@@ -37,5 +37,4 @@ export class MongodbCouponRepo implements ICouponRepo {
     const list = await this.getCollection().find().toArray()
     return list.map((item) => CouponMap.toDomain(item))
   }
-
 }
