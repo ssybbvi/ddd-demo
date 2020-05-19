@@ -1,3 +1,3 @@
-import { couponRouter } from "./coupon";
-
-export { couponRouter }
+import { couponRouter } from './coupon'
+import { couponUserRouter } from './couponUser'
+export { couponRouter, couponUserRouter }

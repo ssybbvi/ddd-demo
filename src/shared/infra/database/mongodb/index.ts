@@ -22,7 +22,6 @@ export class Global {
     this.mongoDb = await this.getMongoDb(authConfig.mongoDatabaseUrl, authConfig.mongoDatabaseName)
   }
 
-
   public getMongoDb(uri: string, dbName: string): Promise<Db> {
     console.log(`Start connecting db...(${uri})`)
     return new Promise<Db>((rs, rj) => {

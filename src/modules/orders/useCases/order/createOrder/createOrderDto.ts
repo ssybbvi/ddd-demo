@@ -1,19 +1,20 @@
-
 export interface CreateOrderDto {
-    userId: string
-    remark?: string
+  userId: string
+  remark?: string
 
-    userName: string
-    provinceName: string,
-    cityName: string,
-    countyName: string,
-    detailAddressInfo: string,
-    nationalCode: string,
-    telNumber: string
+  userName: string
+  provinceName: string
+  cityName: string
+  countyName: string
+  detailAddressInfo: string
+  nationalCode: string
+  telNumber: string
 
-    commodityItems: CreateCommodityItemDto[]
+  couponId?: string
+
+  commodityItems: CreateCommodityItemDto[]
 }
 
 export interface CreateCommodityItemDto {
-    commodityId: string
+  commodityId: string
 }

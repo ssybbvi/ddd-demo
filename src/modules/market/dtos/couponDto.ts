@@ -6,6 +6,7 @@ import { IRewardDiscountDto } from './rewardDiscountDto'
 import { IConditionCouponDto } from './conditionCouponDto'
 
 export interface CouponDto {
+  _id: string
   name: string
   condition: ICouponConditonDto[]
   reward: IRewardDto

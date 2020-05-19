@@ -1,6 +1,3 @@
-import { Db, MongoClient, Collection } from 'mongodb'
-
-import { Global } from '../../../../shared/infra/database/mongodb'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 import { BargainMap } from '../../mappers/bargainMap'
 import { Bargain } from '../../domain/bargain'
@@ -10,7 +7,7 @@ import { RandomUtils } from '../../../../shared/utils/RandomUtils'
 import { MongodbWithTenantCollection, MongodbWithTenant } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 
 export class MongoBargainRepo implements IBargainRepo {
-  constructor() { }
+  constructor() {}
 
   private getCollection(): MongodbWithTenantCollection<IBargainDbModel> {
     return MongodbWithTenant.instance.Collection<IBargainDbModel>('bargain')

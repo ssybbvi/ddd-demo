@@ -1,4 +1,3 @@
-
 import { MongodbWithTenant, MongodbWithTenantCollection } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 import { IStrategyRepo } from '../strategyRepo'
 import { IStrategyDbModel } from '../../dbModels/strategyDbModel'
@@ -7,6 +6,7 @@ import { StrategyMap } from '../../mappers/strategyMap'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 
 export class MongodbStrategyRepo implements IStrategyRepo {
+  constructor() {}
 
   private getCollection(): MongodbWithTenantCollection<IStrategyDbModel> {
     return MongodbWithTenant.instance.Collection<IStrategyDbModel>('strategy')
@@ -27,7 +27,7 @@ export class MongodbStrategyRepo implements IStrategyRepo {
           condition: raw.condition,
           reward: raw.reward,
           description: raw.description,
-        }
+        },
       },
       { upsert: true }
     )
@@ -38,5 +38,4 @@ export class MongodbStrategyRepo implements IStrategyRepo {
     const list = await this.getCollection().find().toArray()
     return list.map((item) => StrategyMap.toDomain(item))
   }
-
 }

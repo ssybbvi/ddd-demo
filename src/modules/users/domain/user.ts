@@ -87,7 +87,7 @@ export class User extends AggregateRoot<UserProps> {
         ...props,
         isDeleted: props.isDeleted ? props.isDeleted : false,
         inviteToken: props.inviteToken ? props.inviteToken : id.toString(),
-        createAt: props.createAt ? props.createAt : Date.now()
+        createAt: props.createAt ? props.createAt : Date.now(),
       },
       id
     )

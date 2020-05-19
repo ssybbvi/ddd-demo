@@ -20,6 +20,14 @@ import { IRewardGiveawayDbModel } from '../dbModels/rewardGiveawayDbModel'
 import { IRewardReliefAmountDbModel } from '../dbModels/rewardReliefAmountDbModel'
 
 export class CouponMap implements IMapper<Coupon> {
+  public static toListDto(couponList: Coupon[]) {
+    let couponDtoList = []
+    for (let item of couponList) {
+      couponDtoList.push(this.toDTO(item))
+    }
+    return couponDtoList
+  }
+
   public static toConditionDTO(couponConditon: ICouponConditon[]) {
     let conditionDtoList = []
     for (let item of couponConditon) {
@@ -53,6 +61,7 @@ export class CouponMap implements IMapper<Coupon> {
     let rewardDto = this.toRewardDto(coupon.reward)
 
     return {
+      _id: coupon.id.toString(),
       name: coupon.name,
       condition: conditionDtoList,
       reward: rewardDto,

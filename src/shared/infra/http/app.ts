@@ -8,8 +8,6 @@ import { v1Router } from './api/v1'
 import { middleware } from '.'
 //import { isProduction } from '../../../config'
 
-
-
 const origin = {
   // origin: isProduction ? 'https://xxx.com' : '*',
   origin: '*',
@@ -24,7 +22,6 @@ app.use(compression())
 app.use(helmet())
 app.use(morgan('combined'))
 app.use(middleware.ensureAuthenticatedTenant())
-
 app.use('/api/v1', v1Router)
 
 const port = process.env.PORT || 5000

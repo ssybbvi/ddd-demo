@@ -6,6 +6,8 @@ import { CouponMap } from '../../mappers/couponMap'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 
 export class MongodbCouponRepo implements ICouponRepo {
+  constructor() {}
+
   private getCollection(): MongodbWithTenantCollection<ICouponDbModel> {
     return MongodbWithTenant.instance.Collection<ICouponDbModel>('coupon')
   }

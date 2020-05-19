@@ -1,6 +1,3 @@
-import { Db, MongoClient, Collection } from 'mongodb'
-
-import { Global } from '../../../../shared/infra/database/mongodb'
 import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 import { OrderDbModel } from '../../dbModels/orderDbModel'
 import { IOrderRepo } from '../orderRepo'
@@ -9,7 +6,7 @@ import { Order } from '../../domain/order'
 import { MongodbWithTenantCollection, MongodbWithTenant } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 
 export class MongoOrderRepo implements IOrderRepo {
-  constructor() { }
+  constructor() {}
 
   private getCollection(): MongodbWithTenantCollection<OrderDbModel> {
     return MongodbWithTenant.instance.Collection<OrderDbModel>('order')

@@ -1,4 +1,3 @@
-
 import { MongodbWithTenant, MongodbWithTenantCollection } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 import { ICouponUserRepo } from '../couponUserRepo'
 import { ICouponUserDbModel } from '../../dbModels/couponUserDbModel'
@@ -7,7 +6,7 @@ import { DomainEvents } from '../../../../shared/domain/events/DomainEvents'
 import { CouponUserMap } from '../../mappers/couponUserMap'
 
 export class MongodbCouponUserRepo implements ICouponUserRepo {
-
+  constructor() {}
   private getCollection(): MongodbWithTenantCollection<ICouponUserDbModel> {
     return MongodbWithTenant.instance.Collection<ICouponUserDbModel>('couponUser')
   }
@@ -27,15 +26,15 @@ export class MongodbCouponUserRepo implements ICouponUserRepo {
           userId: raw.userId,
           isUse: raw.isUse,
           useAt: raw.useAt,
-        }
+        },
       },
       { upsert: true }
     )
     await DomainEvents.dispatchEventsForAggregate(couponUser)
   }
 
-  public async filter(): Promise<CouponUser[]> {
-    const list = await this.getCollection().find().toArray()
+  public async filter(userId: string): Promise<CouponUser[]> {
+    const list = await this.getCollection().find({ userId }).toArray()
     return list.map((item) => CouponUserMap.toDomain(item))
   }
 
@@ -43,5 +42,4 @@ export class MongodbCouponUserRepo implements ICouponUserRepo {
     let couponUser = await this.getCollection().findOne({ userId, couponId, isUse: false })
     return CouponUserMap.toDomain(couponUser)
   }
-
 }

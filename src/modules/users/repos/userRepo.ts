@@ -1,5 +1,4 @@
 import { User } from '../domain/user'
-import { UpUserName } from '../domain/upUserName'
 
 export interface IUserRepo {
   filter(): Promise<User[]>

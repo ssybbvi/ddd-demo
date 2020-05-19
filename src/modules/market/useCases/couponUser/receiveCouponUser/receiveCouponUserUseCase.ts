@@ -1,26 +1,22 @@
 import { Either, Result, right, left } from '../../../../../shared/core/Result'
 import { AppError } from '../../../../../shared/core/AppError'
 import { UseCase } from '../../../../../shared/core/UseCase'
-import { ReceiveCouponDto } from './receiveCouponDto'
+import { ReceiveCouponUserDto } from './receiveCouponUserDto'
 import { ICouponUserRepo } from '../../../repos/couponUserRepo'
-import { ICouponRepo } from '../../../repos/couponRepo'
 import { CouponUser } from '../../../domain/couponUser'
 
 type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 
-export class ReceiveCouponUseCase implements UseCase<ReceiveCouponDto, Promise<Response>> {
+export class ReceiveCouponUserUseCase implements UseCase<ReceiveCouponUserDto, Promise<Response>> {
   private couponUserRepo: ICouponUserRepo
-  private couponRepo: ICouponRepo
 
-  constructor(couponUserRepo: ICouponUserRepo, couponRepo: ICouponRepo) {
+  constructor(couponUserRepo: ICouponUserRepo) {
     this.couponUserRepo = couponUserRepo
-    this.couponRepo = couponRepo
   }
 
-  public async execute(request: ReceiveCouponDto): Promise<Response> {
+  public async execute(request: ReceiveCouponUserDto): Promise<Response> {
     try {
       const { userId, couponId } = request
-      //const coupon = await this.couponRepo.getById(couponId)
 
       const couponUserOrError = CouponUser.create({
         userId,

@@ -40,8 +40,6 @@ export class CouponUser extends AggregateRoot<ICouponUserProps> {
     const guardArgs: IGuardArgument[] = [
       { argument: props.couponId, argumentName: 'couponId' },
       { argument: props.userId, argumentName: 'userId' },
-      { argument: props.isUse, argumentName: 'isUse' },
-      { argument: props.useAt, argumentName: 'useAt' },
     ]
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)
@@ -52,7 +50,7 @@ export class CouponUser extends AggregateRoot<ICouponUserProps> {
 
     const defaultValues: ICouponUserProps = {
       ...props,
-      isUse: props.isUse ? props.isUse : false
+      isUse: props.isUse ? props.isUse : false,
     }
 
     const model = new CouponUser(defaultValues, id)
