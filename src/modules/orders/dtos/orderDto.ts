@@ -1,6 +1,7 @@
 import { ICancelInfoDto } from './cancelInfoDto'
 import { IPaymentInfoDto } from './paymentInfoDto'
 import { IDeliveryInfoDto, IAddressInfoDto } from './deliveryInfoDto'
+import { ICommodityItemDto } from './commodityItemDto'
 
 export interface OrderDto {
   _id: string
@@ -14,17 +15,9 @@ export interface OrderDto {
   paymentInfo?: IPaymentInfoDto
   deliveryInfo?: IDeliveryInfoDto
   addressInfo: IAddressInfoDto
-  commodityItems: CommodityItemDto[]
+  commodityItems: ICommodityItemDto[]
 
   status: OrderStatus
-}
-
-export interface CommodityItemDto {
-  _id: string
-  name: string
-  amount: number
-  image: string
-  commodityId: string
 }
 
 export type OrderStatus = 'unpaid' | 'cancel' | 'shipping' | 'shipped' | 'received'

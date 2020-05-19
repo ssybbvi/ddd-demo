@@ -43,32 +43,6 @@ export class OrderAssertionService {
     return right(Result.ok<void>())
   }
 
-  public assertionAddress({
-    userName,
-    provinceName,
-    cityName,
-    countyName,
-    detailAddressInfo,
-    nationalCode,
-    telNumber,
-  }): Either<Result<any>, Result<AddressInfo>> {
-    const addressInfoOrErrors = AddressInfo.create({
-      userName: userName,
-      provinceName: provinceName,
-      cityName: cityName,
-      countyName: countyName,
-      detailAddressInfo: detailAddressInfo,
-      nationalCode: nationalCode,
-      telNumber: telNumber,
-    })
-
-    if (addressInfoOrErrors.isFailure) {
-      return left(addressInfoOrErrors)
-    }
-
-    return right(Result.ok<AddressInfo>(addressInfoOrErrors.getValue()))
-  }
-
   public async assertionCommodityItems(commodityItems: CreateCommodityItemDto[]): Promise<CommodityItemsResponse> {
     if (!!commodityItems === false || commodityItems.length === 0) {
       return left(new NotFoundError('没有该商品'))

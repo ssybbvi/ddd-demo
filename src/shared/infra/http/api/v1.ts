@@ -4,7 +4,12 @@ import { userRouter, wxUserRouter, upUserRouter } from '../../../../modules/user
 import { signInRouter, recommendedUserRouter } from '../../../../modules/distribution/infra/http/routes/index'
 import { fundRouter, fundAccountRouter } from '../../../../modules/funds/infra/http/routes'
 import { commodityRouter, purchaseHistoryRouter } from '../../../../modules/commoditys/infra/http/routes'
-import { orderRouter, orderUserRouter, bargainRouter } from '../../../../modules/orders/infra/http/routes'
+import {
+  orderRouter,
+  orderUserRouter,
+  bargainRouter,
+  addressUserRouter,
+} from '../../../../modules/orders/infra/http/routes'
 import { authorityUserRouter } from '../../../../modules/authority/infra/http/routes'
 import { Middleware } from '../utils/Middleware'
 import { dayDayTaskRouter, scheduleTaskRouter } from '../../../../modules/jiFenYueDui/infra/http/routes'
@@ -41,4 +46,5 @@ v1Router.use('/commodityTag', commodityTagRouter)
 v1Router.use('/bargain', bargainRouter)
 v1Router.use('/coupon', couponRouter)
 v1Router.use('/couponUser', couponUserRouter)
+v1Router.use('/addressUser', addressUserRouter)
 export { v1Router }

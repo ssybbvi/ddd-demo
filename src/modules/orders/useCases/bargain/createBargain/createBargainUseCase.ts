@@ -31,40 +31,33 @@ export class CreateBargainUseCase implements UseCase<CreateBargainDto, Promise<R
     this.bargainRepo = bargainRepo
   }
 
-  private async assertionAddress({
-    userName,
-    provinceName,
-    cityName,
-    countyName,
-    detailAddressInfo,
-    nationalCode,
-    telNumber,
-  }): Promise<Either<AppError.UnexpectedError | Result<any>, Result<AddressInfo>>> {
-    const addressInfoOrErrors = AddressInfo.create({
-      userName: userName,
-      provinceName: provinceName,
-      cityName: cityName,
-      countyName: countyName,
-      detailAddressInfo: detailAddressInfo,
-      nationalCode: nationalCode,
-      telNumber: telNumber,
-    })
-
-    if (addressInfoOrErrors.isFailure) {
-      return left(addressInfoOrErrors)
-    }
-
-    return right(Result.ok<AddressInfo>(addressInfoOrErrors.getValue()))
-  }
-
   public async execute(request: CreateBargainDto): Promise<Response> {
     try {
-      const { userId, commodityItems } = request
+      const {
+        userId,
+        commodityItems,
 
-      const addressResult = await this.orderAssertionService.assertionAddress(request)
-      const addressResultValue = addressResult.value
-      if (addressResult.isLeft()) {
-        return left(addressResult.value)
+        userName,
+        provinceName,
+        cityName,
+        countyName,
+        detailAddressInfo,
+        nationalCode,
+        telNumber,
+      } = request
+
+      const addressInfoOrErrors = AddressInfo.create({
+        userName: userName,
+        provinceName: provinceName,
+        cityName: cityName,
+        countyName: countyName,
+        detailAddressInfo: detailAddressInfo,
+        nationalCode: nationalCode,
+        telNumber: telNumber,
+      })
+
+      if (addressInfoOrErrors.isFailure) {
+        return left(addressInfoOrErrors)
       }
 
       const assertionCommodityItemsResult = await this.orderAssertionService.assertionCommodityItems(commodityItems)
@@ -87,7 +80,7 @@ export class CreateBargainUseCase implements UseCase<CreateBargainDto, Promise<R
       const bargainOrErrors = Bargain.create({
         userId,
         commodityItems: commodityItems1,
-        addressInfo: addressResultValue.getValue(),
+        addressInfo: addressInfoOrErrors.getValue(),
       })
       if (bargainOrErrors.isFailure) {
         return left(bargainOrErrors)

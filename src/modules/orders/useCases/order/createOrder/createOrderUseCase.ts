@@ -11,6 +11,7 @@ import { DotBuyRepeatOnceCommodityError } from '../../../domain/orderUser'
 import { CommodityItems } from '../../../domain/commodityItems'
 import { NotFoundError } from '../../../../../shared/core/NotFoundError'
 import { OrderAssertionService } from '../../../domain/service/assertionService'
+import { AddressInfo } from '../../../domain/addressInfo'
 
 type Response = Either<
   | NotFoundError
@@ -37,12 +38,28 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
         remark,
 
         commodityItems,
+
+        userName,
+        provinceName,
+        cityName,
+        countyName,
+        detailAddressInfo,
+        nationalCode,
+        telNumber,
       } = request
 
-      const addressResult = await this.orderAssertionService.assertionAddress(request)
-      const addressResultValue = addressResult.value
-      if (addressResult.isLeft()) {
-        return left(addressResult.value)
+      const addressInfoOrErrors = AddressInfo.create({
+        userName: userName,
+        provinceName: provinceName,
+        cityName: cityName,
+        countyName: countyName,
+        detailAddressInfo: detailAddressInfo,
+        nationalCode: nationalCode,
+        telNumber: telNumber,
+      })
+
+      if (addressInfoOrErrors.isFailure) {
+        return left(addressInfoOrErrors)
       }
 
       const assertionCommodityItemsResult = await this.orderAssertionService.assertionCommodityItems(commodityItems)
@@ -60,7 +77,7 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
       const orderOrErrors = Order.create({
         userId: userId,
         remark: remark,
-        addressInfo: addressResultValue.getValue(),
+        addressInfo: addressInfoOrErrors.getValue(),
         commodityItems: CommodityItems.create(commodityItemList),
       })
 
