@@ -1,3 +1,5 @@
+import { ISkuDto } from '../../../dtos/skuDto'
+
 export interface CreateCommodityDto {
   name: string
   amount: number
@@ -7,7 +9,10 @@ export interface CreateCommodityDto {
   sales: number
   restrictedPurchaseQuantity: number
   limitedPurchasePerPerson: number
-  tags: string[],
-  imgesDescrptionList: string[],
+  tags: string[]
+  imgesDescrptionList: string[]
   type: string
+  strategyTags: string[]
+  categoryId: string
+  skus: ISkuDto[]
 }

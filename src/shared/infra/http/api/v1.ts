@@ -3,7 +3,13 @@ import { tenantRouter } from '../../../../modules/tenants/infra/http/routes/tena
 import { userRouter, wxUserRouter, upUserRouter } from '../../../../modules/users/infra/http/routers/index'
 import { signInRouter, recommendedUserRouter } from '../../../../modules/distribution/infra/http/routes/index'
 import { fundRouter, fundAccountRouter } from '../../../../modules/funds/infra/http/routes'
-import { commodityRouter, purchaseHistoryRouter } from '../../../../modules/commoditys/infra/http/routes'
+import {
+  commodityRouter,
+  purchaseHistoryRouter,
+  attributeRouter,
+  categoryRouter,
+  specificationRouter,
+} from '../../../../modules/commoditys/infra/http/routes'
 import {
   orderRouter,
   orderUserRouter,
@@ -47,4 +53,7 @@ v1Router.use('/bargain', bargainRouter)
 v1Router.use('/coupon', couponRouter)
 v1Router.use('/couponUser', couponUserRouter)
 v1Router.use('/addressUser', addressUserRouter)
+v1Router.use('/attribute', attributeRouter)
+v1Router.use('/category', categoryRouter)
+v1Router.use('/specification', specificationRouter)
 export { v1Router }

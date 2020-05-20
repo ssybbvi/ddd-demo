@@ -6,9 +6,11 @@ import { CommodityDto } from '../dtos/commodityDto'
 import { CommodityName } from '../domain/commodityName'
 import { CommodityAmount } from '../domain/commodityAmount'
 import { CommodityType } from '../domain/commodityType'
+import { SkuMap } from './skuMap'
+import { Skus } from '../domain/skus'
 
 export class CommodityMap implements IMapper<Commodity> {
-  public static async  toListDto(commodityList: Commodity[]): Promise<CommodityDto[]> {
+  public static async toListDto(commodityList: Commodity[]): Promise<CommodityDto[]> {
     let commodityDtoList = []
     for (let item of commodityList) {
       commodityDtoList.push(await this.toDTO(item))
@@ -17,6 +19,7 @@ export class CommodityMap implements IMapper<Commodity> {
   }
 
   public static async toDTO(commodity: Commodity): Promise<CommodityDto> {
+    const skus = commodity.skus.getItems().map((item) => SkuMap.toDTO(item))
     return {
       _id: commodity.id.toString(),
       name: commodity.name.value,
@@ -29,7 +32,10 @@ export class CommodityMap implements IMapper<Commodity> {
       limitedPurchasePerPerson: commodity.limitedPurchasePerPerson,
       tags: commodity.tags,
       imgesDescrptionList: commodity.imgesDescrptionList,
-      type: commodity.type
+      type: commodity.type,
+      strategyTags: commodity.strategyTags,
+      categoryId: commodity.categoryId,
+      skus: skus,
     }
   }
 
@@ -40,6 +46,7 @@ export class CommodityMap implements IMapper<Commodity> {
 
     const commodityNameOrErrors = CommodityName.create({ name: raw.name })
     const commdityAmountOrErrors = CommodityAmount.create({ amount: raw.amount })
+    const skus = Skus.create(raw.skus.map((item) => SkuMap.toDomain(item)))
 
     const commodityOrError = Commodity.create(
       {
@@ -53,7 +60,10 @@ export class CommodityMap implements IMapper<Commodity> {
         limitedPurchasePerPerson: raw.limitedPurchasePerPerson,
         tags: raw.tags,
         imgesDescrptionList: raw.imgesDescrptionList,
-        type: raw.type as CommodityType
+        type: raw.type as CommodityType,
+        strategyTags: raw.strategyTags,
+        categoryId: raw.categoryId,
+        skus: skus,
       },
       new UniqueEntityID(raw._id)
     )
@@ -63,6 +73,8 @@ export class CommodityMap implements IMapper<Commodity> {
   }
 
   public static toPersistence(commodity: Commodity): ICommodityDbModel {
+    const skus = commodity.skus.getItems().map((item) => SkuMap.toPersistence(item))
+
     return {
       _id: commodity.id.toString(),
       name: commodity.name.value,
@@ -75,7 +87,10 @@ export class CommodityMap implements IMapper<Commodity> {
       limitedPurchasePerPerson: commodity.limitedPurchasePerPerson,
       tags: commodity.tags,
       imgesDescrptionList: commodity.imgesDescrptionList,
-      type: commodity.type
+      type: commodity.type,
+      strategyTags: commodity.strategyTags,
+      categoryId: commodity.categoryId,
+      skus: skus,
     }
   }
 }

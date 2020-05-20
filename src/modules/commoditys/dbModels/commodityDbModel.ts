@@ -1,8 +1,8 @@
-import { IBaseIdDbModels } from "../../../shared/infra/database/dbModel/baseIdDbModels";
-import { ITenantIdDbModel } from "../../../shared/infra/database/dbModel/tenantIdDbModel";
+import { IBaseIdDbModels } from '../../../shared/infra/database/dbModel/baseIdDbModels'
+import { ITenantIdDbModel } from '../../../shared/infra/database/dbModel/tenantIdDbModel'
+import { ISkuDbModel } from './skuDbModel'
 
 export interface ICommodityDbModel extends IBaseIdDbModels, ITenantIdDbModel {
-
   name: string
   amount: number
   description: string
@@ -12,6 +12,9 @@ export interface ICommodityDbModel extends IBaseIdDbModels, ITenantIdDbModel {
   restrictedPurchaseQuantity: number
   limitedPurchasePerPerson: number
   tags: string[]
-  imgesDescrptionList: string[],
+  imgesDescrptionList: string[]
   type: string
+  strategyTags: string[]
+  categoryId: string
+  skus: ISkuDbModel[]
 }

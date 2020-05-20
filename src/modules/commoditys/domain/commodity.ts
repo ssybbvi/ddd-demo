@@ -6,6 +6,7 @@ import { CommodityCreated } from './events/CommodityCreated'
 import { CommodityAmount } from './commodityAmount'
 import { CommodityName } from './commodityName'
 import { CommodityType } from './commodityType'
+import { Skus } from './skus'
 
 export interface ICommodityProps {
   name: CommodityName
@@ -14,11 +15,14 @@ export interface ICommodityProps {
   images: string[]
   fakeAmount: string
   sales: number
-  restrictedPurchaseQuantity: number//每次限购
-  limitedPurchasePerPerson: number//每人限购
+  restrictedPurchaseQuantity: number //每次限购
+  limitedPurchasePerPerson: number //每人限购
   tags: string[]
-  imgesDescrptionList: string[],
+  imgesDescrptionList: string[]
   type: CommodityType
+  strategyTags: string[]
+  categoryId: string
+  skus: Skus
 }
 
 export class Commodity extends AggregateRoot<ICommodityProps> {
@@ -70,6 +74,18 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     return this.props.type
   }
 
+  get strategyTags(): string[] {
+    return this.props.strategyTags
+  }
+
+  get categoryId(): string {
+    return this.props.categoryId
+  }
+
+  get skus(): Skus {
+    return this.props.skus
+  }
+
   public updateName(name: CommodityName) {
     this.props.name = name
   }
@@ -118,6 +134,18 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     this.props.sales--
   }
 
+  public updateStrategyTags(strategyTags: string[]) {
+    this.props.strategyTags = strategyTags
+  }
+
+  public updateCategoryId(categoryId: string): void {
+    this.props.categoryId = categoryId
+  }
+
+  public updateSkus(skus: Skus): void {
+    this.props.skus = skus
+  }
+
   public isBargain(): boolean {
     return this.props.type === 'bargain'
   }
@@ -143,7 +171,7 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
       ...props,
       tags: props.tags ? props.tags : [],
       limitedPurchasePerPerson: props.limitedPurchasePerPerson ? props.limitedPurchasePerPerson : -1,
-      type: props.type ? props.type : 'ordinary'
+      type: props.type ? props.type : 'ordinary',
     }
 
     const commodity = new Commodity(defaultValues, id)

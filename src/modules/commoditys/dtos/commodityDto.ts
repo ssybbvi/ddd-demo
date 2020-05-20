@@ -1,3 +1,5 @@
+import { ISkuDto } from './skuDto'
+
 export interface CommodityDto {
   _id: string
   name: string
@@ -9,6 +11,9 @@ export interface CommodityDto {
   restrictedPurchaseQuantity: number
   limitedPurchasePerPerson: number
   tags: string[]
-  imgesDescrptionList: string[],
+  imgesDescrptionList: string[]
   type: string
+  strategyTags: string[]
+  categoryId: string
+  skus: ISkuDto[]
 }

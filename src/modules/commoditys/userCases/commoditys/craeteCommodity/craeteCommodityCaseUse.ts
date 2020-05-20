@@ -7,6 +7,9 @@ import { ICommodityRepo } from '../../../repos/iCommodityRepo'
 import { CommodityName } from '../../../domain/commodityName'
 import { CommodityAmount } from '../../../domain/commodityAmount'
 import { CommodityType } from '../../../domain/commodityType'
+import { Sku } from '../../../domain/sku'
+import { SkuMap } from '../../../mappers/skuMap'
+import { Skus } from '../../../domain/skus'
 
 type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 
@@ -31,6 +34,9 @@ export class CreateCommodityUseCase implements UseCase<CreateCommodityDto, Promi
         imgesDescrptionList,
         limitedPurchasePerPerson,
         type,
+        strategyTags,
+        categoryId,
+        skus,
       } = request
 
       const commodityNameOrErrors = CommodityName.create({ name })
@@ -42,6 +48,11 @@ export class CreateCommodityUseCase implements UseCase<CreateCommodityDto, Promi
       if (commdityAmountOrErrors.isFailure) {
         return left(commdityAmountOrErrors)
       }
+
+      const skuList = skus.map((item) => {
+        return SkuMap.toDomain(item)
+      })
+      const skusDomian = Skus.create(skuList)
 
       const commodityOrErrors = Commodity.create({
         name: commodityNameOrErrors.getValue(),
@@ -55,6 +66,9 @@ export class CreateCommodityUseCase implements UseCase<CreateCommodityDto, Promi
         tags,
         imgesDescrptionList,
         type: type as CommodityType,
+        strategyTags,
+        categoryId,
+        skus: skusDomian,
       })
 
       if (commodityOrErrors.isFailure) {
