@@ -9,7 +9,6 @@ import { clsNameSpace } from '../../cls'
 import express from 'express'
 import { MongodbWithTenant } from '../../database/mongodb/mongodbTenant'
 
-
 export class Middleware {
   private authService: IAuthService
 
@@ -72,7 +71,7 @@ export class Middleware {
         console.log('==========set:tenantId==========', tenantId)
         clsNameSpace.set('tenantId', tenantId)
         return next()
-      });
+      })
     }
   }
 
@@ -92,9 +91,7 @@ export class Middleware {
 
       const { userId } = decoded
       if (!userId) {
-        return res
-          .status(200)
-          .send({ message: '请登录获取token' })
+        return res.status(200).send({ message: '请登录获取token' })
       }
 
       const tokens = await this.authService.getTokens(userId)
@@ -140,10 +137,10 @@ export class Middleware {
     //TODO 待优化
     return async (req, res, next) => {
       let client = new ossAliyun({
-        region: 'oss-cn-shenzhen',
-        accessKeyId: 'LTAI4FtmLY3CAR639p3otxJX',
-        accessKeySecret: 'zgbVP5Il45Z4nJROIHe8HQ968zRvAv',
-        bucket: 'xiaoailingdong',
+        region: '',
+        accessKeyId: '',
+        accessKeySecret: '',
+        bucket: '',
       })
 
       var form = new formidable.IncomingForm()
@@ -175,7 +172,3 @@ export class Middleware {
     }
   }
 }
-
-
-
-
