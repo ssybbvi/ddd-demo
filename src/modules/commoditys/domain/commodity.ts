@@ -7,10 +7,10 @@ import { CommodityAmount } from './commodityAmount'
 import { CommodityName } from './commodityName'
 import { CommodityType } from './commodityType'
 import { Skus } from './skus'
+import { Attributes } from './attributes'
 
 export interface ICommodityProps {
   name: CommodityName
-  amount: CommodityAmount
   description: string
   images: string[]
   fakeAmount: string
@@ -23,6 +23,7 @@ export interface ICommodityProps {
   strategyTags: string[]
   categoryId: string
   skus: Skus
+  attributes: Attributes
 }
 
 export class Commodity extends AggregateRoot<ICommodityProps> {
@@ -32,10 +33,6 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
 
   get name(): CommodityName {
     return this.props.name
-  }
-
-  get amount(): CommodityAmount {
-    return this.props.amount
   }
 
   get description(): string {
@@ -86,12 +83,12 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     return this.props.skus
   }
 
-  public updateName(name: CommodityName) {
-    this.props.name = name
+  get attributes(): Attributes {
+    return this.props.attributes
   }
 
-  public updateAmount(amount: CommodityAmount) {
-    this.props.amount = amount
+  public updateName(name: CommodityName) {
+    this.props.name = name
   }
 
   public updateDescrption(description: string) {
@@ -150,15 +147,25 @@ export class Commodity extends AggregateRoot<ICommodityProps> {
     return this.props.type === 'bargain'
   }
 
+  public updateAttributes(attributes: Attributes) {
+    this.props.attributes = attributes
+  }
+
   public static create(props: ICommodityProps, id?: UniqueEntityID): Result<Commodity> {
     const guardArgs: IGuardArgument[] = [
       { argument: props.name, argumentName: '商品名称' },
-      { argument: props.amount, argumentName: '金额' },
       { argument: props.description, argumentName: '描述' },
       { argument: props.images, argumentName: '图片' },
       { argument: props.fakeAmount, argumentName: '假价格' },
       { argument: props.sales, argumentName: '销量' },
       { argument: props.restrictedPurchaseQuantity, argumentName: '每次限购' },
+      { argument: props.tags, argumentName: '标签' },
+      { argument: props.imgesDescrptionList, argumentName: '图片描述集合' },
+      { argument: props.type, argumentName: 'type' },
+      { argument: props.strategyTags, argumentName: '策略标签' },
+      { argument: props.categoryId, argumentName: '商品分类' },
+      { argument: props.skus, argumentName: 'skus' },
+      { argument: props.attributes, argumentName: '属性规格' },
     ]
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)

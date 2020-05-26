@@ -3,6 +3,5 @@ import { ITenantIdDbModel } from '../../../shared/infra/database/dbModel/tenantI
 
 export interface ISpecificationDbModel extends IBaseIdDbModels, ITenantIdDbModel {
   name: string
-  attributeId: string
   icon: string
 }

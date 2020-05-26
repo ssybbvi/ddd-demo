@@ -4,8 +4,16 @@ import { UseCase } from '../../../../../shared/core/UseCase'
 import { Category } from '../../../domain/category'
 import { ICategoryRepo } from '../../../repos/iCategoryRepo'
 import { ICreateCategoryDto } from './createCategoryDto'
+import { Specification } from '../../../domain/specification'
+import { UniqueEntityID } from '../../../../../shared/domain/UniqueEntityID'
+import { Attribute } from '../../../domain/attribute'
+import { Specifications } from '../../../domain/specifications'
+import { Attributes } from '../../../domain/attributes'
 
-type Response = Either<AppError.UnexpectedError | Result<Category>, Result<void>>
+type Response = Either<
+  AppError.UnexpectedError | Result<Category> | Result<Attribute> | Result<Specification>,
+  Result<void>
+>
 
 export class CreateCategoryUseCase implements UseCase<ICreateCategoryDto, Promise<Response>> {
   private categoryRepo: ICategoryRepo
@@ -21,6 +29,7 @@ export class CreateCategoryUseCase implements UseCase<ICreateCategoryDto, Promis
       const categoryOrEerros = Category.create({
         name,
         parentId,
+        attributes: Attributes.create([]),
       })
 
       if (categoryOrEerros.isFailure) {

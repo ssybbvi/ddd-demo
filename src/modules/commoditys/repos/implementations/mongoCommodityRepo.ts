@@ -6,7 +6,7 @@ import { CommodityMap } from '../../mappers/commodityMap'
 import { MongodbWithTenantCollection, MongodbWithTenant } from '../../../../shared/infra/database/mongodb/mongodbTenant'
 
 export class MongoCommodityRepo implements ICommodityRepo {
-  constructor() { }
+  constructor() {}
 
   private getCollection(): MongodbWithTenantCollection<ICommodityDbModel> {
     return MongodbWithTenant.instance.Collection<ICommodityDbModel>('commodity')
@@ -24,7 +24,6 @@ export class MongoCommodityRepo implements ICommodityRepo {
       {
         $set: {
           name: raw.name,
-          amount: raw.amount,
           description: raw.description,
           images: raw.images,
           fakeAmount: raw.fakeAmount,
@@ -34,6 +33,10 @@ export class MongoCommodityRepo implements ICommodityRepo {
           tags: raw.tags,
           imgesDescrptionList: raw.imgesDescrptionList,
           type: raw.type,
+          strategyTags: raw.strategyTags,
+          categoryId: raw.categoryId,
+          skus: raw.skus,
+          attributes: raw.attributes,
         },
       },
       { upsert: true }

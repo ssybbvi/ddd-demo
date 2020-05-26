@@ -1,9 +1,9 @@
 import { ISkuDto } from './skuDto'
+import { IAttributeDto } from './attributeDto'
 
 export interface CommodityDto {
   _id: string
   name: string
-  amount: number
   description: string
   images: string[]
   fakeAmount: string
@@ -16,4 +16,5 @@ export interface CommodityDto {
   strategyTags: string[]
   categoryId: string
   skus: ISkuDto[]
+  attributes: IAttributeDto[]
 }

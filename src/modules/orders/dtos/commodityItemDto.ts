@@ -4,4 +4,6 @@ export interface ICommodityItemDto {
   amount: number
   commodityId: string
   commodityType: string
+  skuId: string
+  specifications: string
 }

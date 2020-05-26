@@ -8,8 +8,13 @@ import { CommodityName } from '../../../domain/commodityName'
 import { CommodityAmount } from '../../../domain/commodityAmount'
 import { CommodityType } from '../../../domain/commodityType'
 import { Sku } from '../../../domain/sku'
-import { SkuMap } from '../../../mappers/skuMap'
 import { Skus } from '../../../domain/skus'
+import { SkuSpecification } from '../../../domain/skuSpecification'
+import { Attribute } from '../../../domain/attribute'
+import { Specification } from '../../../domain/specification'
+import { UniqueEntityID } from '../../../../../shared/domain/UniqueEntityID'
+import { Specifications } from '../../../domain/specifications'
+import { Attributes } from '../../../domain/attributes'
 
 type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 
@@ -24,7 +29,6 @@ export class CreateCommodityUseCase implements UseCase<CreateCommodityDto, Promi
     try {
       const {
         name,
-        amount,
         description,
         images,
         fakeAmount,
@@ -37,6 +41,7 @@ export class CreateCommodityUseCase implements UseCase<CreateCommodityDto, Promi
         strategyTags,
         categoryId,
         skus,
+        attributes,
       } = request
 
       const commodityNameOrErrors = CommodityName.create({ name })
@@ -44,19 +49,72 @@ export class CreateCommodityUseCase implements UseCase<CreateCommodityDto, Promi
         return left(commodityNameOrErrors)
       }
 
-      const commdityAmountOrErrors = CommodityAmount.create({ amount })
-      if (commdityAmountOrErrors.isFailure) {
-        return left(commdityAmountOrErrors)
+      const skuList = []
+      for (let sku of skus) {
+        let combines = []
+        for (let skuSpecification of sku.combines) {
+          const skuSpecificationOrError = SkuSpecification.create({
+            attributeId: skuSpecification.attributeId,
+            specificationId: skuSpecification.specificationId,
+          })
+
+          if (skuSpecificationOrError.isFailure) {
+            return left(skuSpecificationOrError)
+          }
+          combines.push(skuSpecificationOrError.getValue())
+        }
+
+        const skuOrError = Sku.create(
+          {
+            name: sku.name,
+            code: sku.code,
+            price: sku.price,
+            stock: sku.stock,
+            isSufficient: sku.isSufficient,
+            combines: combines,
+          },
+          new UniqueEntityID(sku._id)
+        )
+
+        if (skuOrError.isFailure) {
+          return left(skuOrError)
+        }
+        skuList.push(skuOrError.getValue())
       }
 
-      const skuList = skus.map((item) => {
-        return SkuMap.toDomain(item)
-      })
-      const skusDomian = Skus.create(skuList)
+      const attributeList = []
+      for (let attribute of attributes) {
+        const specificationList = []
+        for (let specification of attribute.specifications) {
+          const specificationOrError = Specification.create(
+            {
+              name: specification.name,
+              icon: specification.icon,
+            },
+            new UniqueEntityID(specification._id)
+          )
+
+          if (specificationOrError.isFailure) {
+            return left(specificationOrError)
+          }
+          specificationList.push(specificationOrError.getValue())
+        }
+
+        const attributeOrError = Attribute.create(
+          {
+            name: attribute.name,
+            specifications: Specifications.create(specificationList),
+          },
+          new UniqueEntityID(attribute._id)
+        )
+        if (attributeOrError.isFailure) {
+          return left(attributeOrError)
+        }
+        attributeList.push(attributeOrError.getValue())
+      }
 
       const commodityOrErrors = Commodity.create({
         name: commodityNameOrErrors.getValue(),
-        amount: commdityAmountOrErrors.getValue(),
         description,
         images,
         fakeAmount,
@@ -68,7 +126,8 @@ export class CreateCommodityUseCase implements UseCase<CreateCommodityDto, Promi
         type: type as CommodityType,
         strategyTags,
         categoryId,
-        skus: skusDomian,
+        skus: Skus.create(skuList),
+        attributes: Attributes.create(attributeList),
       })
 
       if (commodityOrErrors.isFailure) {

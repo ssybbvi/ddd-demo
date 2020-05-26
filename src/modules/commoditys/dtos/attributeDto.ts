@@ -1,5 +1,7 @@
+import { ISpecificationDto } from './specificationDto'
+
 export interface IAttributeDto {
   _id: string
   name: string
-  categoryId: string
+  specifications: ISpecificationDto[]
 }

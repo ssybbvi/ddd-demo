@@ -17,4 +17,5 @@ export interface CreateOrderDto {
 
 export interface CreateCommodityItemDto {
   commodityId: string
+  skuId: string
 }

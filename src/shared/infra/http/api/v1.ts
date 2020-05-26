@@ -6,9 +6,7 @@ import { fundRouter, fundAccountRouter } from '../../../../modules/funds/infra/h
 import {
   commodityRouter,
   purchaseHistoryRouter,
-  attributeRouter,
   categoryRouter,
-  specificationRouter,
 } from '../../../../modules/commoditys/infra/http/routes'
 import {
   orderRouter,
@@ -53,7 +51,5 @@ v1Router.use('/bargain', bargainRouter)
 v1Router.use('/coupon', couponRouter)
 v1Router.use('/couponUser', couponUserRouter)
 v1Router.use('/addressUser', addressUserRouter)
-v1Router.use('/attribute', attributeRouter)
 v1Router.use('/category', categoryRouter)
-v1Router.use('/specification', specificationRouter)
 export { v1Router }

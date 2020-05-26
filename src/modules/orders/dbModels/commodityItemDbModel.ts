@@ -1,8 +1,10 @@
-import { IBaseIdDbModels } from "../../../shared/infra/database/dbModel/baseIdDbModels";
+import { IBaseIdDbModels } from '../../../shared/infra/database/dbModel/baseIdDbModels'
 
 export interface ICommodityItemDbModel extends IBaseIdDbModels {
   name: string
   amount: number
-  commodityId: string,
+  commodityId: string
   commodityType: string
+  skuId: string
+  specifications: string
 }

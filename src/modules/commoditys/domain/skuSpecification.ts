@@ -1,5 +1,6 @@
 import { ValueObject } from '../../../shared/domain/ValueObject'
 import { Result } from '../../../shared/core/Result'
+import { IGuardArgument, Guard } from '../../../shared/core/Guard'
 
 export interface ISkuSpecificationProps {
   attributeId: string
@@ -20,6 +21,17 @@ export class SkuSpecification extends ValueObject<ISkuSpecificationProps> {
   }
 
   public static create(props: ISkuSpecificationProps): Result<SkuSpecification> {
+    const guardArgs: IGuardArgument[] = [
+      { argument: props.attributeId, argumentName: '属性编号' },
+      { argument: props.specificationId, argumentName: '规格编号' },
+    ]
+
+    const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)
+
+    if (!guardResult.succeeded) {
+      return Result.fail<SkuSpecification>(guardResult.message)
+    }
+
     const defaultProps: ISkuSpecificationProps = {
       ...props,
     }

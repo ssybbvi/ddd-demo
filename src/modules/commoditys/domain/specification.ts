@@ -2,24 +2,24 @@ import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
 import { Result } from '../../../shared/core/Result'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { IGuardArgument, Guard } from '../../../shared/core/Guard'
+import { Entity } from '../../../shared/domain/Entity'
 
 export interface ISpecificationProps {
   name: string
-  attributeId: string
   icon: string
 }
 
-export class Specification extends AggregateRoot<ISpecificationProps> {
+export class Specification extends Entity<ISpecificationProps> {
   private constructor(props: ISpecificationProps, id?: UniqueEntityID) {
     super(props, id)
   }
 
-  get name(): string {
-    return this.props.name
+  get id(): UniqueEntityID {
+    return this._id
   }
 
-  get attributeId(): string {
-    return this.props.attributeId
+  get name(): string {
+    return this.props.name
   }
 
   get icon(): string {
@@ -30,10 +30,6 @@ export class Specification extends AggregateRoot<ISpecificationProps> {
     this.props.name = name
   }
 
-  public updateAttributeId(attributeId: string) {
-    this.props.attributeId = attributeId
-  }
-
   public updateIconn(icon: string) {
     this.props.icon = icon
   }
@@ -41,8 +37,7 @@ export class Specification extends AggregateRoot<ISpecificationProps> {
   public static create(props: ISpecificationProps, id?: UniqueEntityID): Result<Specification> {
     const guardArgs: IGuardArgument[] = [
       { argument: props.name, argumentName: '名称' },
-      { argument: props.attributeId, argumentName: '属性编号' },
-      { argument: props.icon, argumentName: 'ICON' },
+      { argument: props.icon, argumentName: 'icon' },
     ]
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)

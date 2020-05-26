@@ -1,38 +1,43 @@
-import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
-import { Result } from '../../../shared/core/Result'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { IGuardArgument, Guard } from '../../../shared/core/Guard'
+import { Entity } from '../../../shared/domain/Entity'
+import { Specifications } from './specifications'
+import { Result } from '../../../shared/core/Result'
 
 export interface IAttributeProps {
   name: string
-  categoryId: string
+  specifications: Specifications
 }
 
-export class Attribute extends AggregateRoot<IAttributeProps> {
+export class Attribute extends Entity<IAttributeProps> {
   private constructor(props: IAttributeProps, id?: UniqueEntityID) {
     super(props, id)
+  }
+
+  get id(): UniqueEntityID {
+    return this._id
   }
 
   get name(): string {
     return this.props.name
   }
 
-  get categoryId(): string {
-    return this.props.categoryId
+  get specifications(): Specifications {
+    return this.props.specifications
   }
 
   public updateName(name: string) {
     this.props.name = name
   }
 
-  public updateCategoryId(categoryId: string) {
-    this.props.categoryId = categoryId
+  public updateCategoryId(specifications: Specifications) {
+    this.props.specifications = specifications
   }
 
   public static create(props: IAttributeProps, id?: UniqueEntityID): Result<Attribute> {
     const guardArgs: IGuardArgument[] = [
       { argument: props.name, argumentName: '名称' },
-      { argument: props.categoryId, argumentName: '分类' },
+      { argument: props.specifications, argumentName: 'specifications' },
     ]
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)

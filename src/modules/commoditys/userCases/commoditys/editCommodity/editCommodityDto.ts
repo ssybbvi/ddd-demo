@@ -1,12 +1,20 @@
+import { ISkuDto } from '../../../dtos/skuDto'
+import { IAttributeDto } from '../../../dtos/attributeDto'
+
 export interface IEditCommodityDto {
-    _id: string
-    name: string
-    amount: number
-    description: string
-    images: string[]
-    fakeAmount: string
-    restrictedPurchaseQuantity: number
-    tags: string[]
-    imgesDescrptionList: string[],
-    type: string
+  _id: string
+  name: string
+  description: string
+  images: string[]
+  fakeAmount: string
+  sales: number
+  restrictedPurchaseQuantity: number
+  limitedPurchasePerPerson: number
+  tags: string[]
+  imgesDescrptionList: string[]
+  type: string
+  strategyTags: string[]
+  categoryId: string
+  skus: ISkuDto[]
+  attributes: IAttributeDto[]
 }

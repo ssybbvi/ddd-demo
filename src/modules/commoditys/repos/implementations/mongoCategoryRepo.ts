@@ -25,6 +25,7 @@ export class MongoCategoryRepo implements ICategoryRepo {
         $set: {
           name: raw.name,
           parentId: raw.parentId,
+          attributes: raw.attributes,
         },
       },
       { upsert: true }

@@ -6,7 +6,6 @@ import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { ICommodityItemDto } from '../dtos/commodityItemDto'
 import { commodityIdToDto } from '../../commoditys/infra/decorators/commodityIdToDto'
 
-
 export class CommodityItemMap implements IMapper<CommodityItem> {
   public static toDomain(raw: ICommodityItemDbModel): CommodityItem {
     if (!raw) {
@@ -18,8 +17,11 @@ export class CommodityItemMap implements IMapper<CommodityItem> {
         name: raw.name,
         amount: raw.amount,
         commodityId: raw.commodityId,
-        commodityType: raw.commodityType as CommodityType
-      }, new UniqueEntityID(raw._id)
+        commodityType: raw.commodityType as CommodityType,
+        skuId: raw.skuId,
+        specifications: raw.specifications,
+      },
+      new UniqueEntityID(raw._id)
     )
     commodityItemOrError.isFailure ? console.log(commodityItemOrError.error) : ''
     return commodityItemOrError.isSuccess ? commodityItemOrError.getValue() : null
@@ -34,7 +36,9 @@ export class CommodityItemMap implements IMapper<CommodityItem> {
       name: commodityItem.name,
       amount: commodityItem.amount,
       commodityId: commodityItem.commodityId,
-      commodityType: commodityItem.commodityType
+      commodityType: commodityItem.commodityType,
+      skuId: commodityItem.skuId,
+      specifications: commodityItem.specifications,
     }
   }
 
@@ -56,7 +60,9 @@ export class CommodityItemMap implements IMapper<CommodityItem> {
       name: commodityItem.name,
       amount: commodityItem.amount,
       commodityId: commodityItem.commodityId,
-      commodityType: commodityItem.commodityType
+      commodityType: commodityItem.commodityType,
+      skuId: commodityItem.skuId,
+      specifications: commodityItem.specifications,
     }
   }
 }

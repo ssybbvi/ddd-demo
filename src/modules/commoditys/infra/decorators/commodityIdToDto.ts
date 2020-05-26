@@ -1,14 +1,25 @@
-import { commodityCache } from "../cache";
+import { commodityCache } from '../cache'
 
-function commodityIdToDto(key: string = "commodityId") {
+function commodityIdToDto(key: string = 'commodityId') {
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-    let oldFunc = descriptor.value;
+    let oldFunc = descriptor.value
     descriptor.value = async function (...args: any[]) {
-      var result = await oldFunc.apply(this, args);
+      var result = await oldFunc.apply(this, args)
       try {
         let id = result[key]
         let dto = await commodityCache.getValue(id)
-        let { name, amount, description, images, fakeAmount, sales, restrictedPurchaseQuantity, limitedPurchasePerPerson, tags, imgesDescrptionList, type } = dto
+        let {
+          name,
+          description,
+          images,
+          fakeAmount,
+          sales,
+          restrictedPurchaseQuantity,
+          limitedPurchasePerPerson,
+          tags,
+          imgesDescrptionList,
+          type,
+        } = dto
         return {
           commodityName: name,
           commodityDescription: description,
@@ -20,17 +31,15 @@ function commodityIdToDto(key: string = "commodityId") {
           commodityTags: tags,
           commodityImgesDescrptionList: imgesDescrptionList,
           commodityType: type,
-          commodityAmount: amount,
 
-          ...result
+          ...result,
         }
       } catch (err) {
-        console.log("commodityIdToDto", err, result)
+        console.log('commodityIdToDto', err, result)
         return result
       }
     }
   }
 }
-
 
 export { commodityIdToDto }

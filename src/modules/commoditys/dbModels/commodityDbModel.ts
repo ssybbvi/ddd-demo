@@ -1,10 +1,10 @@
 import { IBaseIdDbModels } from '../../../shared/infra/database/dbModel/baseIdDbModels'
 import { ITenantIdDbModel } from '../../../shared/infra/database/dbModel/tenantIdDbModel'
 import { ISkuDbModel } from './skuDbModel'
+import { IAttributeDbModel } from './attributeDbModel'
 
 export interface ICommodityDbModel extends IBaseIdDbModels, ITenantIdDbModel {
   name: string
-  amount: number
   description: string
   images: string[]
   fakeAmount: string
@@ -17,4 +17,5 @@ export interface ICommodityDbModel extends IBaseIdDbModels, ITenantIdDbModel {
   strategyTags: string[]
   categoryId: string
   skus: ISkuDbModel[]
+  attributes: IAttributeDbModel[]
 }

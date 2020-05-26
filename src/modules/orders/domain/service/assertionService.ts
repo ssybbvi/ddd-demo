@@ -7,6 +7,7 @@ import { AddressInfo } from '../addressInfo'
 import { CreateCommodityItemDto } from '../../useCases/order/createOrder/createOrderDto'
 import { NotFoundError } from '../../../../shared/core/NotFoundError'
 import { GetCommodityByIdUseCase } from '../../../commoditys/userCases/commoditys/getCommodityById/getCommodityByIdUseCase'
+import { Commodity } from '../../../commoditys/domain/commodity'
 
 export type BuyOneceAssertionResponse = Either<DotBuyRepeatOnceCommodityError | Result<OrderUser>, Result<void>>
 
@@ -53,14 +54,21 @@ export class OrderAssertionService {
       let getCommodityByIdUseCaseResult = await this.getCommodityByIdUseCase.execute({ commodityId: item.commodityId })
       let getCommodityByIdUseCaseResultValue = getCommodityByIdUseCaseResult.value
       if (getCommodityByIdUseCaseResult.isLeft()) {
-        return left(getCommodityByIdUseCaseResult.value)
+        return left(getCommodityByIdUseCaseResultValue)
       }
-      const commodity = getCommodityByIdUseCaseResultValue.getValue()
+      const commodity = getCommodityByIdUseCaseResultValue.getValue() as Commodity
+      const sku = commodity.skus.getItems().find((findItem) => findItem.id.toString() === item.skuId)
+      if (!sku) {
+        return left(new NotFoundError('无此skuId'))
+      }
+
       let commodityItemOrErrors = CommodityItem.create({
         name: commodity.name.value,
-        amount: commodity.amount.value,
+        amount: sku.price,
         commodityId: item.commodityId,
         commodityType: commodity.type,
+        skuId: item.skuId,
+        specifications: sku.name,
       })
 
       if (commodityItemOrErrors.isFailure) {

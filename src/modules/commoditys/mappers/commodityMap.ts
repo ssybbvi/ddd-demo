@@ -4,10 +4,11 @@ import { ICommodityDbModel } from '../dbModels/commodityDbModel'
 import { Commodity } from '../domain/commodity'
 import { CommodityDto } from '../dtos/commodityDto'
 import { CommodityName } from '../domain/commodityName'
-import { CommodityAmount } from '../domain/commodityAmount'
 import { CommodityType } from '../domain/commodityType'
 import { SkuMap } from './skuMap'
 import { Skus } from '../domain/skus'
+import { AttributeMap } from './attributeMap'
+import { Attributes } from '../domain/attributes'
 
 export class CommodityMap implements IMapper<Commodity> {
   public static async toListDto(commodityList: Commodity[]): Promise<CommodityDto[]> {
@@ -20,10 +21,10 @@ export class CommodityMap implements IMapper<Commodity> {
 
   public static async toDTO(commodity: Commodity): Promise<CommodityDto> {
     const skus = commodity.skus.getItems().map((item) => SkuMap.toDTO(item))
+    const attributes = commodity.attributes.getItems().map((item) => AttributeMap.toDTO(item))
     return {
       _id: commodity.id.toString(),
       name: commodity.name.value,
-      amount: commodity.amount.value,
       description: commodity.description,
       images: commodity.images,
       fakeAmount: commodity.fakeAmount,
@@ -36,6 +37,7 @@ export class CommodityMap implements IMapper<Commodity> {
       strategyTags: commodity.strategyTags,
       categoryId: commodity.categoryId,
       skus: skus,
+      attributes: attributes,
     }
   }
 
@@ -45,13 +47,12 @@ export class CommodityMap implements IMapper<Commodity> {
     }
 
     const commodityNameOrErrors = CommodityName.create({ name: raw.name })
-    const commdityAmountOrErrors = CommodityAmount.create({ amount: raw.amount })
     const skus = Skus.create(raw.skus.map((item) => SkuMap.toDomain(item)))
+    const attributes = Attributes.create(raw.attributes.map((item) => AttributeMap.toDomain(item)))
 
     const commodityOrError = Commodity.create(
       {
         name: commodityNameOrErrors.getValue(),
-        amount: commdityAmountOrErrors.getValue(),
         description: raw.description,
         images: raw.images,
         fakeAmount: raw.fakeAmount,
@@ -64,6 +65,7 @@ export class CommodityMap implements IMapper<Commodity> {
         strategyTags: raw.strategyTags,
         categoryId: raw.categoryId,
         skus: skus,
+        attributes: attributes,
       },
       new UniqueEntityID(raw._id)
     )
@@ -74,11 +76,10 @@ export class CommodityMap implements IMapper<Commodity> {
 
   public static toPersistence(commodity: Commodity): ICommodityDbModel {
     const skus = commodity.skus.getItems().map((item) => SkuMap.toPersistence(item))
-
+    const attributes = commodity.attributes.getItems().map((item) => AttributeMap.toPersistence(item))
     return {
       _id: commodity.id.toString(),
       name: commodity.name.value,
-      amount: commodity.amount.value,
       description: commodity.description,
       images: commodity.images,
       fakeAmount: commodity.fakeAmount,
@@ -91,6 +92,7 @@ export class CommodityMap implements IMapper<Commodity> {
       strategyTags: commodity.strategyTags,
       categoryId: commodity.categoryId,
       skus: skus,
+      attributes: attributes,
     }
   }
 }

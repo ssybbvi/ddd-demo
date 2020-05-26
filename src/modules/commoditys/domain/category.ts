@@ -2,10 +2,12 @@ import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
 import { Result } from '../../../shared/core/Result'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { IGuardArgument, Guard } from '../../../shared/core/Guard'
+import { Attributes } from './attributes'
 
 export interface ICategoryProps {
   name: string
   parentId: string
+  attributes: Attributes
 }
 
 export class Category extends AggregateRoot<ICategoryProps> {
@@ -21,6 +23,10 @@ export class Category extends AggregateRoot<ICategoryProps> {
     return this.props.parentId
   }
 
+  get attributes(): Attributes {
+    return this.props.attributes
+  }
+
   public updateName(name: string) {
     this.props.name = name
   }
@@ -29,10 +35,15 @@ export class Category extends AggregateRoot<ICategoryProps> {
     this.props.parentId = parentId
   }
 
+  public updateAttributes(attributes: Attributes) {
+    this.props.attributes = attributes
+  }
+
   public static create(props: ICategoryProps, id?: UniqueEntityID): Result<Category> {
     const guardArgs: IGuardArgument[] = [
       { argument: props.name, argumentName: '名称' },
       { argument: props.parentId, argumentName: '父节点' },
+      { argument: props.attributes, argumentName: 'attributes' },
     ]
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)

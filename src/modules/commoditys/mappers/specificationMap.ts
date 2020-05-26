@@ -5,19 +5,18 @@ import { ISpecificationDto } from '../dtos/specificationDto'
 import { ISpecificationDbModel } from '../dbModels/specificationDbModel'
 
 export class SpecificationMap implements IMapper<Specification> {
-  public static async toDtoList(specificationList: Specification[]) {
+  public static toDtoList(specificationList: Specification[]) {
     const list = []
     for (let item of specificationList) {
-      list.push(await this.toDTO(item))
+      list.push(this.toDTO(item))
     }
     return list
   }
 
-  public static async toDTO(specification: Specification): Promise<ISpecificationDto> {
+  public static toDTO(specification: Specification): ISpecificationDto {
     return {
       _id: specification.id.toString(),
       name: specification.name,
-      attributeId: specification.attributeId,
       icon: specification.icon,
     }
   }
@@ -30,7 +29,6 @@ export class SpecificationMap implements IMapper<Specification> {
     const specificationOrError = Specification.create(
       {
         name: raw.name,
-        attributeId: raw.attributeId,
         icon: raw.icon,
       },
       new UniqueEntityID(raw._id)
@@ -44,7 +42,6 @@ export class SpecificationMap implements IMapper<Specification> {
     return {
       _id: specification.id.toString(),
       name: specification.name,
-      attributeId: specification.attributeId,
       icon: specification.icon,
     }
   }
