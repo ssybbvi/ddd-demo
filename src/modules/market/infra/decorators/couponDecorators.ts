@@ -8,12 +8,11 @@ function couponIdToDto(key: string = 'couponId') {
       try {
         let couponId = result[key]
         let userDto = await couponCache.getValue(couponId)
-        let { name, condition, reward, receiveLimit, userReceiveLimit } = userDto
+        let { name, receiveTotal, publishTotal, userReceiveLimit } = userDto
         return {
           couponName: name,
-          couponCondition: condition,
-          couponReward: reward,
-          couponReceiveLimit: receiveLimit,
+          conponPublishTotal: publishTotal,
+          couponReceiveTotal: receiveTotal,
           couponUserReceiveLimit: userReceiveLimit,
           ...result,
         }

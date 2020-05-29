@@ -20,11 +20,12 @@ export class ConditionCoupon extends ValueObject<IConditionCouponProps> {
     return this.props.couponId
   }
 
+  public IsAvailable(couponId: string): boolean {
+    return this.props.couponId === couponId
+  }
 
   public static create(props: IConditionCouponProps): Result<ConditionCoupon> {
-    const guardArgs: IGuardArgument[] = [
-      { argument: props.couponId, argumentName: 'couponId' },
-    ]
+    const guardArgs: IGuardArgument[] = [{ argument: props.couponId, argumentName: 'couponId' }]
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)
 

@@ -24,9 +24,8 @@ export class MongodbCouponRepo implements ICouponRepo {
       {
         $set: {
           name: raw.name,
-          condition: raw.condition,
-          reward: raw.reward,
-          receiveLimit: raw.receiveLimit,
+          receiveTotal: raw.receiveTotal,
+          publishTotal: raw.publishTotal,
           userReceiveLimit: raw.userReceiveLimit,
         },
       },

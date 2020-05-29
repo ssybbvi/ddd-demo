@@ -20,7 +20,7 @@ import { dayDayTaskRouter, scheduleTaskRouter } from '../../../../modules/jiFenY
 
 import { thirdPartyAppRouter, appUserRouter, authCodeRouter } from '../../../../modules/oauth2/infra/http/routes'
 import { commodityTagRouter } from '../../../../modules/commoditys/infra/http/routes/commodityTag'
-import { couponRouter, couponUserRouter } from '../../../../modules/market/infra/http/routes'
+import { couponRouter, couponUserRouter, strategyRouter } from '../../../../modules/market/infra/http/routes'
 
 const v1Router = express.Router()
 
@@ -52,4 +52,5 @@ v1Router.use('/coupon', couponRouter)
 v1Router.use('/couponUser', couponUserRouter)
 v1Router.use('/addressUser', addressUserRouter)
 v1Router.use('/category', categoryRouter)
+v1Router.use('/strategy', strategyRouter)
 export { v1Router }

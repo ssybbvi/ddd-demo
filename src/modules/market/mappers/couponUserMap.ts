@@ -4,7 +4,6 @@ import { CouponUser } from '../domain/couponUser'
 
 import { ICouponUserDbModel } from '../dbModels/couponUserDbModel'
 import { ICouponUserDto } from '../dtos/couponUserDto'
-import { couponIdToDto } from '../infra/decorators/couponDecorators'
 
 export class CouponUserMap implements IMapper<CouponUser> {
   public static async toListDto(couponUserList: CouponUser[]): Promise<ICouponUserDto[]> {

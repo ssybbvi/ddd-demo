@@ -21,11 +21,14 @@ export class ConditionDate extends ValueObject<IConditionDateProps> {
     return this.props.beginAt
   }
 
-
   get finishAt(): number {
     return this.props.finishAt
   }
 
+  public IsAvailable(): boolean {
+    const now = Date.now()
+    return this.props.beginAt < now && this.props.finishAt > now
+  }
 
   public static create(props: IConditionDateProps): Result<ConditionDate> {
     const guardArgs: IGuardArgument[] = [

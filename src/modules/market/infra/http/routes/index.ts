@@ -1,3 +1,4 @@
 import { couponRouter } from './coupon'
 import { couponUserRouter } from './couponUser'
-export { couponRouter, couponUserRouter }
+import { strategyRouter } from './strategy'
+export { couponRouter, couponUserRouter, strategyRouter }

@@ -1,24 +1,31 @@
 import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
-import { ConditionDate } from './conditionDate'
-import { ConditionAmount } from './conditionAmount'
-import { RewardReliefAmount } from './rewardReliefAmount'
-import { RewardDiscount } from './rewardDiscount'
-import { RewardGiveaway } from './rewardGiveaway'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
-import { Result } from '../../../shared/core/Result'
+import { Result, Either, left, right } from '../../../shared/core/Result'
 import { IGuardArgument, Guard } from '../../../shared/core/Guard'
+import { UseCaseError } from '../../../shared/core/UseCaseError'
+
+export class ExceededUserReceiveLimitError extends Result<UseCaseError> {
+  constructor() {
+    super(false, {
+      message: `超过活动券每人领取次数`,
+    } as UseCaseError)
+  }
+}
+
+export class ExceededPublishTotalError extends Result<UseCaseError> {
+  constructor() {
+    super(false, {
+      message: `超过活动券发布总张数`,
+    } as UseCaseError)
+  }
+}
 
 export interface ICouponProps {
   name: string
-  condition: ICouponConditon[]
-  reward: ICouponReward
-  receiveLimit: number
-  userReceiveLimit: number
+  userReceiveLimit?: number
+  publishTotal: number
+  receiveTotal?: number
 }
-
-export type ICouponConditon = ConditionDate | ConditionAmount
-
-export type ICouponReward = RewardDiscount | RewardGiveaway | RewardReliefAmount
 
 export class Coupon extends AggregateRoot<ICouponProps> {
   private constructor(props: ICouponProps, id?: UniqueEntityID) {
@@ -29,26 +36,36 @@ export class Coupon extends AggregateRoot<ICouponProps> {
     return this.props.name
   }
 
-  get condition(): ICouponConditon[] {
-    return this.props.condition
-  }
-
-  get reward(): RewardDiscount | RewardGiveaway | RewardReliefAmount {
-    return this.props.reward
-  }
-
-  get receiveLimit(): number {
-    return this.props.receiveLimit
+  get receiveTotal(): number {
+    return this.props.receiveTotal
   }
 
   get userReceiveLimit(): number {
     return this.props.userReceiveLimit
   }
 
+  get publishTotal(): number {
+    return this.props.publishTotal
+  }
+
+  public receive(
+    userReceiveTotal: number
+  ): Either<ExceededUserReceiveLimitError | ExceededPublishTotalError, Result<void>> {
+    if (this.props.receiveTotal >= this.props.publishTotal) {
+      return left(new ExceededPublishTotalError())
+    }
+
+    if (userReceiveTotal + 1 > this.props.userReceiveLimit) {
+      return left(new ExceededUserReceiveLimitError())
+    }
+    this.props.receiveTotal++
+    return right(Result.ok<void>())
+  }
+
   public static create(props: ICouponProps, id?: UniqueEntityID): Result<Coupon> {
     const guardArgs: IGuardArgument[] = [
       { argument: props.name, argumentName: '名称' },
-      { argument: props.condition, argumentName: '描述' },
+      { argument: props.publishTotal, argumentName: '发布总数' },
     ]
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)
@@ -59,6 +76,8 @@ export class Coupon extends AggregateRoot<ICouponProps> {
 
     const defaultValues: ICouponProps = {
       ...props,
+      receiveTotal: props.receiveTotal ? props.receiveTotal : 0,
+      userReceiveLimit: props.userReceiveLimit ? props.userReceiveLimit : 1,
     }
 
     const commodityTag = new Coupon(defaultValues, id)

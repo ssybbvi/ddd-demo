@@ -1,4 +1,4 @@
-import { Strategy } from "../domain/strategy";
+import { Strategy } from '../domain/strategy'
 
 export interface IStrategyRepo {
   save(strategy: Strategy): Promise<void>

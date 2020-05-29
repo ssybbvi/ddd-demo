@@ -3,6 +3,7 @@ import { ISkuDbModel, ISkuSpecificationDbModel } from '../dbModels/skuDbModel'
 import { Sku } from '../domain/sku'
 import { ISkuDto, ISkuSpecificationDto } from '../dtos/skuDto'
 import { SkuSpecification } from '../domain/skuSpecification'
+import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 
 export class SkuMap implements IMapper<Sku> {
   public static async toDtoList(skuList: Sku[]) {
@@ -51,14 +52,17 @@ export class SkuMap implements IMapper<Sku> {
       return null
     }
 
-    const skuOrError = Sku.create({
-      name: raw.name,
-      code: raw.code,
-      price: raw.price,
-      stock: raw.stock,
-      isSufficient: raw.isSufficient,
-      combines: this.combinesToDomain(raw.combines),
-    })
+    const skuOrError = Sku.create(
+      {
+        name: raw.name,
+        code: raw.code,
+        price: raw.price,
+        stock: raw.stock,
+        isSufficient: raw.isSufficient,
+        combines: this.combinesToDomain(raw.combines),
+      },
+      new UniqueEntityID(raw._id)
+    )
 
     skuOrError.isFailure ? console.log(skuOrError.error) : ''
     return skuOrError.isSuccess ? skuOrError.getValue() : null
@@ -75,6 +79,7 @@ export class SkuMap implements IMapper<Sku> {
 
   public static toPersistence(sku: Sku): ISkuDbModel {
     return {
+      _id: sku.id.toString(),
       name: sku.name,
       code: sku.code,
       price: sku.price,

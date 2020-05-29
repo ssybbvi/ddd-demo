@@ -32,6 +32,14 @@ import { IConditionCommodityStrategyTagDbModel } from '../dbModels/conditionComm
 import { IConditionCommodityQuantityDbModel } from '../dbModels/conditionCommodityQuantityDbModel'
 
 export class StrategyMap implements IMapper<Strategy> {
+  public static toListDto(strategyList: Strategy[]) {
+    let list = []
+    for (let item of strategyList) {
+      list.push(this.toDTO(item))
+    }
+    return list
+  }
+
   public static toConditionDto(condition: IStrategyConditon[]) {
     let conditionDtoList = []
     for (let item of condition) {
@@ -73,6 +81,7 @@ export class StrategyMap implements IMapper<Strategy> {
     let rewardDto = this.toRewardDto(strategy.reward)
 
     return {
+      _id: strategy.id.toString(),
       name: strategy.name,
       condition: conditionDtoList,
       reward: rewardDto,
@@ -83,11 +92,11 @@ export class StrategyMap implements IMapper<Strategy> {
   public static toConditionDomain(conditions: IStrategyConditonDbModel[]) {
     let conditionList = []
     for (let item of conditions) {
-      if (Reflect.has(item, 'amount')) {
+      if (item.type === 'amount') {
         conditionList.push(ConditionAmountMap.toDomain(item as IConditionAmountDbModel))
-      } else if (Reflect.has(item, 'coupon')) {
+      } else if (item.type === 'coupon') {
         conditionList.push(ConditionCouponMap.toDomain(item as IConditionCouponDbModel))
-      } else if (Reflect.has(item, 'date')) {
+      } else if (item.type === 'date') {
         conditionList.push(ConditionDateMap.toDomain(item as IConditionDateDbModel))
       } else if (item.type === 'commodityStrategyTag') {
         conditionList.push(ConditionCommodityStrategyTagMap.toDomain(item as IConditionCommodityStrategyTagDbModel))

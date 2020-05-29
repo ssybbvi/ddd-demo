@@ -41,7 +41,7 @@ export class Strategy extends AggregateRoot<IStrategyProps> {
     return this.props.condition
   }
 
-  get reward(): RewardCoupon | RewardDiscount | RewardGiveaway | RewardReliefAmount {
+  get reward(): IStrategyReward {
     return this.props.reward
   }
 
@@ -49,10 +49,28 @@ export class Strategy extends AggregateRoot<IStrategyProps> {
     return this.props.description
   }
 
+  public updateName(name: string) {
+    this.props.name = name
+  }
+
+  public updateCondition(condition: IStrategyConditon[]) {
+    this.props.condition = condition
+  }
+
+  public updateReward(reward: IStrategyReward) {
+    this.props.reward = reward
+  }
+
+  public updateDescription(description: string) {
+    this.props.description = description
+  }
+
   public static create(props: IStrategyProps, id?: UniqueEntityID): Result<Strategy> {
     const guardArgs: IGuardArgument[] = [
       { argument: props.name, argumentName: '名称' },
-      { argument: props.condition, argumentName: '描述' },
+      { argument: props.description, argumentName: '描述' },
+      { argument: props.condition, argumentName: '条件' },
+      { argument: props.reward, argumentName: '奖励' },
     ]
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)

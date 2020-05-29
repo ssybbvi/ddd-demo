@@ -1,6 +1,7 @@
 import { ValueObject } from '../../../shared/domain/ValueObject'
 import { IGuardArgument, Guard } from '../../../shared/core/Guard'
 import { Result } from '../../../shared/core/Result'
+import { StrategyCommodity } from './strategyCommodity'
 
 export interface IConditionCommodityStrategyTagProps {
   type: 'commodityStrategyTag'
@@ -18,6 +19,10 @@ export class ConditionCommodityStrategyTag extends ValueObject<IConditionCommodi
 
   get tag(): string {
     return this.props.tag
+  }
+
+  public IsAvailable(strategyCommoditys: StrategyCommodity[]): boolean {
+    return strategyCommoditys.every((item) => item.strategyTag.includes(this.props.tag))
   }
 
   public static create(props: IConditionCommodityStrategyTagProps): Result<ConditionCommodityStrategyTag> {
