@@ -7,7 +7,6 @@ import { Fund } from '../../../domain/fund'
 import { FundType } from '../../../domain/fundType'
 import { CreateFundDto } from './createFundDto'
 import { FundStatus } from '../../../domain/fundStatus'
-import { AmountInfo } from '../../../../orders/domain/amountInfo'
 
 type Response = Either<AppError.UnexpectedError | Result<any>, Result<void>>
 

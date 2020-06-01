@@ -6,4 +6,5 @@ export interface ICommodityItemDto {
   commodityType: string
   skuId: string
   specifications: string
+  strategyTags: string[]
 }

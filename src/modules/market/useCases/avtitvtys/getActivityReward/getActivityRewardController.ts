@@ -2,20 +2,20 @@ import { BaseController } from '../../../../../shared/infra/http/models/BaseCont
 import * as express from 'express'
 import { Strategy } from '../../../domain/strategy'
 import { StrategyMap } from '../../../mappers/strategyMap'
-import { GetStrategyListUseCase } from './getStrategyListUseCase'
-import { IGetStrategyListDto } from './getStrategyListDto'
+import { GetActivityRewardUseCase } from './getActivityRewardUseCase'
+import { IGetActivityRewardDto } from './getActivityRewardDto'
 
-export class GetStrategyListController extends BaseController {
-  private useCase: GetStrategyListUseCase
+export class GetActivityRewardController extends BaseController {
+  private useCase: GetActivityRewardUseCase
 
-  constructor(useCase: GetStrategyListUseCase) {
+  constructor(useCase: GetActivityRewardUseCase) {
     super()
     this.useCase = useCase
   }
 
   async executeImpl(req: any, res: express.Response): Promise<any> {
     try {
-      const dto = req.body as IGetStrategyListDto
+      const dto = req.body as IGetActivityRewardDto
 
       const result = await this.useCase.execute(dto)
       const resultValue = result.value

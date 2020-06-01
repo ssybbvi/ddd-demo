@@ -1,7 +1,7 @@
 import { ConditionAmountMap } from './conditionAmountMap'
 import { IMapper } from '../../../shared/infra/Mapper'
 import { Strategy, IStrategyConditon, IStrategyReward } from '../domain/strategy'
-import { StrategyDto } from '../dtos/strategyDto'
+import { IStrategyDto } from '../dtos/strategyDto'
 import { ConditionAmount } from '../domain/conditionAmount'
 import { ConditionDateMap } from './conditionDateMap'
 import { ConditionDate } from '../domain/conditionDate'
@@ -30,6 +30,21 @@ import { ConditionCommodityStrategyTag } from '../domain/conditionCommodityStrat
 import { ConditionCommodityQuantity } from '../domain/conditionCommodityQuantity'
 import { IConditionCommodityStrategyTagDbModel } from '../dbModels/conditionCommodityStrategyTagDbModel'
 import { IConditionCommodityQuantityDbModel } from '../dbModels/conditionCommodityQuantityDbModel'
+import { left, Either, Result, right } from '../../../shared/core/Result'
+
+type StrategyResponse = Either<
+  | Result<ConditionAmount>
+  | Result<ConditionDate>
+  | Result<ConditionCommodityQuantity>
+  | Result<ConditionCommodityStrategyTag>
+  | Result<ConditionCoupon>
+  | Result<RewardCoupon>
+  | Result<RewardDiscount>
+  | Result<RewardGiveaway>
+  | Result<RewardReliefAmount>
+  | Result<Strategy>,
+  Result<Strategy>
+>
 
 export class StrategyMap implements IMapper<Strategy> {
   public static toListDto(strategyList: Strategy[]) {
@@ -76,7 +91,7 @@ export class StrategyMap implements IMapper<Strategy> {
     return rewardDto
   }
 
-  public static toDTO(strategy: Strategy): StrategyDto {
+  public static toDTO(strategy: Strategy): IStrategyDto {
     let conditionDtoList = this.toConditionDto(strategy.condition)
     let rewardDto = this.toRewardDto(strategy.reward)
 
@@ -189,5 +204,112 @@ export class StrategyMap implements IMapper<Strategy> {
       reward: reward,
       description: strategy.description,
     }
+  }
+
+  public static dtoToDomain(strategyDto: IStrategyDto): StrategyResponse {
+    const { name, condition, description, reward } = strategyDto
+
+    let conditionList = []
+    for (let item of condition) {
+      if (item.type === 'amount') {
+        const conditionAmountOrError = ConditionAmount.create({
+          type: 'amount',
+          amount: item.amount,
+        })
+        if (conditionAmountOrError.isFailure) {
+          return left(conditionAmountOrError)
+        }
+        conditionList.push(conditionAmountOrError.getValue())
+      } else if (item.type === 'date') {
+        const conditionDateOrError = ConditionDate.create({
+          type: 'date',
+          beginAt: item.beginAt,
+          finishAt: item.finishAt,
+        })
+        if (conditionDateOrError.isFailure) {
+          return left(conditionDateOrError)
+        }
+        conditionList.push(conditionDateOrError.getValue())
+      } else if (item.type === 'commodityQuantity') {
+        const commodityQuantityOrError = ConditionCommodityQuantity.create({
+          type: 'commodityQuantity',
+          quantity: item.quantity,
+        })
+        if (commodityQuantityOrError.isFailure) {
+          return left(commodityQuantityOrError)
+        }
+        conditionList.push(commodityQuantityOrError.getValue())
+      } else if (item.type === 'commodityStrategyTag') {
+        const conditionCommodityStrategyTagOrError = ConditionCommodityStrategyTag.create({
+          type: 'commodityStrategyTag',
+          tag: item.tag,
+        })
+        if (conditionCommodityStrategyTagOrError.isFailure) {
+          return left(conditionCommodityStrategyTagOrError)
+        }
+        conditionList.push(conditionCommodityStrategyTagOrError.getValue())
+      } else if (item.type === 'coupon') {
+        const conditionCouponOrError = ConditionCoupon.create({
+          type: 'coupon',
+          couponId: item.couponId,
+        })
+        if (conditionCouponOrError.isFailure) {
+          return left(conditionCouponOrError)
+        }
+        conditionList.push(conditionCouponOrError.getValue())
+      }
+    }
+
+    let strategyReward: IStrategyReward
+    if (reward.type == 'coupon') {
+      const rewardCouponOrError = RewardCoupon.create({
+        type: 'coupon',
+        couponId: reward.couponId,
+      })
+      if (rewardCouponOrError.isFailure) {
+        return left(rewardCouponOrError)
+      }
+      strategyReward = rewardCouponOrError.getValue()
+    } else if (reward.type == 'discount') {
+      const rewardDiscountOrError = RewardDiscount.create({
+        type: 'discount',
+        discount: reward.discount,
+      })
+      if (rewardDiscountOrError.isFailure) {
+        return left(rewardDiscountOrError)
+      }
+      strategyReward = rewardDiscountOrError.getValue()
+    } else if (reward.type == 'giveaway') {
+      const rewardGiveawayOrError = RewardGiveaway.create({
+        type: 'giveaway',
+        commodityId: reward.commodityId,
+      })
+      if (rewardGiveawayOrError.isFailure) {
+        return left(rewardGiveawayOrError)
+      }
+      strategyReward = rewardGiveawayOrError.getValue()
+    } else if (reward.type == 'reliefAmount') {
+      const rewardReliefAmountOrError = RewardReliefAmount.create({
+        type: 'reliefAmount',
+        reliefAmount: reward.reliefAmount,
+      })
+      if (rewardReliefAmountOrError.isFailure) {
+        return left(rewardReliefAmountOrError)
+      }
+      strategyReward = rewardReliefAmountOrError.getValue()
+    }
+
+    const strategyOrError = Strategy.create({
+      name: name,
+      condition: conditionList,
+      reward: strategyReward,
+      description: description,
+    })
+
+    if (strategyOrError.isFailure) {
+      return left(strategyOrError)
+    }
+
+    return right(Result.ok<Strategy>(strategyOrError.getValue()))
   }
 }

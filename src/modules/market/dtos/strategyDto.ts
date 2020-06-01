@@ -8,7 +8,7 @@ import { IConditionCommodityStrategyTagDto } from './conditionCommodityStrategyT
 import { IRewardCouponDto } from './rewardCouponDto'
 import { IConditionCouponDto } from './conditionCouponDto'
 
-export interface StrategyDto {
+export interface IStrategyDto {
   _id: string
   name: string
   description: string

@@ -3,16 +3,18 @@ import { left, right, Result, Either } from '../../../../shared/core/Result'
 import { OrderUser, DotBuyRepeatOnceCommodityError } from '../orderUser'
 import { GetOrderUserUseCase } from '../../useCases/orderUser/getOrderUser/getOrderUserUseCase'
 import { AppError } from '../../../../shared/core/AppError'
-import { AddressInfo } from '../addressInfo'
 import { CreateCommodityItemDto } from '../../useCases/order/createOrder/createOrderDto'
 import { NotFoundError } from '../../../../shared/core/NotFoundError'
 import { GetCommodityByIdUseCase } from '../../../commoditys/userCases/commoditys/getCommodityById/getCommodityByIdUseCase'
 import { Commodity } from '../../../commoditys/domain/commodity'
 
-export type BuyOneceAssertionResponse = Either<DotBuyRepeatOnceCommodityError | Result<OrderUser>, Result<void>>
+export type BuyOneceAssertionResponse = Either<
+  DotBuyRepeatOnceCommodityError | Result<OrderUser> | Result<CommodityItem> | Result<Commodity> | NotFoundError,
+  Result<void>
+>
 
 export type CommodityItemsResponse = Either<
-  AppError.UnexpectedError | Result<CommodityItem> | NotFoundError | Result<any>,
+  AppError.UnexpectedError | Result<CommodityItem> | Result<Commodity> | NotFoundError,
   Result<CommodityItem[]>
 >
 
@@ -69,11 +71,13 @@ export class OrderAssertionService {
         commodityType: commodity.type,
         skuId: item.skuId,
         specifications: sku.name,
+        strategyTags: commodity.strategyTags,
       })
 
       if (commodityItemOrErrors.isFailure) {
         return left(commodityItemOrErrors)
       }
+
       commodityItemList.push(commodityItemOrErrors.getValue())
     }
 

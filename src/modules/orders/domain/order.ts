@@ -14,7 +14,7 @@ import { UseCaseError } from '../../../shared/core/UseCaseError'
 import { OrderCode } from './orderCode'
 import { CommodityItems } from './commodityItems'
 import { AddressInfo } from './addressInfo'
-import { StrategyItems } from './strategyItems'
+import { Strategys } from '../../market/domain/strategys'
 
 export class ExpectPaidError extends Result<UseCaseError> {
   constructor() {
@@ -76,15 +76,16 @@ export interface OrderProps {
   userId: string
   createAt?: number
   totalAmount?: number
+  toPayAmount?: number
   remark?: string
   code?: OrderCode
-
+  couponId?: string
   cancelInfo?: CancelInfo
   paymentInfo?: PaymentInfo
   deliveryInfo?: DeliveryInfo
   addressInfo: AddressInfo
   commodityItems: CommodityItems
-  strategyItems?: StrategyItems
+  strategys: Strategys
 }
 
 export class Order extends AggregateRoot<OrderProps> {
@@ -102,6 +103,10 @@ export class Order extends AggregateRoot<OrderProps> {
 
   get totalAmount(): number {
     return this.props.totalAmount
+  }
+
+  get toPayAmount(): number {
+    return this.props.toPayAmount
   }
 
   get remark(): string {
@@ -132,8 +137,12 @@ export class Order extends AggregateRoot<OrderProps> {
     return this.props.addressInfo
   }
 
-  get strategyItems(): StrategyItems {
-    return this.props.strategyItems
+  get couponId(): string {
+    return this.props.couponId
+  }
+
+  get strategys(): Strategys {
+    return this.props.strategys
   }
 
   public autoCancel() {
@@ -243,23 +252,18 @@ export class Order extends AggregateRoot<OrderProps> {
     return this.props.createAt + 1000 * 60 * 15 > Date.now()
   }
 
-  private calculationCommodityItemAmountTotal(): void {
-    this.props.totalAmount = this.commodityItems.getItems().reduce((acc, item) => (acc += item.amount), 0)
-  }
-
   public static create(props: OrderProps, id?: UniqueEntityID): Result<Order> {
-    const isNew = !!id === false
     const order = new Order(
       {
         ...props,
         createAt: props.createAt ? props.createAt : Date.now(),
         code: props.code ? props.code : OrderCode.create({}).getValue(),
+        totalAmount: props.totalAmount ? props.totalAmount : props.commodityItems.getCommodityTotalAmount(),
       },
       id
     )
 
-    order.calculationCommodityItemAmountTotal()
-
+    const isNew = !!id === false
     if (isNew) {
       order.addDomainEvent(new OrderCreated(order))
     }

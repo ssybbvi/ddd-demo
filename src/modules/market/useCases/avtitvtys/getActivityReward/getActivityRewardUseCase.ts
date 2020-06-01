@@ -1,8 +1,7 @@
 import { Either, Result, right, left } from '../../../../../shared/core/Result'
 import { AppError } from '../../../../../shared/core/AppError'
 import { UseCase } from '../../../../../shared/core/UseCase'
-import { IStrategyRepo } from '../../../repos/strategyRepo'
-import { IGetStrategryRewardDto, IStrategyCommodityDto } from './getStrategryRewardDto'
+import { IStrategyCommodityDto, IGetActivityRewardDto } from './getActivityRewardDto'
 import { ICouponRepo } from '../../../repos/couponRepo'
 import { ICouponUserRepo } from '../../../repos/couponUserRepo'
 import { NotFoundError } from '../../../../../shared/core/NotFoundError'
@@ -12,40 +11,40 @@ import { ConditionCommodityStrategyTag } from '../../../domain/conditionCommodit
 import { ConditionCommodityQuantity } from '../../../domain/conditionCommodityQuantity'
 import { ConditionCoupon } from '../../../domain/conditionCoupon'
 import { ConditionAmount } from '../../../domain/conditionAmount'
-import { StrategyCommodity } from '../../../domain/strategyCommodity'
 import { ICommodityRepo } from '../../../../commoditys/repos/iCommodityRepo'
+import { CommodityItem } from '../../../../orders/domain/commodityItem'
+import { CommodityType } from '../../../../commoditys/domain/commodityType'
+import { RewardDiscount } from '../../../domain/rewardDiscount'
+import { IActivityRepo } from '../../../repos/activityRepo'
 
-type Response = Either<AppError.UnexpectedError | NotFoundError | Result<StrategyCommodity>, Result<Strategy[]>>
-type GetStrategyCommodityResponse = Either<
-  AppError.UnexpectedError | NotFoundError | Result<any>,
-  Result<StrategyCommodity>
->
+type Response = Either<AppError.UnexpectedError | NotFoundError | Result<CommodityItem>, Result<Strategy[]>>
+type GetCommodityItemResponse = Either<AppError.UnexpectedError | NotFoundError | Result<any>, Result<CommodityItem>>
 
 export interface ISeniority {
   couponId: string
-  strategyCommoditys: StrategyCommodity[]
+  commodityItems: CommodityItem[]
 }
 
-export class GetStrategryRewardUseCase implements UseCase<IGetStrategryRewardDto, Promise<Response>> {
+export class GetActivityRewardUseCase implements UseCase<IGetActivityRewardDto, Promise<Response>> {
   private couponRepo: ICouponRepo
-  private strategyRepo: IStrategyRepo
+  private activityRepo: IActivityRepo
   private couponUserRepo: ICouponUserRepo
   private commodityRepo: ICommodityRepo
 
   constructor(
     couponRepo: ICouponRepo,
-    strategyRepo: IStrategyRepo,
+    activityRepo: IActivityRepo,
     couponUserRepo: ICouponUserRepo,
     commodityRepo: ICommodityRepo
   ) {
     this.couponRepo = couponRepo
-    this.strategyRepo = strategyRepo
+    this.activityRepo = activityRepo
     this.couponUserRepo = couponUserRepo
     this.commodityRepo = commodityRepo
   }
 
   private condition(strategyConditons: IStrategyConditon[], seniority: ISeniority) {
-    const { couponId, strategyCommoditys } = seniority
+    const { couponId, commodityItems } = seniority
 
     const conditionDates = strategyConditons.filter((item) => item.type == 'date') as ConditionDate[]
     const conditionDateResult = conditionDates.every((item) => item.IsAvailable())
@@ -57,7 +56,7 @@ export class GetStrategryRewardUseCase implements UseCase<IGetStrategryRewardDto
       (item) => item.type == 'commodityStrategyTag'
     ) as ConditionCommodityStrategyTag[]
 
-    const commodityStrategyTagsResult = commodityStrategyTags.every((item) => item.IsAvailable(strategyCommoditys))
+    const commodityStrategyTagsResult = commodityStrategyTags.every((item) => item.IsAvailable(commodityItems))
     if (!commodityStrategyTagsResult) {
       return false
     }
@@ -66,7 +65,7 @@ export class GetStrategryRewardUseCase implements UseCase<IGetStrategryRewardDto
       (item) => item.type == 'commodityQuantity'
     ) as ConditionCommodityQuantity[]
     const conditionCommodityQuantitysResult = conditionCommodityQuantitys.every((item) =>
-      item.IsAvailable(strategyCommoditys)
+      item.IsAvailable(commodityItems)
     )
     if (!conditionCommodityQuantitysResult) {
       return false
@@ -79,7 +78,7 @@ export class GetStrategryRewardUseCase implements UseCase<IGetStrategryRewardDto
     }
 
     const amountConditons = strategyConditons.filter((item) => item.type == 'amount') as ConditionAmount[]
-    const amountConditonsResult = amountConditons.every((item) => item.IsAvailable(strategyCommoditys))
+    const amountConditonsResult = amountConditons.every((item) => item.IsAvailable(commodityItems))
     if (!amountConditonsResult) {
       return false
     }
@@ -87,7 +86,7 @@ export class GetStrategryRewardUseCase implements UseCase<IGetStrategryRewardDto
     return true
   }
 
-  private async getStrategyCommodity(item: IStrategyCommodityDto): Promise<GetStrategyCommodityResponse> {
+  private async getCommodityItem(item: IStrategyCommodityDto): Promise<GetCommodityItemResponse> {
     const commodity = await this.commodityRepo.getById(item.commodityId)
     if (!commodity) {
       return left(new NotFoundError(`没有此商品${item.commodityId}`))
@@ -97,41 +96,42 @@ export class GetStrategryRewardUseCase implements UseCase<IGetStrategryRewardDto
       return left(new NotFoundError(`没有此sku${item.skuId}`))
     }
 
-    const strategyCommodityOrError = StrategyCommodity.create({
+    const commodityItemOrError = CommodityItem.create({
       name: commodity.name.value,
       commodityId: item.commodityId,
       skuId: item.skuId,
-      type: commodity.type,
-      strategyTag: commodity.strategyTags,
+      commodityType: commodity.type as CommodityType,
+      strategyTags: commodity.strategyTags,
       amount: sku.price,
+      specifications: '',
     })
-    if (strategyCommodityOrError.isFailure) {
-      return left(strategyCommodityOrError)
+    if (commodityItemOrError.isFailure) {
+      return left(commodityItemOrError)
     }
 
-    return right(Result.ok<StrategyCommodity>(strategyCommodityOrError.getValue()))
+    return right(Result.ok<CommodityItem>(commodityItemOrError.getValue()))
   }
 
-  private getAvailableStrategyCommodityList(
+  private getAvailableCommodityItemList(
     strategyConditons: IStrategyConditon[],
-    strategyCommoditys: StrategyCommodity[]
-  ): StrategyCommodity[] {
+    commodityItems: CommodityItem[]
+  ): CommodityItem[] {
     const commodityStrategyTags = strategyConditons.filter(
       (item) => item.type == 'commodityStrategyTag'
     ) as ConditionCommodityStrategyTag[]
 
     if (commodityStrategyTags.length == 0) {
-      return strategyCommoditys
+      return commodityItems
     }
 
-    return strategyCommoditys.filter((strategyCommoditysItem) => {
+    return commodityItems.filter((commodityItemsItem) => {
       return commodityStrategyTags.some((commodityStrategyTagItem) =>
-        strategyCommoditysItem.strategyTag.includes(commodityStrategyTagItem.tag)
+        commodityItemsItem.strategyTags.includes(commodityStrategyTagItem.tag)
       )
     })
   }
 
-  public async execute(request: IGetStrategryRewardDto): Promise<Response> {
+  public async execute(request: IGetActivityRewardDto): Promise<Response> {
     try {
       const { couponId, strategyCommodityDtoList, userId } = request
 
@@ -142,31 +142,37 @@ export class GetStrategryRewardUseCase implements UseCase<IGetStrategryRewardDto
         }
       }
 
-      const strategyCommoditys: StrategyCommodity[] = []
+      const commodityItems: CommodityItem[] = []
       for (let item of strategyCommodityDtoList) {
-        const strategyCommodityResult = await this.getStrategyCommodity(item)
-        const strategyCommodityResultValue = strategyCommodityResult.value
-        if (strategyCommodityResult.isLeft()) {
-          return left(strategyCommodityResult.value)
+        const commodityItemResult = await this.getCommodityItem(item)
+        const commodityItemResultValue = commodityItemResult.value
+        if (commodityItemResult.isLeft()) {
+          return left(commodityItemResult.value)
         }
-        strategyCommoditys.push(strategyCommodityResultValue.getValue())
+        commodityItems.push(commodityItemResultValue.getValue())
       }
 
       const availableStrategys: Strategy[] = []
 
       //活动策略
-      const strategyList = await this.strategyRepo.filter()
-      for (let item of strategyList) {
-        const availableStrategyCommodityList = await this.getAvailableStrategyCommodityList(
-          item.condition,
-          strategyCommoditys
+      const activityList = await this.activityRepo.filterByEnable()
+
+      for (let item of activityList) {
+        const availableCommodityItemList = await this.getAvailableCommodityItemList(
+          item.strategy.condition,
+          commodityItems
         )
-        const couponConditionResult = this.condition(item.condition, {
+        const couponConditionResult = this.condition(item.strategy.condition, {
           couponId: couponId,
-          strategyCommoditys: availableStrategyCommodityList,
+          commodityItems: availableCommodityItemList,
         })
+        if (item.strategy.reward.type == 'discount') {
+          const totalAmount = availableCommodityItemList.reduce((acc, item) => (acc += item.amount), 0)
+          const rewardDiscount = item.strategy.reward as RewardDiscount
+          rewardDiscount.setRewardDiscountAmount(totalAmount)
+        }
         if (couponConditionResult) {
-          availableStrategys.push(item)
+          availableStrategys.push(item.strategy)
         }
       }
 

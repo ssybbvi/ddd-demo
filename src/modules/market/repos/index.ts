@@ -1,8 +1,9 @@
 import { MongodbCouponRepo } from './implementations/mongodbCouponRepo'
-import { MongodbStrategyRepo } from './implementations/mongodbStrategy'
 import { MongodbCouponUserRepo } from './implementations/mongodbCouponUserRepo'
+import { MongodbActivityRepo } from './implementations/mongodbActivityRepo'
 
 const couponRepo = new MongodbCouponRepo()
-const strategyRepo = new MongodbStrategyRepo()
+const activityRepo = new MongodbActivityRepo()
 const couponUserRepo = new MongodbCouponUserRepo()
-export { couponRepo, strategyRepo, couponUserRepo }
+
+export { couponRepo, activityRepo, couponUserRepo }

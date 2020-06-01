@@ -1,14 +1,10 @@
-import { CreateOrderUseCase } from "./createOrderUseCase";
-import { orderRepo } from "../../../repos";
-import { CreateOrderController } from "./createOrderController";
-import { commodityRepo } from "../../../../commoditys/repos";
-import { getOrderUserUseCase } from "../../orderUser/getOrderUser";
-import { orderAssertionService } from "../../../domain/service";
+import { CreateOrderUseCase } from './createOrderUseCase'
+import { orderRepo } from '../../../repos'
+import { CreateOrderController } from './createOrderController'
+import { orderAssertionService } from '../../../domain/service'
+import { getActivityRewardUseCase } from '../../../../market/useCases/avtitvtys/getActivityReward'
 
-const createOrderUseCase = new CreateOrderUseCase(orderRepo, orderAssertionService)
+const createOrderUseCase = new CreateOrderUseCase(orderRepo, orderAssertionService, getActivityRewardUseCase)
 const createOrderController = new CreateOrderController(createOrderUseCase)
 
-export {
-    createOrderUseCase,
-    createOrderController
-}
+export { createOrderUseCase, createOrderController }

@@ -20,11 +20,8 @@ export class RewardCoupon extends ValueObject<IRewardCouponProps> {
     return this.props.couponId
   }
 
-
   public static create(props: IRewardCouponProps): Result<RewardCoupon> {
-    const guardArgs: IGuardArgument[] = [
-      { argument: props.couponId, argumentName: 'couponId' },
-    ]
+    const guardArgs: IGuardArgument[] = [{ argument: props.couponId, argumentName: 'couponId' }]
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)
 

@@ -6,11 +6,10 @@ import { IConditionCouponDbModel } from './conditionCouponDbModel'
 import { IConditionDateDbModel } from './conditionDateDbModel'
 import { IConditionAmountDbModel } from './conditionAmountDbModel'
 import { IBaseIdDbModels } from '../../../shared/infra/database/dbModel/baseIdDbModels'
-import { ITenantIdDbModel } from '../../../shared/infra/database/dbModel/tenantIdDbModel'
 import { IConditionCommodityQuantityDbModel } from './conditionCommodityQuantityDbModel'
 import { IConditionCommodityStrategyTagDbModel } from './conditionCommodityStrategyTagDbModel'
 
-export interface IStrategyDbModel extends IBaseIdDbModels, ITenantIdDbModel {
+export interface IStrategyDbModel extends IBaseIdDbModels {
   name: string
   description: string
   condition: IStrategyConditonDbModel[]

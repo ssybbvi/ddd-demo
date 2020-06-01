@@ -5,6 +5,7 @@ import { Result } from '../../../shared/core/Result'
 export interface IRewardDiscountProps {
   type: 'discount'
   discount: number
+  rewardDiscountAmount?: number
 }
 
 export class RewardDiscount extends ValueObject<IRewardDiscountProps> {
@@ -20,11 +21,20 @@ export class RewardDiscount extends ValueObject<IRewardDiscountProps> {
     return this.props.discount
   }
 
+  get rewardDiscountAmount(): number {
+    return this.props.rewardDiscountAmount
+  }
+
+  public setRewardDiscountAmount(totalAmount: number) {
+    this.props.rewardDiscountAmount = this.toFixed(totalAmount * (1 - this.props.discount))
+  }
+
+  private toFixed(value: number): number {
+    return Math.round(value * 100) / 100
+  }
 
   public static create(props: IRewardDiscountProps): Result<RewardDiscount> {
-    const guardArgs: IGuardArgument[] = [
-      { argument: props.discount, argumentName: 'discount' },
-    ]
+    const guardArgs: IGuardArgument[] = [{ argument: props.discount, argumentName: 'discount' }]
 
     const guardResult = Guard.againstNullOrUndefinedBulk(guardArgs)
 

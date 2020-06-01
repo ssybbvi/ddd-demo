@@ -1,19 +1,19 @@
 import { BaseController } from '../../../../../shared/infra/http/models/BaseController'
 import * as express from 'express'
-import { UpdateStrategyUseCase } from './updateStrategyUseCase'
-import { IUpdateStrategyDto } from './updateStrategyDto'
+import { CreateActivityUseCase } from './createActivityUseCase'
+import { ICreateActivityDto } from './createActivityDto'
 
-export class UpdateStrategyController extends BaseController {
-  private useCase: UpdateStrategyUseCase
+export class CreateActivityController extends BaseController {
+  private useCase: CreateActivityUseCase
 
-  constructor(useCase: UpdateStrategyUseCase) {
+  constructor(useCase: CreateActivityUseCase) {
     super()
     this.useCase = useCase
   }
 
   async executeImpl(req: any, res: express.Response): Promise<any> {
     try {
-      const dto = req.body as IUpdateStrategyDto
+      const dto = req.body as ICreateActivityDto
 
       const result = await this.useCase.execute(dto)
 

@@ -1,7 +1,7 @@
 import { ValueObject } from '../../../shared/domain/ValueObject'
 import { IGuardArgument, Guard } from '../../../shared/core/Guard'
 import { Result } from '../../../shared/core/Result'
-import { StrategyCommodity } from './strategyCommodity'
+import { CommodityItem } from '../../orders/domain/commodityItem'
 
 export interface IConditionAmountProps {
   type: 'amount'
@@ -21,7 +21,7 @@ export class ConditionAmount extends ValueObject<IConditionAmountProps> {
     return this.props.amount
   }
 
-  public IsAvailable(strategyCommoditys: StrategyCommodity[]): boolean {
+  public IsAvailable(strategyCommoditys: CommodityItem[]): boolean {
     return this.props.amount <= strategyCommoditys.reduce((acc, item) => (acc += item.amount), 0)
   }
 

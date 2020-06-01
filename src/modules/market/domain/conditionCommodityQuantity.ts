@@ -1,7 +1,7 @@
 import { ValueObject } from '../../../shared/domain/ValueObject'
 import { IGuardArgument, Guard } from '../../../shared/core/Guard'
 import { Result } from '../../../shared/core/Result'
-import { StrategyCommodity } from './strategyCommodity'
+import { CommodityItem } from '../../orders/domain/commodityItem'
 
 export interface IConditionCommodityQuantityProps {
   type: 'commodityQuantity'
@@ -21,7 +21,7 @@ export class ConditionCommodityQuantity extends ValueObject<IConditionCommodityQ
     return this.props.quantity
   }
 
-  public IsAvailable(strategyCommoditys: StrategyCommodity[]): boolean {
+  public IsAvailable(strategyCommoditys: CommodityItem[]): boolean {
     return strategyCommoditys.length >= this.props.quantity
   }
 

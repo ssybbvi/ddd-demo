@@ -7,4 +7,5 @@ export interface ICommodityItemDbModel extends IBaseIdDbModels {
   commodityType: string
   skuId: string
   specifications: string
+  strategyTags: string[]
 }

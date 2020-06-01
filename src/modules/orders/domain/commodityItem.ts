@@ -11,6 +11,7 @@ export interface CommodityItemProps {
   commodityType: CommodityType
   skuId: string
   specifications: string
+  strategyTags: string[]
 }
 
 export class CommodityItem extends Entity<CommodityItemProps> {
@@ -42,6 +43,10 @@ export class CommodityItem extends Entity<CommodityItemProps> {
     return this.props.specifications
   }
 
+  get strategyTags(): string[] {
+    return this.props.strategyTags
+  }
+
   public isBargain(): boolean {
     return this.props.commodityType === 'bargain'
   }
@@ -58,6 +63,7 @@ export class CommodityItem extends Entity<CommodityItemProps> {
       { argument: props.commodityType, argumentName: '商品类型' },
       { argument: props.skuId, argumentName: 'skuId' },
       { argument: props.specifications, argumentName: 'specifications' },
+      { argument: props.strategyTags, argumentName: 'strategyTags' },
     ])
 
     if (!nullGuard.succeeded) {

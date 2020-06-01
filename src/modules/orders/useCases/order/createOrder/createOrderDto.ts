@@ -12,7 +12,7 @@ export interface CreateOrderDto {
 
   couponId?: string
 
-  commodityItems: CreateCommodityItemDto[]
+  commodityItemDtoList: CreateCommodityItemDto[]
 }
 
 export interface CreateCommodityItemDto {

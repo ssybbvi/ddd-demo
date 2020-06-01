@@ -12,6 +12,8 @@ import { CommodityItems } from '../../../domain/commodityItems'
 import { NotFoundError } from '../../../../../shared/core/NotFoundError'
 import { OrderAssertionService } from '../../../domain/service/assertionService'
 import { AddressInfo } from '../../../domain/addressInfo'
+import { GetActivityRewardUseCase } from '../../../../market/useCases/avtitvtys/getActivityReward/getActivityRewardUseCase'
+import { Strategys } from '../../../../market/domain/strategys'
 
 type Response = Either<
   | NotFoundError
@@ -25,10 +27,16 @@ type Response = Either<
 export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Response>> {
   private orderRepo: IOrderRepo
   private orderAssertionService: OrderAssertionService
+  private getActivityRewardUseCase: GetActivityRewardUseCase
 
-  constructor(orderRepo: IOrderRepo, orderAssertionService: OrderAssertionService) {
+  constructor(
+    orderRepo: IOrderRepo,
+    orderAssertionService: OrderAssertionService,
+    getActivityRewardUseCase: GetActivityRewardUseCase
+  ) {
     this.orderRepo = orderRepo
     this.orderAssertionService = orderAssertionService
+    this.getActivityRewardUseCase = getActivityRewardUseCase
   }
 
   public async execute(request: CreateOrderDto): Promise<Response> {
@@ -37,7 +45,7 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
         userId,
         remark,
 
-        commodityItems,
+        commodityItemDtoList,
 
         userName,
         provinceName,
@@ -46,6 +54,8 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
         detailAddressInfo,
         nationalCode,
         telNumber,
+
+        couponId,
       } = request
 
       const addressInfoOrErrors = AddressInfo.create({
@@ -62,23 +72,38 @@ export class CreateOrderUseCase implements UseCase<CreateOrderDto, Promise<Respo
         return left(addressInfoOrErrors)
       }
 
-      const assertionCommodityItemsResult = await this.orderAssertionService.assertionCommodityItems(commodityItems)
-      const assertionCommodityItemsResultValue = assertionCommodityItemsResult.value
+      const assertionCommodityItemsResult = await this.orderAssertionService.assertionCommodityItems(
+        commodityItemDtoList
+      )
       if (assertionCommodityItemsResult.isLeft()) {
-        return left(assertionCommodityItemsResultValue)
+        return left(assertionCommodityItemsResult.value)
       }
-      const commodityItemList = assertionCommodityItemsResultValue.getValue() as CommodityItem[]
+      const commodityItemList = assertionCommodityItemsResult.value.getValue() as CommodityItem[]
+      const commodityItems = CommodityItems.create(commodityItemList)
 
       // const buyOneceAssertioResult = await this.orderAssertionService.buyOneceAssertion(userId, commodityItemList)
       // if (buyOneceAssertioResult.isLeft()) {
       //   return left(buyOneceAssertioResult.value)
       // }
 
+      const getActivityRewardUseCaseResult = await this.getActivityRewardUseCase.execute({
+        couponId: couponId,
+        strategyCommodityDtoList: commodityItemDtoList,
+        userId: userId,
+      })
+
+      if (getActivityRewardUseCaseResult.isLeft()) {
+        return left(getActivityRewardUseCaseResult.value)
+      }
+
+      const strategyList = getActivityRewardUseCaseResult.value.getValue()
+
       const orderOrErrors = Order.create({
         userId: userId,
         remark: remark,
         addressInfo: addressInfoOrErrors.getValue(),
-        commodityItems: CommodityItems.create(commodityItemList),
+        commodityItems: commodityItems,
+        strategys: Strategys.create(strategyList),
       })
 
       if (orderOrErrors.isFailure) {

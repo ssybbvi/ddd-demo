@@ -26,14 +26,16 @@ export class MongoOrderRepo implements IOrderRepo {
           userId: raw.userId,
           createAt: raw.createAt,
           totalAmount: raw.totalAmount,
+          toPayAmount: raw.toPayAmount,
           remark: raw.remark,
           code: raw.code,
-
+          couponId: raw.couponId,
           cancelInfo: raw.cancelInfo,
           paymentInfo: raw.paymentInfo,
           deliveryInfo: raw.deliveryInfo,
           addressInfo: raw.addressInfo,
           commodityItems: raw.commodityItems,
+          strategys: raw.strategys,
         },
       },
       { upsert: true }

@@ -12,6 +12,8 @@ import { CancelInfoMap } from './cancelInfoMap'
 import { ICommodityItemDbModel } from '../dbModels/commodityItemDbModel'
 import { userIdToDto } from '../../users/infra/decorators/wxUserDtoDecorators'
 import { AddressInfoMap } from './addressInfoMap'
+import { StrategyMap } from '../../market/mappers/strategyMap'
+import { Strategys } from '../../market/domain/strategys'
 
 export class OrderMap implements IMapper<Order> {
   public static toDomain(raw: OrderDbModel): Order {
@@ -20,6 +22,7 @@ export class OrderMap implements IMapper<Order> {
     }
 
     const commodityItemList = raw.commodityItems.map((item) => CommodityItemMap.toDomain(item))
+    const strategyList = raw.strategys.map((item) => StrategyMap.toDomain(item))
 
     const codeOrError = OrderCode.create({ code: raw.code })
     codeOrError.isFailure ? console.log(codeOrError) : ''
@@ -29,14 +32,17 @@ export class OrderMap implements IMapper<Order> {
         userId: raw.userId,
         createAt: raw.createAt,
         totalAmount: raw.totalAmount,
+        toPayAmount: raw.toPayAmount,
         remark: raw.remark,
         code: codeOrError.getValue(),
+        couponId: raw.couponId,
 
         cancelInfo: CancelInfoMap.toDomain(raw.cancelInfo),
         paymentInfo: PaymentInfoMap.toDomain(raw.paymentInfo),
         deliveryInfo: DeliveryInfoMap.toDomain(raw.deliveryInfo),
         addressInfo: AddressInfoMap.toDomain(raw.addressInfo),
         commodityItems: CommodityItems.create(commodityItemList),
+        strategys: Strategys.create(strategyList),
       },
       new UniqueEntityID(raw._id)
     )
@@ -52,19 +58,24 @@ export class OrderMap implements IMapper<Order> {
       .getItems()
       .map<ICommodityItemDbModel>((item) => CommodityItemMap.toPersistence(item))
 
+    const strategys = order.strategys.getItems().map((item) => StrategyMap.toPersistence(item))
+
     return {
       _id: order.id.toString(),
       userId: order.userId,
       createAt: order.createAt,
       totalAmount: order.totalAmount,
+      toPayAmount: order.toPayAmount,
       remark: order.remark,
       code: order.code.code,
+      couponId: order.couponId,
 
       cancelInfo: CancelInfoMap.toPersistence(order.cancelInfo),
       paymentInfo: PaymentInfoMap.toPersistence(order.paymentInfo),
       deliveryInfo: DeliveryInfoMap.toPersistence(order.deliveryInfo),
       addressInfo: AddressInfoMap.toPersistence(order.addressInfo),
       commodityItems: commodityItems,
+      strategys: strategys,
     }
   }
 
@@ -84,28 +95,32 @@ export class OrderMap implements IMapper<Order> {
     const orderStatus = order.cancelInfo
       ? 'cancel'
       : order.deliveryInfo && order.deliveryInfo.finishAt
-        ? 'received'
-        : order.deliveryInfo && order.deliveryInfo.beginAt
-          ? 'shipped'
-          : order.paymentInfo
-            ? 'shipping'
-            : 'unpaid'
+      ? 'received'
+      : order.deliveryInfo && order.deliveryInfo.beginAt
+      ? 'shipped'
+      : order.paymentInfo
+      ? 'shipping'
+      : 'unpaid'
 
     const commodityItemDtoList = await CommodityItemMap.toListDto(order.commodityItems.getItems())
+    const strategyList = StrategyMap.toListDto(order.strategys.getItems())
+
     return {
       _id: order.id.toString(),
       userId: order.userId,
       createAt: order.createAt,
       totalAmount: order.totalAmount,
+      toPayAmount: order.toPayAmount,
       remark: order.remark,
       code: order.code.code,
-
+      couponId: order.couponId,
       cancelInfo: CancelInfoMap.toDTO(order.cancelInfo),
       paymentInfo: PaymentInfoMap.toDTO(order.paymentInfo),
       deliveryInfo: DeliveryInfoMap.toDTO(order.deliveryInfo),
       addressInfo: AddressInfoMap.toDTO(order.addressInfo),
       commodityItems: commodityItemDtoList,
       status: orderStatus,
+      strategys: strategyList,
     }
   }
 }

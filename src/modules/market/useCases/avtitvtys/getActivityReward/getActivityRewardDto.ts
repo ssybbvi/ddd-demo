@@ -1,4 +1,4 @@
-export interface IGetStrategryRewardDto {
+export interface IGetActivityRewardDto {
   couponId: string
   strategyCommodityDtoList: IStrategyCommodityDto[]
   userId: string

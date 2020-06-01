@@ -20,6 +20,7 @@ export class CommodityItemMap implements IMapper<CommodityItem> {
         commodityType: raw.commodityType as CommodityType,
         skuId: raw.skuId,
         specifications: raw.specifications,
+        strategyTags: raw.strategyTags,
       },
       new UniqueEntityID(raw._id)
     )
@@ -39,6 +40,7 @@ export class CommodityItemMap implements IMapper<CommodityItem> {
       commodityType: commodityItem.commodityType,
       skuId: commodityItem.skuId,
       specifications: commodityItem.specifications,
+      strategyTags: commodityItem.strategyTags,
     }
   }
 
@@ -63,6 +65,7 @@ export class CommodityItemMap implements IMapper<CommodityItem> {
       commodityType: commodityItem.commodityType,
       skuId: commodityItem.skuId,
       specifications: commodityItem.specifications,
+      strategyTags: commodityItem.strategyTags,
     }
   }
 }
