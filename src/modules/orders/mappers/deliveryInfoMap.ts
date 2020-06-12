@@ -1,7 +1,7 @@
 import { IMapper } from '../../../shared/infra/Mapper'
 import { DeliveryInfo } from '../domain/deliveryInfo'
 import { IDeliveryInfoDto } from '../dtos/deliveryInfoDto'
-import { DeliveryInfoType } from '../domain/deliveryType'
+import { DeliveryInfoType } from '../domain/deliveryInfoType'
 import { IDeliveryInfoDbModel } from '../dbModels/deliveryInfoDbModel'
 import { AddressInfoMap } from './addressInfoMap'
 

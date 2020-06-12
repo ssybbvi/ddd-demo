@@ -1,11 +1,15 @@
 import * as express from 'express'
 
 export abstract class BaseController {
-  protected abstract executeImpl(req: express.Request, res: express.Response): Promise<void | any>
+  protected abstract executeImpl(
+    req: express.Request,
+    res: express.Response,
+    next?: express.NextFunction
+  ): Promise<void | any>
 
-  public async execute(req: express.Request, res: express.Response): Promise<void> {
+  public async execute(req: express.Request, res: express.Response, next?: express.NextFunction): Promise<void> {
     try {
-      await this.executeImpl(req, res)
+      await this.executeImpl(req, res, next)
     } catch (err) {
       console.log(`[BaseController]: Uncaught controller error`)
       console.log(err)

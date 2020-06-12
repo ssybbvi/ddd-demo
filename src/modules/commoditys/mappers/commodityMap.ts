@@ -95,4 +95,37 @@ export class CommodityMap implements IMapper<Commodity> {
       attributes: attributes,
     }
   }
+
+  public static dtoToDomain(commodityDto: CommodityDto): Commodity {
+    if (!commodityDto) {
+      return null
+    }
+
+    const commodityNameOrErrors = CommodityName.create({ name: commodityDto.name })
+    const skus = Skus.create(commodityDto.skus.map((item) => SkuMap.toDomain(item)))
+    const attributes = Attributes.create(commodityDto.attributes.map((item) => AttributeMap.toDomain(item)))
+
+    const commodityOrError = Commodity.create(
+      {
+        name: commodityNameOrErrors.getValue(),
+        description: commodityDto.description,
+        images: commodityDto.images,
+        fakeAmount: commodityDto.fakeAmount,
+        sales: commodityDto.sales,
+        restrictedPurchaseQuantity: commodityDto.restrictedPurchaseQuantity,
+        limitedPurchasePerPerson: commodityDto.limitedPurchasePerPerson,
+        tags: commodityDto.tags,
+        imgesDescrptionList: commodityDto.imgesDescrptionList,
+        type: commodityDto.type as CommodityType,
+        strategyTags: commodityDto.strategyTags,
+        categoryId: commodityDto.categoryId,
+        skus: skus,
+        attributes: attributes,
+      },
+      new UniqueEntityID(commodityDto._id)
+    )
+
+    commodityOrError.isFailure ? console.log(commodityOrError.error) : ''
+    return commodityOrError.isSuccess ? commodityOrError.getValue() : null
+  }
 }

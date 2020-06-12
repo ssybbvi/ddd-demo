@@ -75,4 +75,17 @@ export class MongoCommodityRepo implements ICommodityRepo {
     let commodityList = await this.getCollection().find(query).toArray()
     return commodityList.map((item) => CommodityMap.toDomain(item))
   }
+
+  public async filterBySkuIds(skuIds: string[]): Promise<Commodity[]> {
+    let commodityList = await this.getCollection()
+      .find({
+        skus: {
+          $elemMatch: {
+            _id: { $in: skuIds },
+          },
+        },
+      })
+      .toArray()
+    return commodityList.map((item) => CommodityMap.toDomain(item))
+  }
 }

@@ -3,6 +3,7 @@ import { Result, left, right, Either } from '../../../shared/core/Result'
 import { Guard } from '../../../shared/core/Guard'
 import { UseCaseError } from '../../../shared/core/UseCaseError'
 import { ValueObject } from '../../../shared/domain/ValueObject'
+import { DeliveryInfoType } from './deliveryInfoType'
 
 export class RepeatShipmentError extends Result<UseCaseError> {
   constructor() {
@@ -32,7 +33,7 @@ export interface IDeliveryInfoProps {
   beginAt?: number
   code?: string
   finishAt?: number
-  type?: string
+  type: DeliveryInfoType
 }
 
 export class DeliveryInfo extends ValueObject<IDeliveryInfoProps> {
@@ -52,7 +53,7 @@ export class DeliveryInfo extends ValueObject<IDeliveryInfoProps> {
     return this.props.type
   }
 
-  public shipped(code: string, type: string): Either<RepeatShipmentError | Result<any>, Result<void>> {
+  public shipped(code: string, type: DeliveryInfoType): Either<RepeatShipmentError | Result<any>, Result<void>> {
     const nullGuard = Guard.againstNullOrUndefinedBulk([
       { argument: code, argumentName: '运单号' },
       { argument: type, argumentName: '配送方式' },

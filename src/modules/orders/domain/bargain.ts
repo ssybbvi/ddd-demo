@@ -12,6 +12,7 @@ import { DeliveryInfo, RepeatShipmentError, NotShippingError } from './deliveryI
 import { UseCaseError } from '../../../shared/core/UseCaseError'
 import { CommodityItems } from './commodityItems'
 import { AddressInfo } from './addressInfo'
+import { DeliveryInfoType } from './deliveryInfoType'
 
 export class ExpiredError extends Result<UseCaseError> {
   constructor() {
@@ -143,7 +144,7 @@ export class Bargain extends AggregateRoot<IBargainProps> {
 
   public shipped(
     code: string,
-    type: string
+    type: DeliveryInfoType
   ): Either<NotSeccessError | RepeatShipmentError | Result<any>, Result<void>> {
     if (!this.props.isSuccess) {
       return left(new NotSeccessError())

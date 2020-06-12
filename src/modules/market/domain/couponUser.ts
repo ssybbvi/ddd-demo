@@ -2,6 +2,7 @@ import { AggregateRoot } from '../../../shared/domain/AggregateRoot'
 import { UniqueEntityID } from '../../../shared/domain/UniqueEntityID'
 import { Result } from '../../../shared/core/Result'
 import { IGuardArgument, Guard } from '../../../shared/core/Guard'
+import { UseCouponed } from './events/useCouponed'
 
 export interface ICouponUserProps {
   couponId: string
@@ -34,6 +35,8 @@ export class CouponUser extends AggregateRoot<ICouponUserProps> {
   public use() {
     this.props.useAt = Date.now()
     this.props.isUse = true
+
+    this.addDomainEvent(new UseCouponed(this))
   }
 
   public static create(props: ICouponUserProps, id?: UniqueEntityID): Result<CouponUser> {

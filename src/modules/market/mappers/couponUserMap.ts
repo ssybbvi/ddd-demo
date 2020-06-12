@@ -4,6 +4,7 @@ import { CouponUser } from '../domain/couponUser'
 
 import { ICouponUserDbModel } from '../dbModels/couponUserDbModel'
 import { ICouponUserDto } from '../dtos/couponUserDto'
+import { couponIdToDto } from '../infra/decorators/couponDecorators'
 
 export class CouponUserMap implements IMapper<CouponUser> {
   public static async toListDto(couponUserList: CouponUser[]): Promise<ICouponUserDto[]> {
@@ -14,7 +15,7 @@ export class CouponUserMap implements IMapper<CouponUser> {
     return dtoList
   }
 
-  //@couponIdToDto()
+  @couponIdToDto()
   public static async toDTO(couponUser: CouponUser): Promise<ICouponUserDto> {
     return {
       couponId: couponUser.couponId,
@@ -25,6 +26,9 @@ export class CouponUserMap implements IMapper<CouponUser> {
   }
 
   public static toDomain(raw: ICouponUserDbModel): CouponUser {
+    if (!raw) {
+      return null
+    }
     const couponUserOrError = CouponUser.create(
       {
         couponId: raw.couponId,

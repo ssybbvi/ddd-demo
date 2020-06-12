@@ -9,8 +9,9 @@ const loadDtoCache = () => {
     const tenantIds = MongodbWithTenant.instance.getTenantIds()
     for (let item of tenantIds) {
       clsNameSpace.run(() => {
+        console.log('xxxx=====================', item)
         clsNameSpace.set('tenantId', item)
-        Promise.all([wxUserCache.load(), commodityCache.load(), couponCache.load()]).then(() => res())
+        // Promise.all([wxUserCache.load(), commodityCache.load(), couponCache.load()]).then(() => res())
       })
     }
   })

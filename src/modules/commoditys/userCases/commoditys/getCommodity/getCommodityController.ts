@@ -5,6 +5,7 @@ import { GetCommodityDto } from './getCommodityDto'
 import { GetCommodityDtoResult } from './getCommodityDtoResult'
 import { Commodity } from '../../../domain/commodity'
 import { CommodityMap } from '../../../mappers/commodityMap'
+import { CommodityDto } from '../../../dtos/commodityDto'
 
 export class GetCommodityController extends BaseController {
   private useCase: GetCommodityUseCase
@@ -28,9 +29,7 @@ export class GetCommodityController extends BaseController {
       } else {
         const commodityList = resultValue.getValue() as Commodity[]
         const commodityDtoList = await CommodityMap.toListDto(commodityList)
-        return this.ok<GetCommodityDtoResult>(res, {
-          commoditys: commodityDtoList,
-        })
+        return this.ok<CommodityDto[]>(res, commodityDtoList)
       }
     } catch (err) {
       return this.fail(res, err)

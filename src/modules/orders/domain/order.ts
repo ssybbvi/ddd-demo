@@ -15,6 +15,7 @@ import { OrderCode } from './orderCode'
 import { CommodityItems } from './commodityItems'
 import { AddressInfo } from './addressInfo'
 import { Strategys } from '../../market/domain/strategys'
+import { DeliveryInfoType } from './deliveryInfoType'
 
 export class ExpectPaidError extends Result<UseCaseError> {
   constructor() {
@@ -83,7 +84,7 @@ export interface OrderProps {
   cancelInfo?: CancelInfo
   paymentInfo?: PaymentInfo
   deliveryInfo?: DeliveryInfo
-  addressInfo: AddressInfo
+  addressInfo?: AddressInfo
   commodityItems: CommodityItems
   strategys: Strategys
 }
@@ -225,7 +226,7 @@ export class Order extends AggregateRoot<OrderProps> {
 
   public shipped(
     shippingNumber: string,
-    shippingType: string
+    shippingType: DeliveryInfoType
   ): Either<RepeatShipmentError | ExpectPaidError | Result<any>, Result<void>> {
     if (!this.paymentInfo) {
       return left(new ExpectPaidError())

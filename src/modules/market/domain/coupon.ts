@@ -25,6 +25,7 @@ export interface ICouponProps {
   userReceiveLimit?: number
   publishTotal: number
   receiveTotal?: number
+  useTotal?: number
 }
 
 export class Coupon extends AggregateRoot<ICouponProps> {
@@ -48,6 +49,10 @@ export class Coupon extends AggregateRoot<ICouponProps> {
     return this.props.publishTotal
   }
 
+  get useTotal(): number {
+    return this.props.useTotal
+  }
+
   public receive(
     userReceiveTotal: number
   ): Either<ExceededUserReceiveLimitError | ExceededPublishTotalError, Result<void>> {
@@ -60,6 +65,10 @@ export class Coupon extends AggregateRoot<ICouponProps> {
     }
     this.props.receiveTotal++
     return right(Result.ok<void>())
+  }
+
+  public increaseUseTotal() {
+    this.props.useTotal++
   }
 
   public static create(props: ICouponProps, id?: UniqueEntityID): Result<Coupon> {

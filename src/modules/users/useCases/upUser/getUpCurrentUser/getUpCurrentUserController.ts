@@ -22,9 +22,7 @@ export class GetUpCurrentUserController extends BaseController {
         return this.fail(res, result.value.errorValue().message)
       } else {
         const upUser = result.value.getValue()
-        return this.ok(res, {
-          user: UpUserMap.toAdminDto(upUser)
-        })
+        return this.ok(res, UpUserMap.toAdminDto(upUser))
       }
     } catch (err) {
       return this.fail(res, err)
