@@ -9,7 +9,7 @@ import { UpUserPassword } from '../domain/upUserPassword'
 export class UpUserMap implements IMapper<UpUser> {
   public static toDTO(user: UpUser): UpUserDto {
     return {
-      username: user.userName.value
+      username: user.userName.value,
     }
   }
 
@@ -24,7 +24,7 @@ export class UpUserMap implements IMapper<UpUser> {
       {
         userName: upUserNameOrError.getValue(),
         password: upPasswordError.getValue(),
-        salt: raw.salt
+        salt: raw.salt,
       },
       new UniqueEntityID(raw._id)
     )
@@ -39,7 +39,7 @@ export class UpUserMap implements IMapper<UpUser> {
       _id: user.id.toString(),
       userName: user.userName.value,
       password: user.password.value,
-      salt: user.salt
+      salt: user.salt,
     }
   }
 

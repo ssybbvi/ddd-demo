@@ -7,15 +7,14 @@ import { AuthorityUserDTO } from '../dtos/authorityUserDTO'
 
 export class AuthorityUserMap implements IMapper<AuthorityUser> {
   public static toDomain(raw: IAuthorityUserDbModel): AuthorityUser {
-
-    const roleIds = raw.roleIds.map(item => {
+    const roleIds = raw.roleIds.map((item) => {
       return RoleId.create(new UniqueEntityID(item)).getValue()
     })
 
     const authorityUserOrError = AuthorityUser.create(
       {
         name: raw.name,
-        roleIds: roleIds
+        roleIds: roleIds,
       },
       new UniqueEntityID(raw._id)
     )
@@ -29,7 +28,7 @@ export class AuthorityUserMap implements IMapper<AuthorityUser> {
     return {
       _id: authorityUser.authorityUserId.id.toString(),
       name: authorityUser.name,
-      roleIds: authorityUser.roleIds.map(item => item.id.toString())
+      roleIds: authorityUser.roleIds.map((item) => item.id.toString()),
     }
   }
 
@@ -37,7 +36,7 @@ export class AuthorityUserMap implements IMapper<AuthorityUser> {
     return {
       _id: authorityUser.authorityUserId.id.toString(),
       name: authorityUser.name,
-      roleIds: authorityUser.roleIds.map(item => item.id.toString())
+      roleIds: authorityUser.roleIds.map((item) => item.id.toString()),
     }
   }
 }

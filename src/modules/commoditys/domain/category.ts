@@ -42,7 +42,6 @@ export class Category extends AggregateRoot<ICategoryProps> {
   public static create(props: ICategoryProps, id?: UniqueEntityID): Result<Category> {
     const guardArgs: IGuardArgument[] = [
       { argument: props.name, argumentName: '名称' },
-      { argument: props.parentId, argumentName: '父节点' },
       { argument: props.attributes, argumentName: 'attributes' },
     ]
 
