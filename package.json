@@ -27,7 +27,7 @@
     "formidable": "^1.2.2",
     "helmet": "^3.21.2",
     "jest": "^25.5.4",
-    "jsdom": "^16.1.0",
+    "jsdom": "^16.5.0",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.5.3",
     "morgan": "^1.9.1",
