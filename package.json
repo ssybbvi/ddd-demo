@@ -22,7 +22,7 @@
     "dompurify": "^2.0.8",
     "dotenv": "^8.2.0",
     "dotenv-extended": "^2.7.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-rate-limit": "^5.1.1",
     "formidable": "^1.2.2",
     "helmet": "^3.21.2",
